@@ -2,11 +2,88 @@ package julja.gms;
 
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
+import julja.gms.Handler.Command;
+import julja.util.Prompt;
 
 public class ClientApp {
-  public static void main(String[] args) {
 
+  Scanner sc = new Scanner(System.in);
+  Prompt prompt = new Prompt(sc);
+
+  @SuppressWarnings("unchecked")
+  public void service() {
+    Deque<String> stack = new ArrayDeque<>();
+    Queue<String> queue = new LinkedList<>();
+    HashMap<String, Command> commandMap = new HashMap<>();
+    String command;
+
+    while (true) {
+      command = prompt.inputString("명령>");
+
+      if (command.length() == 0) {
+        continue;
+      } else if (command.equalsIgnoreCase("quit")) {
+        // System.out.println("안녕!");
+        break;
+      } else if (command.equalsIgnoreCase("history")) {
+        printCommandHistory(stack.iterator());
+        System.out.println();
+        continue;
+      } else if (command.equalsIgnoreCase("history2")) {
+        printCommandHistory(queue.iterator());
+        System.out.println();
+        continue;
+      }
+      stack.push(command);
+      queue.offer(command);
+      Command commandHandler = commandMap.get(command);
+
+      if (commandHandler != null)
+        try {
+          commandHandler.execute();
+        } catch (Exception e) {
+          System.out.println("명령어 실행 중 오류 발생 : " + e.getMessage());
+        }
+      else {
+        System.out.println("실행할 수 없는 명령입니다.");
+      }
+      System.out.println();
+    }
+    sc.close();
+  }
+
+  private void printCommandHistory(Iterator<String> iter) {
+    Iterator<String> iterator = iter;
+    int count = 0;
+    String answer = null;
+    while (iterator.hasNext()) {
+      System.out.println(iterator.next());
+      if (++count % 5 == 0) {
+        System.out.print(": ");
+        answer = sc.nextLine();
+        if (answer.equalsIgnoreCase("q")) {
+          break;
+        }
+      }
+    }
+    System.out.println();
+  }
+
+  public static void main(String[] args) {
+    
+    System.out.println("게임 관리 시스템 클라이언트입니다.");
+    ClientApp app = new ClientApp();
+    app.service();
+    
+
+    /*
     String serverAddr = null;
     int port = 0;
     Scanner sc = new Scanner(System.in);
@@ -39,5 +116,6 @@ public class ClientApp {
       e.printStackTrace();
     }
     sc.close();
+    */
   }
 }
