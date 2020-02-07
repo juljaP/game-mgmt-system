@@ -80,55 +80,59 @@ public class ClientApp {
     commandMap.put("/board/detail", new BoardDetailCommand(in, out, prompt));
     commandMap.put("/board/update", new BoardUpdateCommand(in, out, prompt));
     commandMap.put("/board/delete", new BoardDeleteCommand(in, out, prompt));
-    commandMap.put("/lesson/list", new GameListCommand(in, out));
-    commandMap.put("/lesson/add", new GameAddCommand(in, out, prompt));
-    commandMap.put("/lesson/detail", new GameDetailCommand(in, out, prompt));
-    commandMap.put("/lesson/update", new GameUpdateCommand(in, out, prompt));
-    commandMap.put("/lesson/delete", new GameDeleteCommand(in, out, prompt));
-    commandMap.put("/member/list", new UserListCommand(in, out));
-    commandMap.put("/member/add", new UserAddCommand(in, out, prompt));
-    commandMap.put("/member/detail", new UserDetailCommand(in, out, prompt));
-    commandMap.put("/member/update", new UserUpdateCommand(in, out, prompt));
-    commandMap.put("/member/delete", new UserDeleteCommand(in, out, prompt));
+    commandMap.put("/game/list", new GameListCommand(in, out));
+    commandMap.put("/game/add", new GameAddCommand(in, out, prompt));
+    commandMap.put("/game/detail", new GameDetailCommand(in, out, prompt));
+    commandMap.put("/game/update", new GameUpdateCommand(in, out, prompt));
+    commandMap.put("/game/delete", new GameDeleteCommand(in, out, prompt));
+    commandMap.put("/user/list", new UserListCommand(in, out));
+    commandMap.put("/user/add", new UserAddCommand(in, out, prompt));
+    commandMap.put("/user/detail", new UserDetailCommand(in, out, prompt));
+    commandMap.put("/user/update", new UserUpdateCommand(in, out, prompt));
+    commandMap.put("/user/delete", new UserDeleteCommand(in, out, prompt));
+    try {
+      String command;
 
-    String command;
+      while (true) {
+        command = prompt.inputString("\n 명령>");
 
-    while (true) {
-      command = prompt.inputString("\n명령>");
+        if (command.length() == 0) {
+          continue;
 
-      if (command.length() == 0) {
-        continue;
-
-      } else if (command.equalsIgnoreCase("quit") || command.equals("/server/stop")) {
-        out.writeUTF(command);
-        out.flush();
-        System.out.println("서버: " + in.readUTF());
-        // System.out.println("안녕!");
-        break;
-      } else if (command.equalsIgnoreCase("history")) {
-        printCommandHistory(stack.iterator());
-        System.out.println();
-        continue;
-      } else if (command.equalsIgnoreCase("history2")) {
-        printCommandHistory(queue.iterator());
-        System.out.println();
-        continue;
-      }
-      stack.push(command);
-      queue.offer(command);
-      Command commandHandler = commandMap.get(command);
-
-      if (commandHandler != null) {
-        try {
-          commandHandler.execute();
-        } catch (Exception e) {
-          System.out.println("명령어 실행 중 오류 발생 : " + e.getMessage());
+        } else if (command.equalsIgnoreCase("quit") || command.equals("/server/stop")) {
+          out.writeUTF(command);
+          out.flush();
+          System.out.println("서버: " + in.readUTF());
+          // System.out.println("안녕!");
+          break;
+        } else if (command.equalsIgnoreCase("history")) {
+          printCommandHistory(stack.iterator());
+          System.out.println();
+          continue;
+        } else if (command.equalsIgnoreCase("history2")) {
+          printCommandHistory(queue.iterator());
+          System.out.println();
+          continue;
         }
-      } else {
-        System.out.println("실행할 수 없는 명령입니다.");
+        stack.push(command);
+        queue.offer(command);
+        Command commandHandler = commandMap.get(command);
+
+        if (commandHandler != null) {
+          try {
+            commandHandler.execute();
+          } catch (Exception e) {
+            System.out.println("명령어 실행 중 오류 발생 : " + e.getMessage());
+          }
+        } else {
+          System.out.println("실행할 수 없는 명령입니다.");
+        }
+        System.out.println();
       }
-      System.out.println();
+    } catch (Exception e) {
+      System.out.println("프로그램 실행 중 오류 발생!");
     }
+
     sc.close();
 
   }

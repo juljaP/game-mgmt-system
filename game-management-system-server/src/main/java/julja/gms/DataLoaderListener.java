@@ -100,7 +100,7 @@ public class DataLoaderListener implements julja.context.ApplicationContextListe
   }
 
   private void saveBoardData() {
-    File file = new File("board.ser");
+    File file = new File("./board.ser");
     try (ObjectOutputStream out =
         new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
       out.writeObject(boardList);

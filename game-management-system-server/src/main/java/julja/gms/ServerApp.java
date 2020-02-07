@@ -92,12 +92,12 @@ public class ServerApp {
           out.reset();
           out.writeObject(gameList);
 
-        } else if (request.equals("/lesson/list")) {
+        } else if (request.equals("/user/list")) {
           out.writeUTF("OK");
           out.reset();
           out.writeObject(userList);
 
-        } else if (request.equals("/member/list")) {
+        } else if (request.equals("/board/list")) {
           out.writeUTF("OK");
           out.reset();
           out.writeObject(boardList);
@@ -123,18 +123,18 @@ public class ServerApp {
             out.writeUTF(e.getMessage());
           }
 
-        } else if (request.equals("/lesson/add")) {
+        } else if (request.equals("/game/add")) {
           try {
-            Game lesson = (Game) in.readObject();
+            Game game = (Game) in.readObject();
 
             int i = 0;
             for (; i < gameList.size(); i++) {
-              if (gameList.get(i).getNo() == lesson.getNo()) {
+              if (gameList.get(i).getNo() == game.getNo()) {
                 break;
               }
             }
             if (i == gameList.size()) {
-              gameList.add(lesson);
+              gameList.add(game);
               out.writeUTF("OK");
             } else {
               out.writeUTF("FAIL");
@@ -145,17 +145,17 @@ public class ServerApp {
             out.writeUTF(e.getMessage());
           }
 
-        } else if (request.equals("/member/add")) {
+        } else if (request.equals("/user/add")) {
           try {
-            User member = (User) in.readObject();
+            User user = (User) in.readObject();
             int i = 0;
             for (; i < userList.size(); i++) {
-              if (userList.get(i).getNo() == member.getNo()) {
+              if (userList.get(i).getNo() == user.getNo()) {
                 break;
               }
             }
             if (i == userList.size()) {
-              userList.add(member);
+              userList.add(user);
               out.writeUTF("OK");
             } else {
               out.writeUTF("FAIL");
@@ -189,19 +189,19 @@ public class ServerApp {
             out.writeUTF(e.getMessage());
           }
 
-        } else if (request.equals("/lesson/detail")) {
+        } else if (request.equals("/game/detail")) {
           try {
             int no = in.readInt();
-            Game lesson = null;
+            Game game = null;
             for (Game l : gameList) {
               if (l.getNo() == no) {
-                lesson = l;
+                game = l;
                 break;
               }
             }
-            if (lesson != null) {
+            if (game != null) {
               out.writeUTF("OK");
-              out.writeObject(lesson);
+              out.writeObject(game);
             } else {
               out.writeUTF("FAIL");
               out.writeUTF("해당 번호의 수업이 없습니다.");
@@ -211,19 +211,19 @@ public class ServerApp {
             out.writeUTF(e.getMessage());
           }
 
-        } else if (request.equals("/member/detail")) {
+        } else if (request.equals("/user/detail")) {
           try {
             int no = in.readInt();
-            User member = null;
+            User user = null;
             for (User m : userList) {
               if (m.getNo() == no) {
-                member = m;
+                user = m;
                 break;
               }
             }
-            if (member != null) {
+            if (user != null) {
               out.writeUTF("OK");
-              out.writeObject(member);
+              out.writeObject(user);
             } else {
               out.writeUTF("FAIL");
               out.writeUTF("해당 번호의 회원이 없습니다.");
@@ -257,18 +257,18 @@ public class ServerApp {
             out.writeUTF(e.getMessage());
           }
 
-        } else if (request.equals("/lesson/update")) {
+        } else if (request.equals("/game/update")) {
           try {
-            Game lesson = (Game) in.readObject();
+            Game game = (Game) in.readObject();
             int index = -1;
             for (int i = 0; i < gameList.size(); i++) {
-              if (gameList.get(i).getNo() == lesson.getNo()) {
+              if (gameList.get(i).getNo() == game.getNo()) {
                 index = i;
                 break;
               }
             }
             if (index != -1) {
-              gameList.set(index, lesson);
+              gameList.set(index, game);
               out.writeUTF("OK");
             } else {
               out.writeUTF("FAIL");
@@ -279,18 +279,18 @@ public class ServerApp {
             out.writeUTF(e.getMessage());
           }
 
-        } else if (request.equals("/member/update")) {
+        } else if (request.equals("/user/update")) {
           try {
-            User member = (User) in.readObject();
+            User user = (User) in.readObject();
             int index = -1;
             for (int i = 0; i < userList.size(); i++) {
-              if (userList.get(i).getNo() == member.getNo()) {
+              if (userList.get(i).getNo() == user.getNo()) {
                 index = i;
                 break;
               }
             }
             if (index != -1) {
-              userList.set(index, member);
+              userList.set(index, user);
               out.writeUTF("OK");
             } else {
               out.writeUTF("FAIL");
@@ -323,7 +323,7 @@ public class ServerApp {
             out.writeUTF(e.getMessage());
           }
 
-        } else if (request.equals("/lesson/delete")) {
+        } else if (request.equals("/game/delete")) {
           try {
             int no = in.readInt();
 
@@ -346,7 +346,7 @@ public class ServerApp {
             out.writeUTF(e.getMessage());
           }
 
-        } else if (request.equals("/member/delete")) {
+        } else if (request.equals("/user/delete")) {
           try {
             int no = in.readInt();
             int index = -1;
