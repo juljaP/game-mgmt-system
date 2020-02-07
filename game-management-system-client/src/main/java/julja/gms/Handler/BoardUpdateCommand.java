@@ -1,19 +1,23 @@
 package julja.gms.Handler;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Date;
-import java.util.List;
 import julja.gms.domain.Board;
 import julja.util.Prompt;
 
 public class BoardUpdateCommand implements Command {
 
+  ObjectInputStream in;
+  ObjectOutputStream out;
   Prompt prompt;
-  List<Board> boardList;
 
-  public BoardUpdateCommand(Prompt prompt, List<Board> list) {
+  public BoardUpdateCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
+    this.in = in;
+    this.out = out;
     this.prompt = prompt;
-    boardList = list;
   }
+
 
   @Override
   public void execute() {
@@ -24,7 +28,7 @@ public class BoardUpdateCommand implements Command {
     }
     Board oldBoard = this.boardList.get(index);
     Board newBoard = new Board();
-    newBoard.setBbsNum(oldBoard.getBbsNum());
+    newBoard.setNo(oldBoard.getNo());
     System.out.println("제목 : " + oldBoard.getBbsName());
     newBoard.setBbsName(oldBoard.getBbsName());
     newBoard.setBbsText(prompt.inputString(String.format("내용(%s)? ", oldBoard.getBbsText()),
@@ -39,9 +43,9 @@ public class BoardUpdateCommand implements Command {
     }
   }
 
-  private int indexOfUser(int num) {
+  private int indexOfUser(int no) {
     for (int i = 0; i < this.boardList.size(); i++) {
-      if (this.boardList.get(i).getBbsNum() == num) {
+      if (this.boardList.get(i).getNo() == no) {
         return i;
       }
     }

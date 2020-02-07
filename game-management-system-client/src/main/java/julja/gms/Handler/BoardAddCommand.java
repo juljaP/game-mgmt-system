@@ -1,24 +1,27 @@
 package julja.gms.Handler;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Date;
-import java.util.List;
 import julja.gms.domain.Board;
 import julja.util.Prompt;
 
 public class BoardAddCommand implements Command {
 
+  ObjectInputStream in;
+  ObjectOutputStream out;
   Prompt prompt;
-  List<Board> boardList;
 
-  public BoardAddCommand(Prompt prompt, List<Board> list) {
+  public BoardAddCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
+    this.in = in;
+    this.out = out;
     this.prompt = prompt;
-    boardList = list;
   }
 
   @Override
   public void execute() {
     Board b = new Board();
-    b.setBbsNum(boardList.size() + 1);
+    b.setNo(boardList.size() + 1);
     b.setBbsName(prompt.inputString("제목 : "));
     b.setBbsText(prompt.inputString("내용 : "));
     b.setToday(new Date(System.currentTimeMillis()));

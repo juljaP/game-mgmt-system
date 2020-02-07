@@ -1,17 +1,20 @@
 package julja.gms.Handler;
 
-import java.util.List;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import julja.gms.domain.User;
 import julja.util.Prompt;
 
 public class UserUpdateCommand implements Command {
 
+  ObjectInputStream in;
+  ObjectOutputStream out;
   Prompt prompt;
-  List<User> userList;
 
-  public UserUpdateCommand(Prompt prompt, List<User> list) {
+  public UserUpdateCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
+    this.in = in;
+    this.out = out;
     this.prompt = prompt;
-    userList = list;
   }
 
   @Override
@@ -23,7 +26,7 @@ public class UserUpdateCommand implements Command {
     }
     User oldUser = userList.get(index);
     User newUser = new User();
-    newUser.setUserNum(oldUser.getUserNum());
+    newUser.setNo(oldUser.getNo());
     newUser.setUserEmail(prompt.inputString(String.format("이메일(%s) : ", oldUser.getUserEmail()),
         oldUser.getUserEmail()));
     newUser.setUserPW(
@@ -41,7 +44,7 @@ public class UserUpdateCommand implements Command {
 
   private int indexOfUser(int num) {
     for (int i = 0; i < this.userList.size(); i++) {
-      if (this.userList.get(i).getUserNum() == num) {
+      if (this.userList.get(i).getNo() == num) {
         return i;
       }
     }

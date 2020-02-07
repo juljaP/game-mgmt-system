@@ -1,17 +1,19 @@
 package julja.gms.Handler;
 
-import java.util.List;
-import julja.gms.domain.User;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import julja.util.Prompt;
 
 public class UserDeleteCommand implements Command {
 
+  ObjectInputStream in;
+  ObjectOutputStream out;
   Prompt prompt;
-  List<User> userList;
 
-  public UserDeleteCommand(Prompt prompt, List<User> list) {
+  public UserDeleteCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
+    this.in = in;
+    this.out = out;
     this.prompt = prompt;
-    userList = list;
   }
 
   @Override
@@ -27,7 +29,7 @@ public class UserDeleteCommand implements Command {
 
   private int indexOfUser(int num) {
     for (int i = 0; i < this.userList.size(); i++) {
-      if (this.userList.get(i).getUserNum() == num) {
+      if (this.userList.get(i).getNo() == num) {
         return i;
       }
     }

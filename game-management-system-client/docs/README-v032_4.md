@@ -5,7 +5,6 @@
 
 - src/main/java/julja/gms/ClientApp.java 변경
 
-
 ### 1: 31번 프로젝트에서 Board 클래스 가져오기
 
 - julja.gms.domain 패키지 생성

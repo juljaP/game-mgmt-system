@@ -8,12 +8,12 @@ public class Board implements Serializable {
   private static final long serialVersionUID = 6151682943645316748L;
   private String bbsName, bbsText;
   private Date today;
-  private int bbsNum, bbsHits;
+  private int no, bbsHits;
 
   public static Board valueOf(String csv) {
     String[] data = csv.split(", ");
     Board board = new Board();
-    board.setBbsNum(Integer.parseInt(data[0]));
+    board.setNo(Integer.parseInt(data[0]));
     board.setBbsName(data[1]);
     board.setBbsText(data[2]);
     board.setToday(Date.valueOf(data[3]));
@@ -22,8 +22,8 @@ public class Board implements Serializable {
   }
 
   public String toCsvString() {
-    return String.format("%d, %s, %s, %s, %d", this.getBbsNum(), this.getBbsName(),
-        this.getBbsText(), this.getToday(), this.getBbsHits());
+    return String.format("%d, %s, %s, %s, %d", this.getNo(), this.getBbsName(), this.getBbsText(),
+        this.getToday(), this.getBbsHits());
   }
 
   public String getBbsName() {
@@ -50,12 +50,12 @@ public class Board implements Serializable {
     this.today = today;
   }
 
-  public int getBbsNum() {
-    return bbsNum;
+  public int getNo() {
+    return no;
   }
 
-  public void setBbsNum(int bbsNum) {
-    this.bbsNum = bbsNum;
+  public void setNo(int no) {
+    this.no = no;
   }
 
   public int getBbsHits() {
@@ -72,7 +72,7 @@ public class Board implements Serializable {
     int result = 1;
     result = prime * result + bbsHits;
     result = prime * result + ((bbsName == null) ? 0 : bbsName.hashCode());
-    result = prime * result + bbsNum;
+    result = prime * result + no;
     result = prime * result + ((bbsText == null) ? 0 : bbsText.hashCode());
     return result;
   }
@@ -93,7 +93,7 @@ public class Board implements Serializable {
         return false;
     } else if (!bbsName.equals(other.bbsName))
       return false;
-    if (bbsNum != other.bbsNum)
+    if (no != other.no)
       return false;
     if (bbsText == null) {
       if (other.bbsText != null)

@@ -6,14 +6,14 @@ import java.sql.Date;
 public class User implements Serializable {
 
   private static final long serialVersionUID = -8578616307920400868L;
-  private int userNum;
+  private int no;
   private String userEmail, userPW, userName;
   private Date userResisteredDate;
 
   public static User valueOf(String csv) {
     String[] data = csv.split(", ");
     User user = new User();
-    user.setUserNum(Integer.parseInt(data[0]));
+    user.setNo(Integer.parseInt(data[0]));
     user.setUserEmail(data[1]);
     user.setUserPW(data[2]);
     user.setUserName(data[3]);
@@ -22,16 +22,16 @@ public class User implements Serializable {
   }
 
   public String toCsvString() {
-    return String.format("%d, %s, %s, %s, %s", this.getUserNum(), this.getUserEmail(),
-        this.getUserPW(), this.getUserName(), this.getUserResisteredDate());
+    return String.format("%d, %s, %s, %s, %s", this.getNo(), this.getUserEmail(), this.getUserPW(),
+        this.getUserName(), this.getUserResisteredDate());
   }
 
-  public int getUserNum() {
-    return userNum;
+  public int getNo() {
+    return no;
   }
 
-  public void setUserNum(int userNum) {
-    this.userNum = userNum;
+  public void setNo(int no) {
+    this.no = no;
   }
 
   public String getUserEmail() {
@@ -72,7 +72,7 @@ public class User implements Serializable {
     int result = 1;
     result = prime * result + ((userEmail == null) ? 0 : userEmail.hashCode());
     result = prime * result + ((userName == null) ? 0 : userName.hashCode());
-    result = prime * result + userNum;
+    result = prime * result + no;
     result = prime * result + ((userPW == null) ? 0 : userPW.hashCode());
     return result;
   }
@@ -96,7 +96,7 @@ public class User implements Serializable {
         return false;
     } else if (!userName.equals(other.userName))
       return false;
-    if (userNum != other.userNum)
+    if (no != other.no)
       return false;
     if (userPW == null) {
       if (other.userPW != null)

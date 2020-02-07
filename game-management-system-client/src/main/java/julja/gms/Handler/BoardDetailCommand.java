@@ -1,18 +1,22 @@
 package julja.gms.Handler;
 
-import java.util.List;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import julja.gms.domain.Board;
 import julja.util.Prompt;
 
 public class BoardDetailCommand implements Command {
 
+  ObjectInputStream in;
+  ObjectOutputStream out;
   Prompt prompt;
-  List<Board> boardList;
 
-  public BoardDetailCommand(Prompt prompt, List<Board> list) {
+  public BoardDetailCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
+    this.in = in;
+    this.out = out;
     this.prompt = prompt;
-    boardList = list;
   }
+
 
   @Override
   public void execute() {
@@ -29,7 +33,7 @@ public class BoardDetailCommand implements Command {
 
   private int indexOfUser(int num) {
     for (int i = 0; i < this.boardList.size(); i++) {
-      if (this.boardList.get(i).getBbsNum() == num) {
+      if (this.boardList.get(i).getNo() == num) {
         return i;
       }
     }

@@ -6,14 +6,14 @@ import java.sql.Date;
 public class Game implements Serializable {
 
   private static final long serialVersionUID = 4108093492957016867L;
-  private int gameNum;
+  private int no;
   private String gameName, gameProduction, gamePlatform, gameGenre, gameIllust, gameVoice;
   private Date gameDate;
 
   public static Game valueOf(String csv) {
     String[] data = csv.split(", ");
     Game game = new Game();
-    game.setGameNum(Integer.parseInt(data[0]));
+    game.setNo(Integer.parseInt(data[0]));
     game.setGameName(data[1]);
     game.setGameProduction(data[2]);
     game.setGameDate(Date.valueOf(data[3]));
@@ -25,17 +25,17 @@ public class Game implements Serializable {
   }
 
   public String toCsvString() {
-    return String.format("%d, %s, %s, %s, %s, %s, %s, %s", this.getGameNum(), this.getGameName(),
+    return String.format("%d, %s, %s, %s, %s, %s, %s, %s", this.getNo(), this.getGameName(),
         this.getGameProduction(), this.getGameDate(), this.getGamePlatform(), this.getGameGenre(),
         this.getGameIllust(), this.getGameVoice());
   }
 
-  public int getGameNum() {
-    return gameNum;
+  public int getNo() {
+    return no;
   }
 
-  public void setGameNum(int gameNum) {
-    this.gameNum = gameNum;
+  public void setNo(int no) {
+    this.no = no;
   }
 
   public String getGameName() {
@@ -102,7 +102,7 @@ public class Game implements Serializable {
     result = prime * result + ((gameGenre == null) ? 0 : gameGenre.hashCode());
     result = prime * result + ((gameIllust == null) ? 0 : gameIllust.hashCode());
     result = prime * result + ((gameName == null) ? 0 : gameName.hashCode());
-    result = prime * result + gameNum;
+    result = prime * result + no;
     result = prime * result + ((gamePlatform == null) ? 0 : gamePlatform.hashCode());
     result = prime * result + ((gameProduction == null) ? 0 : gameProduction.hashCode());
     result = prime * result + ((gameVoice == null) ? 0 : gameVoice.hashCode());
@@ -138,7 +138,7 @@ public class Game implements Serializable {
         return false;
     } else if (!gameName.equals(other.gameName))
       return false;
-    if (gameNum != other.gameNum)
+    if (no != other.no)
       return false;
     if (gamePlatform == null) {
       if (other.gamePlatform != null)

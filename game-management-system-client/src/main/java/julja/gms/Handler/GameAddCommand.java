@@ -1,23 +1,26 @@
 package julja.gms.Handler;
 
-import java.util.List;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import julja.gms.domain.Game;
 import julja.util.Prompt;
 
 public class GameAddCommand implements Command {
 
+  ObjectInputStream in;
+  ObjectOutputStream out;
   Prompt prompt;
-  List<Game> gameList;
 
-  public GameAddCommand(Prompt prompt, List<Game> list) {
+  public GameAddCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
+    this.in = in;
+    this.out = out;
     this.prompt = prompt;
-    gameList = list;
   }
 
   @Override
   public void execute() {
     Game g = new Game();
-    g.setGameNum(prompt.inputInt("품번 : "));
+    g.setNo(prompt.inputInt("품번 : "));
     g.setGameName(prompt.inputString("게임명 : "));
     g.setGameProduction(prompt.inputString("제작사 : "));
     g.setGameDate(prompt.inputDate("발매일 : "));
@@ -28,7 +31,5 @@ public class GameAddCommand implements Command {
     System.out.println("저장하였습니다.");
     gameList.add(g);
   }
-
-
 }
 

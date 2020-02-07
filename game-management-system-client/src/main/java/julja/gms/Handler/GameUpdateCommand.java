@@ -1,17 +1,20 @@
 package julja.gms.Handler;
 
-import java.util.List;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import julja.gms.domain.Game;
 import julja.util.Prompt;
 
 public class GameUpdateCommand implements Command {
 
+  ObjectInputStream in;
+  ObjectOutputStream out;
   Prompt prompt;
-  List<Game> gameList;
 
-  public GameUpdateCommand(Prompt prompt, List<Game> list) {
+  public GameUpdateCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
+    this.in = in;
+    this.out = out;
     this.prompt = prompt;
-    gameList = list;
   }
 
   @Override
@@ -24,7 +27,7 @@ public class GameUpdateCommand implements Command {
     }
     Game oldGame = this.gameList.get(index);
     Game newGame = new Game();
-    newGame.setGameNum(oldGame.getGameNum());
+    newGame.setNo(oldGame.getNo());
     newGame.setGameName(prompt.inputString(String.format("게임명(%s) ? ", oldGame.getGameName()),
         oldGame.getGameName()));
 
@@ -51,7 +54,7 @@ public class GameUpdateCommand implements Command {
 
   private int indexOfLesson(int num) {
     for (int i = 0; i < this.gameList.size(); i++) {
-      if (this.gameList.get(i).getGameNum() == num) {
+      if (this.gameList.get(i).getNo() == num) {
         return i;
       }
     }

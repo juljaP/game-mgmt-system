@@ -1,17 +1,20 @@
 package julja.gms.Handler;
 
-import java.util.List;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import julja.gms.domain.Game;
 import julja.util.Prompt;
 
 public class GameDetailCommand implements Command {
 
+  ObjectInputStream in;
+  ObjectOutputStream out;
   Prompt prompt;
-  List<Game> gameList;
 
-  public GameDetailCommand(Prompt prompt, List<Game> list) {
+  public GameDetailCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
+    this.in = in;
+    this.out = out;
     this.prompt = prompt;
-    gameList = list;
   }
 
   @Override
@@ -33,7 +36,7 @@ public class GameDetailCommand implements Command {
 
   private int indexOfLesson(int num) {
     for (int i = 0; i < this.gameList.size(); i++) {
-      if (this.gameList.get(i).getGameNum() == num) {
+      if (this.gameList.get(i).getNo() == num) {
         return i;
       }
     }

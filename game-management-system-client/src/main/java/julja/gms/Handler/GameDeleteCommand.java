@@ -1,17 +1,19 @@
 package julja.gms.Handler;
 
-import java.util.List;
-import julja.gms.domain.Game;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import julja.util.Prompt;
 
 public class GameDeleteCommand implements Command {
 
+  ObjectInputStream in;
+  ObjectOutputStream out;
   Prompt prompt;
-  List<Game> gameList;
 
-  public GameDeleteCommand(Prompt prompt, List<Game> list) {
+  public GameDeleteCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
+    this.in = in;
+    this.out = out;
     this.prompt = prompt;
-    gameList = list;
   }
 
   @Override
@@ -27,7 +29,7 @@ public class GameDeleteCommand implements Command {
 
   private int indexOfLesson(int num) {
     for (int i = 0; i < this.gameList.size(); i++) {
-      if (this.gameList.get(i).getGameNum() == num) {
+      if (this.gameList.get(i).getNo() == num) {
         return i;
       }
     }
