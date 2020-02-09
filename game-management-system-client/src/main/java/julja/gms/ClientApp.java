@@ -108,11 +108,9 @@ public class ClientApp {
           break;
         } else if (command.equalsIgnoreCase("history")) {
           printCommandHistory(stack.iterator());
-          System.out.println();
           continue;
         } else if (command.equalsIgnoreCase("history2")) {
           printCommandHistory(queue.iterator());
-          System.out.println();
           continue;
         }
         stack.push(command);
@@ -151,7 +149,6 @@ public class ClientApp {
         }
       }
     }
-    System.out.println();
   }
 
   public static void main(String[] args) {
