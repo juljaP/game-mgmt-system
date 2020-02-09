@@ -2,39 +2,26 @@ package julja.gms.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-import julja.gms.domain.Game;
+import julja.gms.dao.GameObjectFileDao;
 
 public class GameDeleteServlet implements Servlet {
 
-  List<Game> list = null;
+  GameObjectFileDao gameDao;
 
-  public GameDeleteServlet(List<Game> list) {
-    this.list = list;
+  public GameDeleteServlet(GameObjectFileDao gameDao) {
+    this.gameDao = gameDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    try {
-      int no = in.readInt();
 
-      int index = -1;
-      for (int i = 0; i < list.size(); i++) {
-        if (list.get(i).getNo() == no) {
-          index = i;
-          break;
-        }
-      }
-      if (index != -1) {
-        list.remove(index);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-    } catch (Exception e) {
+    int no = in.readInt();
+
+    if (gameDao.delete(no) > 0) {
+      out.writeUTF("OK");
+    } else {
       out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
+      out.writeUTF("해당 품번의 게임이 없습니다.");
     }
   }
 

@@ -2,38 +2,27 @@ package julja.gms.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
+import julja.gms.dao.GameObjectFileDao;
 import julja.gms.domain.Game;
 
 public class GameAddServlet implements Servlet {
 
-  List<Game> list = null;
+  GameObjectFileDao gameDao;
 
-  public GameAddServlet(List<Game> list) {
-    this.list = list;
+  public GameAddServlet(GameObjectFileDao gameDao) {
+    this.gameDao = gameDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    try {
-      Game game = (Game) in.readObject();
+    Game game = (Game) in.readObject();
 
-      int i = 0;
-      for (; i < list.size(); i++) {
-        if (list.get(i).getNo() == game.getNo()) {
-          break;
-        }
-      }
-      if (i == list.size()) {
-        list.add(game);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 번호의 수업이 있습니다.");
-      }
-    } catch (Exception e) {
+    if (gameDao.insert(game) > 0) {
+      out.writeUTF("OK");
+
+    } else {
       out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
+      out.writeUTF("같은 품번의 게임이 있습니다.");
     }
   }
 

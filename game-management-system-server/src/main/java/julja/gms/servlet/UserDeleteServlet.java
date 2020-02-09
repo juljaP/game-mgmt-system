@@ -2,38 +2,25 @@ package julja.gms.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-import julja.gms.domain.User;
+import julja.gms.dao.UserObjectFileDao;
 
 public class UserDeleteServlet implements Servlet {
 
-  List<User> list = null;
+  UserObjectFileDao userDao;
 
-  public UserDeleteServlet(List<User> list) {
-    this.list = list;
+  public UserDeleteServlet(UserObjectFileDao userDao) {
+    this.userDao = userDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    try {
-      int no = in.readInt();
-      int index = -1;
-      for (int i = 0; i < list.size(); i++) {
-        if (list.get(i).getNo() == no) {
-          index = i;
-          break;
-        }
-      }
-      if (index != -1) {
-        list.remove(index);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 회원이 없습니다.");
-      }
-    } catch (Exception e) {
+    int no = in.readInt();
+
+    if (userDao.delete(no) > 0) {
+      out.writeUTF("OK");
+    } else {
       out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
+      out.writeUTF("해당 번호의 유저가 없습니다.");
     }
   }
 

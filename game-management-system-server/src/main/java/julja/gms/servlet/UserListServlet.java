@@ -2,22 +2,21 @@ package julja.gms.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-import julja.gms.domain.User;
+import julja.gms.dao.UserObjectFileDao;
 
 public class UserListServlet implements Servlet {
 
-  List<User> list = null;
+  UserObjectFileDao userDao;
 
-  public UserListServlet(List<User> list) {
-    this.list = list;
+  public UserListServlet(UserObjectFileDao userDao) {
+    this.userDao = userDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     out.writeUTF("OK");
     out.reset();
-    out.writeObject(list);
+    out.writeObject(userDao.findAll());
   }
 
 }

@@ -2,37 +2,27 @@ package julja.gms.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
+import julja.gms.dao.UserObjectFileDao;
 import julja.gms.domain.User;
 
 public class UserAddServlet implements Servlet {
 
-  List<User> list = null;
+  UserObjectFileDao userDao;
 
-  public UserAddServlet(List<User> list) {
-    this.list = list;
+  public UserAddServlet(UserObjectFileDao userDao) {
+    this.userDao = userDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    try {
-      User user = (User) in.readObject();
-      int i = 0;
-      for (; i < list.size(); i++) {
-        if (list.get(i).getNo() == user.getNo()) {
-          break;
-        }
-      }
-      if (i == list.size()) {
-        list.add(user);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 번호의 회원이 있습니다.");
-      }
-    } catch (Exception e) {
+    User user = (User) in.readObject();
+
+    if (userDao.insert(user) > 0) {
+      out.writeUTF("OK");
+
+    } else {
       out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
+      out.writeUTF("같은 번호의 유저가 있습니다.");
     }
   }
 

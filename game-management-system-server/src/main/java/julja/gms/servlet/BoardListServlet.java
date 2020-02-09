@@ -2,22 +2,21 @@ package julja.gms.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-import julja.gms.domain.Board;
+import julja.gms.dao.BoardObjectFileDao;
 
 public class BoardListServlet implements Servlet {
 
-  List<Board> list = null;
+  BoardObjectFileDao boardDao;
 
-  public BoardListServlet(List<Board> list) {
-    this.list = list;
+  public BoardListServlet(BoardObjectFileDao boardDao) {
+    this.boardDao = boardDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     out.writeUTF("OK");
     out.reset();
-    out.writeObject(list);
+    out.writeObject(boardDao.findAll());
   }
 
 }

@@ -7,13 +7,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import julja.gms.context.ApplicationContextListener;
-import julja.gms.domain.Board;
-import julja.gms.domain.Game;
-import julja.gms.domain.User;
+import julja.gms.dao.BoardObjectFileDao;
+import julja.gms.dao.GameObjectFileDao;
+import julja.gms.dao.UserObjectFileDao;
 import julja.gms.servlet.BoardAddServlet;
 import julja.gms.servlet.BoardDeleteServlet;
 import julja.gms.servlet.BoardDetailServlet;
@@ -37,10 +36,6 @@ public class ServerApp {
   Map<String, Servlet> servletMap = new HashMap<>();
   Map<String, Object> context = new HashMap<>();
 
-  List<Game> gameList;
-  List<User> userList;
-  List<Board> boardList;
-
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
   }
@@ -61,32 +56,33 @@ public class ServerApp {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public void service() {
 
     notifyApplicationInitialized();
 
-    gameList = (List<Game>) context.get("gameList");
-    userList = (List<User>) context.get("userList");
-    boardList = (List<Board>) context.get("boardList");
+    GameObjectFileDao gameDao = (GameObjectFileDao) context.get("gameDao");
+    UserObjectFileDao userDao = (UserObjectFileDao) context.get("userDao");
+    BoardObjectFileDao boardDao = (BoardObjectFileDao) context.get("boardDao");
 
-    servletMap.put("/board/add", new BoardAddServlet(boardList));
-    servletMap.put("/board/delete", new BoardDeleteServlet(boardList));
-    servletMap.put("/board/detail", new BoardDetailServlet(boardList));
-    servletMap.put("/board/list", new BoardListServlet(boardList));
-    servletMap.put("/board/update", new BoardUpdateServlet(boardList));
-    servletMap.put("/game/add", new GameAddServlet(gameList));
-    servletMap.put("/game/delete", new GameDeleteServlet(gameList));
-    servletMap.put("/game/detail", new GameDetailServlet(gameList));
-    servletMap.put("/game/list", new GameListServlet(gameList));
-    servletMap.put("/game/update", new GameUpdateServlet(gameList));
-    servletMap.put("/user/add", new UserAddServlet(userList));
-    servletMap.put("/user/delete", new UserDeleteServlet(userList));
-    servletMap.put("/user/detail", new UserDetailServlet(userList));
-    servletMap.put("/user/list", new UserListServlet(userList));
-    servletMap.put("/user/update", new UserUpdateServlet(userList));
+    servletMap.put("/board/add", new BoardAddServlet(boardDao));
+    servletMap.put("/board/delete", new BoardDeleteServlet(boardDao));
+    servletMap.put("/board/detail", new BoardDetailServlet(boardDao));
+    servletMap.put("/board/list", new BoardListServlet(boardDao));
+    servletMap.put("/board/update", new BoardUpdateServlet(boardDao));
 
-    try (ServerSocket serverSocket = new ServerSocket(9999)) {// 9999포트 클라이언트 연결 대기
+    servletMap.put("/game/add", new GameAddServlet(gameDao));
+    servletMap.put("/game/delete", new GameDeleteServlet(gameDao));
+    servletMap.put("/game/detail", new GameDetailServlet(gameDao));
+    servletMap.put("/game/list", new GameListServlet(gameDao));
+    servletMap.put("/game/update", new GameUpdateServlet(gameDao));
+
+    servletMap.put("/user/add", new UserAddServlet(userDao));
+    servletMap.put("/user/delete", new UserDeleteServlet(userDao));
+    servletMap.put("/user/detail", new UserDetailServlet(userDao));
+    servletMap.put("/user/list", new UserListServlet(userDao));
+    servletMap.put("/user/update", new UserUpdateServlet(userDao));
+
+    try (ServerSocket serverSocket = new ServerSocket(9999)) {
       System.out.println("클라이언트 연결 대기중...");
       while (true) {
         Socket socket = serverSocket.accept();

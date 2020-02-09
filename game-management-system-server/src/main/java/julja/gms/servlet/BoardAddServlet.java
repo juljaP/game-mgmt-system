@@ -2,37 +2,27 @@ package julja.gms.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
+import julja.gms.dao.BoardObjectFileDao;
 import julja.gms.domain.Board;
 
 public class BoardAddServlet implements Servlet {
 
-  List<Board> list = null;
+  BoardObjectFileDao boardDao;
 
-  public BoardAddServlet(List<Board> list) {
-    this.list = list;
+  public BoardAddServlet(BoardObjectFileDao boardDao) {
+    this.boardDao = boardDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    try {
-      Board board = (Board) in.readObject();
-      int i = 0;
-      for (; i < list.size(); i++) {
-        if (list.get(i).getNo() == board.getNo()) {
-          break;
-        }
-      }
-      if (i == list.size()) {
-        list.add(board);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 번호의 게시물이 있습니다.");
-      }
-    } catch (Exception e) {
+    Board board = (Board) in.readObject();
+
+    if (boardDao.insert(board) > 0) {
+      out.writeUTF("OK");
+
+    } else {
       out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
+      out.writeUTF("같은 번호의 게시물이 있습니다.");
     }
   }
 
