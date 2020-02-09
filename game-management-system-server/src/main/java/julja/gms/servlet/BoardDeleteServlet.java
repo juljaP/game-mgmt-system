@@ -2,13 +2,13 @@ package julja.gms.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import julja.gms.dao.BoardObjectFileDao;
+import julja.gms.dao.json.BoardJsonFileDao;
 
 public class BoardDeleteServlet implements Servlet {
 
-  BoardObjectFileDao boardDao;
+  BoardJsonFileDao boardDao;
 
-  public BoardDeleteServlet(BoardObjectFileDao boardDao) {
+  public BoardDeleteServlet(BoardJsonFileDao boardDao) {
     this.boardDao = boardDao;
   }
 

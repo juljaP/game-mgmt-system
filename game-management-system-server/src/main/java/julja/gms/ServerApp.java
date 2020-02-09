@@ -10,9 +10,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import julja.gms.context.ApplicationContextListener;
-import julja.gms.dao.BoardObjectFileDao;
-import julja.gms.dao.GameObjectFileDao;
-import julja.gms.dao.UserObjectFileDao;
+import julja.gms.dao.json.BoardJsonFileDao;
+import julja.gms.dao.json.GameJsonFileDao;
+import julja.gms.dao.json.UserJsonFileDao;
 import julja.gms.servlet.BoardAddServlet;
 import julja.gms.servlet.BoardDeleteServlet;
 import julja.gms.servlet.BoardDetailServlet;
@@ -60,9 +60,9 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    GameObjectFileDao gameDao = (GameObjectFileDao) context.get("gameDao");
-    UserObjectFileDao userDao = (UserObjectFileDao) context.get("userDao");
-    BoardObjectFileDao boardDao = (BoardObjectFileDao) context.get("boardDao");
+    GameJsonFileDao gameDao = (GameJsonFileDao) context.get("gameDao");
+    UserJsonFileDao userDao = (UserJsonFileDao) context.get("userDao");
+    BoardJsonFileDao boardDao = (BoardJsonFileDao) context.get("boardDao");
 
     servletMap.put("/board/add", new BoardAddServlet(boardDao));
     servletMap.put("/board/delete", new BoardDeleteServlet(boardDao));

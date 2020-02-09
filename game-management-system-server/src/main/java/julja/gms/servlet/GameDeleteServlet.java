@@ -2,13 +2,13 @@ package julja.gms.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import julja.gms.dao.GameObjectFileDao;
+import julja.gms.dao.json.GameJsonFileDao;
 
 public class GameDeleteServlet implements Servlet {
 
-  GameObjectFileDao gameDao;
+  GameJsonFileDao gameDao;
 
-  public GameDeleteServlet(GameObjectFileDao gameDao) {
+  public GameDeleteServlet(GameJsonFileDao gameDao) {
     this.gameDao = gameDao;
   }
 

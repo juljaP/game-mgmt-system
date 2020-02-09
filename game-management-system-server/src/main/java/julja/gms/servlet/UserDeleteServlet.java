@@ -2,13 +2,13 @@ package julja.gms.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import julja.gms.dao.UserObjectFileDao;
+import julja.gms.dao.json.UserJsonFileDao;
 
 public class UserDeleteServlet implements Servlet {
 
-  UserObjectFileDao userDao;
+  UserJsonFileDao userDao;
 
-  public UserDeleteServlet(UserObjectFileDao userDao) {
+  public UserDeleteServlet(UserJsonFileDao userDao) {
     this.userDao = userDao;
   }
 

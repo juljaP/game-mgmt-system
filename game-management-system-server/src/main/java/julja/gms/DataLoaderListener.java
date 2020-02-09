@@ -2,18 +2,18 @@ package julja.gms;
 
 import java.util.Map;
 import julja.gms.context.ApplicationContextListener;
-import julja.gms.dao.BoardObjectFileDao;
-import julja.gms.dao.GameObjectFileDao;
-import julja.gms.dao.UserObjectFileDao;
+import julja.gms.dao.json.BoardJsonFileDao;
+import julja.gms.dao.json.GameJsonFileDao;
+import julja.gms.dao.json.UserJsonFileDao;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
   @Override
   public void contextInitailized(Map<String, Object> context) {
 
-    UserObjectFileDao userDao = new UserObjectFileDao("./user.ser");
-    GameObjectFileDao gameDao = new GameObjectFileDao("./game.ser");
-    BoardObjectFileDao boardDao = new BoardObjectFileDao("./board.ser");
+    UserJsonFileDao userDao = new UserJsonFileDao("./user.json");
+    GameJsonFileDao gameDao = new GameJsonFileDao("./game.json");
+    BoardJsonFileDao boardDao = new BoardJsonFileDao("./board.json");
 
     context.put("gameDao", gameDao);
     context.put("userDao", userDao);

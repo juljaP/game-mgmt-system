@@ -2,14 +2,14 @@ package julja.gms.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import julja.gms.dao.UserObjectFileDao;
+import julja.gms.dao.json.UserJsonFileDao;
 import julja.gms.domain.User;
 
 public class UserDetailServlet implements Servlet {
 
-  UserObjectFileDao userDao;
+  UserJsonFileDao userDao;
 
-  public UserDetailServlet(UserObjectFileDao userDao) {
+  public UserDetailServlet(UserJsonFileDao userDao) {
     this.userDao = userDao;
   }
 
