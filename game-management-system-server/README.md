@@ -1,21 +1,23 @@
-# 32_5 - 특정 기능을 수행하는 코드를 메서드로 분리
+# 32_6 - 커맨드 패턴을 적용하여 요청 처리 메서드 객체화 
 
 ## 목표
 
-- 기능 별로 코드를 메서드로 분리
-- 분리한 메서드 사용
-- "Extract Method" 리팩토링 기법 이해
+- 커맨드 패턴의 동작 원리
+- 커맨드 패턴 적용
 
 ## 소스 및 결과
 
-- src/main/java/julja/gms/ServerApp.java 변경
+- src/main/java/julja/gms/ServerApp.java 변경 
 
-### 1: 클라이언트의 요청을 처리하는 코드를 기능별로 분리
+### 1: 커맨드 패턴의 인터페이스 정의하라.
 
-- ServerApp.java 변경
-  - if~ else~ 분기문에 작성한 코드를 별도의 메서드로 분리하여 정의
-  - listBoard() : 게시물 목록 데이터 요청 처리
-  - addBoard() : 게시물 데이터 등록 요청 처리
+- julja.servlet 패키지 생성
+- julja.servlet.Servlet 인터페이스 정의
+
+### 2: 각각의 요청 처리 메서드를 인터페이스 규칙에 따라 클래스를 정의하라.
+ 
+- listBoard()를 BoardListServlet 클래스로 정의한다.
+- addBoard()를 BoardAddServlet 클래스로 정의한다.
   - detailBoard() : 게시물 조회 요청 처리
   - updateBoard() : 게시물 변경 요청 처리
   - deleteBoard() : 게시물 삭제 요청 처리

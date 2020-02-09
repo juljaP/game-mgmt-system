@@ -1,4 +1,4 @@
-package julja.gms.Handler;
+package julja.gms.handler;
 
 public interface Command {
 

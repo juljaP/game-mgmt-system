@@ -1,4 +1,4 @@
-package julja.gms.Handler;
+package julja.gms.handler;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

@@ -11,11 +11,12 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import julja.gms.context.ApplicationContextListener;
 import julja.gms.domain.Board;
 import julja.gms.domain.Game;
 import julja.gms.domain.User;
 
-public class DataLoaderListener implements julja.context.ApplicationContextListener {
+public class DataLoaderListener implements ApplicationContextListener {
 
   private List<Game> gameList = new ArrayList<>();
   private List<Board> boardList = new ArrayList<>();
