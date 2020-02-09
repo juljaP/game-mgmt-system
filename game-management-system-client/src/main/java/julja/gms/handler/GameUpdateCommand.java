@@ -1,19 +1,16 @@
 package julja.gms.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import julja.gms.dao.proxy.GameDaoProxy;
 import julja.gms.domain.Game;
 import julja.util.Prompt;
 
 public class GameUpdateCommand implements Command {
 
-  ObjectInputStream in;
-  ObjectOutputStream out;
   Prompt prompt;
+  GameDaoProxy gameDao;
 
-  public GameUpdateCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
-    this.in = in;
-    this.out = out;
+  public GameUpdateCommand(GameDaoProxy gameDao, Prompt prompt) {
+    this.gameDao = gameDao;
     this.prompt = prompt;
   }
 
@@ -23,18 +20,7 @@ public class GameUpdateCommand implements Command {
     try {
       int no = prompt.inputInt("게임 품번? : ");
 
-      out.writeUTF("/game/detail");
-      out.writeInt(no);
-      out.flush();
-
-      String response = in.readUTF();
-
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
-      Game oldGame = (Game) in.readObject();
+      Game oldGame = gameDao.findByNo(no);
       Game newGame = new Game();
       newGame.setNo(oldGame.getNo());
       newGame.setGameName(prompt.inputString(String.format("게임명(%s) ? ", oldGame.getGameName()),
@@ -56,15 +42,8 @@ public class GameUpdateCommand implements Command {
       if (oldGame.equals(newGame)) {
         System.out.println("게임 정보 변경을 취소하였습니다.");
       }
-      out.writeUTF("/game/update");
-      out.writeObject(newGame);
-      out.flush();
 
-      response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
+      gameDao.update(newGame);
       System.out.println("게임 정보를 변경했습니다.");
     } catch (Exception e) {
       System.out.println("명령 실행 중 오류 발생!");

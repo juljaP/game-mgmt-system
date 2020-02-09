@@ -10,6 +10,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import julja.gms.dao.proxy.BoardDaoProxy;
+import julja.gms.dao.proxy.GameDaoProxy;
+import julja.gms.dao.proxy.UserDaoProxy;
 import julja.gms.handler.BoardAddCommand;
 import julja.gms.handler.BoardDeleteCommand;
 import julja.gms.handler.BoardDetailCommand;
@@ -74,23 +77,30 @@ public class ClientApp {
     Deque<String> stack = new ArrayDeque<>();
     Queue<String> queue = new LinkedList<>();
 
+    BoardDaoProxy boardDao = new BoardDaoProxy(in, out);
+    UserDaoProxy userDao = new UserDaoProxy(in, out);
+    GameDaoProxy gameDao = new GameDaoProxy(in, out);
+
     HashMap<String, Command> commandMap = new HashMap<>();
 
-    commandMap.put("/board/list", new BoardListCommand(in, out));
-    commandMap.put("/board/add", new BoardAddCommand(in, out, prompt));
-    commandMap.put("/board/detail", new BoardDetailCommand(in, out, prompt));
-    commandMap.put("/board/update", new BoardUpdateCommand(in, out, prompt));
-    commandMap.put("/board/delete", new BoardDeleteCommand(in, out, prompt));
-    commandMap.put("/game/list", new GameListCommand(in, out));
-    commandMap.put("/game/add", new GameAddCommand(in, out, prompt));
-    commandMap.put("/game/detail", new GameDetailCommand(in, out, prompt));
-    commandMap.put("/game/update", new GameUpdateCommand(in, out, prompt));
-    commandMap.put("/game/delete", new GameDeleteCommand(in, out, prompt));
-    commandMap.put("/user/list", new UserListCommand(in, out));
-    commandMap.put("/user/add", new UserAddCommand(in, out, prompt));
-    commandMap.put("/user/detail", new UserDetailCommand(in, out, prompt));
-    commandMap.put("/user/update", new UserUpdateCommand(in, out, prompt));
-    commandMap.put("/user/delete", new UserDeleteCommand(in, out, prompt));
+    commandMap.put("/board/list", new BoardListCommand(boardDao));
+    commandMap.put("/board/add", new BoardAddCommand(boardDao, prompt));
+    commandMap.put("/board/detail", new BoardDetailCommand(boardDao, prompt));
+    commandMap.put("/board/update", new BoardUpdateCommand(boardDao, prompt));
+    commandMap.put("/board/delete", new BoardDeleteCommand(boardDao, prompt));
+
+    commandMap.put("/game/list", new GameListCommand(gameDao));
+    commandMap.put("/game/add", new GameAddCommand(gameDao, prompt));
+    commandMap.put("/game/detail", new GameDetailCommand(gameDao, prompt));
+    commandMap.put("/game/update", new GameUpdateCommand(gameDao, prompt));
+    commandMap.put("/game/delete", new GameDeleteCommand(gameDao, prompt));
+
+    commandMap.put("/user/list", new UserListCommand(userDao));
+    commandMap.put("/user/add", new UserAddCommand(userDao, prompt));
+    commandMap.put("/user/detail", new UserDetailCommand(userDao, prompt));
+    commandMap.put("/user/update", new UserUpdateCommand(userDao, prompt));
+    commandMap.put("/user/delete", new UserDeleteCommand(userDao, prompt));
+
     try {
       String command;
 

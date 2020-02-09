@@ -1,20 +1,17 @@
 package julja.gms.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Date;
+import julja.gms.dao.proxy.BoardDaoProxy;
 import julja.gms.domain.Board;
 import julja.util.Prompt;
 
 public class BoardUpdateCommand implements Command {
 
-  ObjectInputStream in;
-  ObjectOutputStream out;
   Prompt prompt;
+  BoardDaoProxy boardDao;
 
-  public BoardUpdateCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
-    this.in = in;
-    this.out = out;
+  public BoardUpdateCommand(BoardDaoProxy boardDao, Prompt prompt) {
+    this.boardDao = boardDao;
     this.prompt = prompt;
   }
 
@@ -25,18 +22,14 @@ public class BoardUpdateCommand implements Command {
     try {
       int no = prompt.inputInt("게시글 번호? ");
 
-      out.writeUTF("/board/detail");
-      out.writeInt(no);
-      out.flush();
-
-      String response = in.readUTF();
-
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
+      Board oldBoard = null;
+      try {
+        oldBoard = boardDao.findByNo(no);
+      } catch (Exception e) {
+        System.out.println("해당 번호의 게시글이 없습니다.");
         return;
       }
 
-      Board oldBoard = (Board) in.readObject();
       Board newBoard = new Board();
       newBoard.setNo(oldBoard.getNo());
       System.out.println("제목 : " + oldBoard.getBbsName());
@@ -50,16 +43,9 @@ public class BoardUpdateCommand implements Command {
         System.out.println("게시글 변경을 취소했습니다.");
         return;
       }
-      out.writeUTF("/board/update");
-      out.writeObject(newBoard);
-      out.flush();
-
-      response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
+      boardDao.update(newBoard);
       System.out.println("게시글을 변경했습니다.");
+
     } catch (Exception e) {
       System.out.println("명령 실행 중 오류 발생!");
     }

@@ -1,19 +1,16 @@
 package julja.gms.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import julja.gms.dao.proxy.GameDaoProxy;
 import julja.gms.domain.Game;
 import julja.util.Prompt;
 
 public class GameAddCommand implements Command {
 
-  ObjectInputStream in;
-  ObjectOutputStream out;
   Prompt prompt;
+  GameDaoProxy gameDao;
 
-  public GameAddCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
-    this.in = in;
-    this.out = out;
+  public GameAddCommand(GameDaoProxy gameDao, Prompt prompt) {
+    this.gameDao = gameDao;
     this.prompt = prompt;
   }
 
@@ -32,16 +29,7 @@ public class GameAddCommand implements Command {
     System.out.println();
 
     try {
-      out.writeUTF("/game/add");
-      out.writeObject(g);
-      out.flush();
-
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
+      gameDao.insert(g);
       System.out.println("저장하였습니다.");
 
     } catch (Exception e) {

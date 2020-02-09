@@ -1,20 +1,17 @@
 package julja.gms.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Date;
+import julja.gms.dao.proxy.UserDaoProxy;
 import julja.gms.domain.User;
 import julja.util.Prompt;
 
 public class UserAddCommand implements Command {
 
-  ObjectInputStream in;
-  ObjectOutputStream out;
   Prompt prompt;
+  UserDaoProxy userDao;
 
-  public UserAddCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
-    this.in = in;
-    this.out = out;
+  public UserAddCommand(UserDaoProxy userDao, Prompt prompt) {
+    this.userDao = userDao;
     this.prompt = prompt;
   }
 
@@ -31,20 +28,11 @@ public class UserAddCommand implements Command {
     System.out.println();
 
     try {
-      out.writeUTF("/user/add");
-      out.writeObject(u);
-      out.flush();
-
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
+      userDao.insert(u);
       System.out.println("저장하였습니다.");
 
     } catch (Exception e) {
-      System.out.println("통신 오류 발생.");
+      System.out.println("데이터 저장 실패!");
     }
   }
 

@@ -1,35 +1,22 @@
 package julja.gms.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.List;
+import julja.gms.dao.proxy.GameDaoProxy;
 import julja.gms.domain.Game;
 
 public class GameListCommand implements Command {
 
-  ObjectInputStream in;
-  ObjectOutputStream out;
+  GameDaoProxy gameDao;
 
-  public GameListCommand(ObjectInputStream in, ObjectOutputStream out) {
-    this.in = in;
-    this.out = out;
+  public GameListCommand(GameDaoProxy gameDao) {
+    this.gameDao = gameDao;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void execute() {
 
     try {
-      out.writeUTF("/game/list");
-      out.flush();
-
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
-      List<Game> games = (List<Game>) in.readObject();
+      List<Game> games = gameDao.findAll();
 
       for (Game g : games) {
         System.out.printf("[%d] %s | %s | %s | %s\n", g.getNo(), g.getGameName(),

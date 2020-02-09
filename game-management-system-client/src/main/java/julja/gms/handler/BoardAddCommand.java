@@ -1,20 +1,17 @@
 package julja.gms.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Date;
+import julja.gms.dao.proxy.BoardDaoProxy;
 import julja.gms.domain.Board;
 import julja.util.Prompt;
 
 public class BoardAddCommand implements Command {
 
-  ObjectInputStream in;
-  ObjectOutputStream out;
   Prompt prompt;
+  BoardDaoProxy boardDao;
 
-  public BoardAddCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
-    this.in = in;
-    this.out = out;
+  public BoardAddCommand(BoardDaoProxy boardDao, Prompt prompt) {
+    this.boardDao = boardDao;
     this.prompt = prompt;
   }
 
@@ -22,7 +19,7 @@ public class BoardAddCommand implements Command {
   public void execute() {
 
     Board b = new Board();
-    b.setNo(prompt.inputInt("번호 : "));
+    b.setNo(prompt.inputInt("번호? "));
     b.setBbsName(prompt.inputString("제목 : "));
     b.setBbsText(prompt.inputString("내용 : "));
     b.setToday(new Date(System.currentTimeMillis()));
@@ -30,21 +27,10 @@ public class BoardAddCommand implements Command {
     System.out.println();
 
     try {
-      out.writeUTF("/board/add");
-      out.writeObject(b);
-      out.flush();
-
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
-      System.out.println("저장하였습니다.");
-
+      boardDao.insert(b);
+      System.out.println("저장하였습니다");
     } catch (Exception e) {
-      System.out.println("통신 오류 발생.");
+      System.out.println("데이터 저장 실패!");
     }
-
   }
 }

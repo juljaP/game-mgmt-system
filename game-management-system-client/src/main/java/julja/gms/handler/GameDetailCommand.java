@@ -1,19 +1,16 @@
 package julja.gms.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import julja.gms.dao.proxy.GameDaoProxy;
 import julja.gms.domain.Game;
 import julja.util.Prompt;
 
 public class GameDetailCommand implements Command {
 
-  ObjectInputStream in;
-  ObjectOutputStream out;
   Prompt prompt;
+  GameDaoProxy gameDao;
 
-  public GameDetailCommand(ObjectInputStream in, ObjectOutputStream out, Prompt prompt) {
-    this.in = in;
-    this.out = out;
+  public GameDetailCommand(GameDaoProxy gameDao, Prompt prompt) {
+    this.gameDao = gameDao;
     this.prompt = prompt;
   }
 
@@ -21,17 +18,8 @@ public class GameDetailCommand implements Command {
   public void execute() {
     try {
       int no = prompt.inputInt("게임 품번? ");
-      out.writeUTF("/game/detail");
-      out.writeInt(no);
-      out.flush();
 
-      String response = in.readUTF();
-
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-      Game g = (Game) in.readObject();
+      Game g = gameDao.findByNo(no);
       System.out.printf("게임명 : %s\n", g.getGameName());
       System.out.printf("제작사 : %s\n", g.getGameProduction());
       System.out.printf("발매일 : %s\n", g.getGameDate());
@@ -40,7 +28,7 @@ public class GameDetailCommand implements Command {
       System.out.printf("작화 : %s\n", g.getGameIllust());
       System.out.printf("음성 : %s\n", g.getGameVoice());
     } catch (Exception e) {
-      System.out.println("명령 실행 중 오류 발생");
+      System.out.println("조회 실패!");
     }
   }
 }
