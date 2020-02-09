@@ -1,14 +1,16 @@
 package julja.gms.dao.json;
 
 import java.util.List;
+import julja.gms.dao.UserDao;
 import julja.gms.domain.User;
 
-public class UserJsonFileDao extends AbstractJsonFileDao<User> {
+public class UserJsonFileDao extends AbstractJsonFileDao<User> implements UserDao {
 
   public UserJsonFileDao(String filename) {
     super(filename);
   }
 
+  @Override
   public int insert(User user) throws Exception {
 
     if (indexOf(user.getNo()) > -1) {
@@ -20,10 +22,12 @@ public class UserJsonFileDao extends AbstractJsonFileDao<User> {
     return 1;
   }
 
+  @Override
   public List<User> findAll() throws Exception {
     return list;
   }
 
+  @Override
   public User findByNo(int no) throws Exception {
     int index = indexOf(no);
     if (index == -1) {
@@ -32,6 +36,7 @@ public class UserJsonFileDao extends AbstractJsonFileDao<User> {
     return list.get(index);
   }
 
+  @Override
   public int update(User user) throws Exception {
     int index = indexOf(user.getNo());
 
@@ -44,6 +49,7 @@ public class UserJsonFileDao extends AbstractJsonFileDao<User> {
     return 1;
   }
 
+  @Override
   public int delete(int no) throws Exception {
     int index = indexOf(no);
     if (index == -1) {

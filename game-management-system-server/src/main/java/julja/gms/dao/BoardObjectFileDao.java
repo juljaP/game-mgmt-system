@@ -3,12 +3,13 @@ package julja.gms.dao;
 import java.util.List;
 import julja.gms.domain.Board;
 
-public class BoardObjectFileDao extends AbstractObjectFileDao<Board> {
+public class BoardObjectFileDao extends AbstractObjectFileDao<Board> implements BoardDao {
 
   public BoardObjectFileDao(String filename) {
     super(filename);
   }
 
+  @Override
   public int insert(Board board) throws Exception {
 
     if (indexOf(board.getNo()) > -1) {
@@ -20,10 +21,12 @@ public class BoardObjectFileDao extends AbstractObjectFileDao<Board> {
     return 1;
   }
 
+  @Override
   public List<Board> findAll() throws Exception {
     return list;
   }
 
+  @Override
   public Board findByNo(int no) throws Exception {
     int index = indexOf(no);
     if (index == -1) {
@@ -32,6 +35,7 @@ public class BoardObjectFileDao extends AbstractObjectFileDao<Board> {
     return list.get(index);
   }
 
+  @Override
   public int update(Board board) throws Exception {
     int index = indexOf(board.getNo());
 
@@ -44,6 +48,7 @@ public class BoardObjectFileDao extends AbstractObjectFileDao<Board> {
     return 1;
   }
 
+  @Override
   public int delete(int no) throws Exception {
     int index = indexOf(no);
     if (index == -1) {

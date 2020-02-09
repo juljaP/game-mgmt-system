@@ -3,13 +3,14 @@ package julja.gms.dao;
 import java.util.List;
 import julja.gms.domain.User;
 
-public class UserObjectFileDao extends AbstractObjectFileDao<User> {
+public class UserObjectFileDao extends AbstractObjectFileDao<User> implements UserDao {
 
   public UserObjectFileDao(String filename) {
     super(filename);
   }
 
 
+  @Override
   public int insert(User user) throws Exception {
 
     if (indexOf(user.getNo()) > -1) {
@@ -21,10 +22,12 @@ public class UserObjectFileDao extends AbstractObjectFileDao<User> {
     return 1;
   }
 
+  @Override
   public List<User> findAll() throws Exception {
     return list;
   }
 
+  @Override
   public User findByNo(int no) throws Exception {
     int index = indexOf(no);
     if (index == -1) {
@@ -33,6 +36,7 @@ public class UserObjectFileDao extends AbstractObjectFileDao<User> {
     return list.get(index);
   }
 
+  @Override
   public int update(User user) throws Exception {
     int index = indexOf(user.getNo());
 
@@ -45,6 +49,7 @@ public class UserObjectFileDao extends AbstractObjectFileDao<User> {
     return 1;
   }
 
+  @Override
   public int delete(int no) throws Exception {
     int index = indexOf(no);
     if (index == -1) {

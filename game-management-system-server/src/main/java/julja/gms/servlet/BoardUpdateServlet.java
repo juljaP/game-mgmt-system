@@ -2,14 +2,14 @@ package julja.gms.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import julja.gms.dao.json.BoardJsonFileDao;
+import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
 
 public class BoardUpdateServlet implements Servlet {
 
-  BoardJsonFileDao boardDao;
+  BoardDao boardDao;
 
-  public BoardUpdateServlet(BoardJsonFileDao boardDao) {
+  public BoardUpdateServlet(BoardDao boardDao) {
     this.boardDao = boardDao;
   }
 
