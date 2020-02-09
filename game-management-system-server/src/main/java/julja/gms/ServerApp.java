@@ -101,7 +101,6 @@ public class ServerApp {
     notifyApplicationDestroyed();
   }
 
-  @SuppressWarnings("unchecked")
   int processRequest(Socket clientSocket) {
     try (Socket socket = clientSocket;
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
