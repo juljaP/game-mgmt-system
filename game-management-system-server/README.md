@@ -1,65 +1,31 @@
-# 32_7 - 데이터 처리 코드를 별도의 클래스로 정의하여 객체화
+# 32_8 - DAO 클래스의 공통점을 뽑에 수퍼 클래스로 정의하기(generalization 수행하기)
 
 ## 목표
 
-- DAO(Data Access Object)의 역할과 이점
-- 데이터 처리 코드를 DAO로 분리
+- 상속의 기법 중 generalization을 이해
+- generalization 구현
 
-### DAO(Data Access Object)
+### 상속
 
-- 데이터 처리 역할을 수행하는 객체
-- 데이터 처리 방식을 캡슐화(=추상화=클래스로 정의)하여 객체의 사용을 일관성 있게 만든다.
-  - 즉 데이터 처리 방식(배열, 스택, 큐, 맵, 파일, 데이터베이스 등)을 
-    클래스로 포장(캡슐화)하면 데이터 처리 방식에 상관없이 메서드 사용을 통일할 수 있다.
+- specialization
+  - 수퍼 클래스를 상속 받아 특별한 기능을 수행하는 서브 클래스 만들기.
+- generalization
+  - 클래스들의 공통점을 뽑아 수퍼 클래스로 만든 후에 상속 관계 맺기.
  
+## 소스 및 결과
 
-## 실습 소스 및 결과
-
-- src/main/java/julja/gms/dao 패키지 생성
-- src/main/java/julja/gms/dao/BoardObjectFileDao.java 추가
-- src/main/java/julja/gms/dao/GameObjectFileDao.java 추가
-- src/main/java/julja/gms/dao/UserObjectFileDao.java 추가
+- src/main/java/julja/gms/dao/AbstractObjectFileDao.java 추가
+- src/main/java/julja/gms/dao/BoardObjectFileDao.java 변경
+- src/main/java/julja/gms/dao/LessonObjectFileDao.java 변경
+- src/main/java/julja/gms/dao/MemberObjectFileDao.java 변경
 - src/main/java/julja/gms/ServerApp.java 변경
 
-### 1: 게시물 데이터를 처리하는 DAO 클래스 정의
 
-- julja.gms.dao 패키지 생성
-- julja.gms.BoardObjectFileDao 클래스 정의
+### 1: DAO의 공통점을 뽑아 수퍼 클래스로 정의하라.
 
-### 2: BoardObjectFileDao 객체 적용
+- julja.gms.dao.AbstractObjectFileDao 클래스를 생성한다.
 
-- julja.gms.DataLoaderListener 변경
-  - 게시물 데이터를 로딩하고 저장하는 기존 코드 제거
-  - 대신에 BoardObjectFileDao 객체 생성
-- julja.gms.ServerApp 변경
-  - Map에서 BoardObjectFileDao를 꺼내 관련 커맨드 객체에 주입
-- BoardXxxServlet 변경
-  - 생성자에서 List 객체를 받는 대신에 BoardObjectFileDao 객체를 받는다.
-  - 데이터를 저장하고, 조회하고, 변경하고, 삭제할 때 BoardObjectFileDao 객체를 통해 처리
-  
-  
-### 3: 게임 데이터를 처리하는 DAO 클래스를 정의하고 적용
+### 2: BoardObjectFileDao가 위에서 정의한 클래스를 상속 받도록 변경하라.
 
-- julja.gms.GameObjectFileDao 클래스 정의
-- julja.gms.DataLoaderListener 변경
-  - 게임 데이터를 로딩하고 저장하는 기존 코드 제거
-  - 대신에 GameObjectFileDao 객체 생성
-- julja.gms.ServerApp  변경
-  - Map에서 GameObjectFileDao를 꺼내 관련 커맨드 객체에 주입
-- GameXxxServlet 변경
-  - 생성자에서 List 객체를 받는 대신에 GameObjectFileDao 객체를 받는다.
-  - 데이터를 저장하고, 조회하고, 변경하고, 삭제할 때 GameObjectFileDao 객체를 통해 처리.
-
-### 훈련 4: 유저 데이터를 처리하는 DAO 클래스를 정의하고 적용
-
-- julja.gms.UserObjectFileDao 클래스 정의
-- julja.gms.DataLoaderListener 변경
-  - 유저 데이터를 로딩하고 저장하는 기존 코드 제거
-  - 대신에 UserObjectFileDao 객체 생성
-- julja.gms.ServerApp 변경
-  - Map에서 UserObjectFileDao를 꺼내 관련 커맨드 객체에 주입
-- UserXxxServlet 변경
-  - 생성자에서 List 객체를 받는 대신에 UserObjectFileDao 객체를 받는다.
-  - 데이터를 저장하고, 조회하고, 변경하고, 삭제할 때 UserObjectFileDao 객체를 통해 처리
-  
+- julja.gms.dao.BoardObjectFileDao 변경한다.
   

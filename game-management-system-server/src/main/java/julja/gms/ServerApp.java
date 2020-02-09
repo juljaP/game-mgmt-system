@@ -109,12 +109,10 @@ public class ServerApp {
 
         switch (request) {
           case "quit":
-            out.writeUTF("OK");
-            out.flush();
-            break;
+            quit(out);
+            return 0;
           case "/server/stop":
-            out.writeUTF("OK");
-            out.flush();
+            quit(out);
             return 9;
         }
 
@@ -144,6 +142,11 @@ public class ServerApp {
   private void notFound(ObjectOutputStream out) throws IOException {
     out.writeUTF("FAIL");
     out.writeUTF("요청한 명령을 처리할 수 없습니다.");
+  }
+
+  private void quit(ObjectOutputStream out) throws IOException {
+    out.writeUTF("OK");
+    out.flush();
   }
 
   public static void main(String[] args) throws Exception {
