@@ -87,9 +87,11 @@ public class ServerApp {
       while (true) {
         Socket socket = serverSocket.accept();
         System.out.println("클라이언트와 연결되었습니다.");
-        if (processRequest(socket) == 9) {
-          break;
-        }
+
+        new Thread(() -> {
+          processRequest(socket);
+          System.out.println("-----------------------------------");
+        }).start();
       }
     } catch (Exception e) {
       System.out.println("서버 준비 중 오류 발생");
