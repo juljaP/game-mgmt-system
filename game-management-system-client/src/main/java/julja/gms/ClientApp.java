@@ -35,31 +35,63 @@ public class ClientApp {
 
   Scanner sc = new Scanner(System.in);
   Prompt prompt = new Prompt(sc);
-
   Deque<String> commandStack;
   Queue<String> commandQueue;
-
-  // String host = null;
-  // int port = 0;
+  HashMap<String, Command> commandMap;
+  String host;
+  int port;
 
   public ClientApp() {
     commandStack = new ArrayDeque<>();
     commandQueue = new LinkedList<>();
-  }
-
-  public void service() {
-
-    Scanner sc = new Scanner(System.in);
 
     try {
-      // host = prompt.inputString("서버? ");
-      // port = prompt.inputInt("포트? ");
+      host = prompt.inputString("서버? ");
+      port = prompt.inputInt("포트? ");
     } catch (Exception e) {
       System.out.println("서버 주소 혹은 포트 번호가 유효하지 않습니다.");
       sc.close();
       return;
     }
 
+    BoardDaoProxy boardDao = new BoardDaoProxy(host, port);
+    UserDaoProxy userDao = new UserDaoProxy(host, port);
+    GameDaoProxy gameDao = new GameDaoProxy(host, port);
+    commandMap = new HashMap<>();
+
+    commandMap.put("/board/list", new BoardListCommand(boardDao));
+    commandMap.put("/board/add", new BoardAddCommand(boardDao, prompt));
+    commandMap.put("/board/detail", new BoardDetailCommand(boardDao, prompt));
+    commandMap.put("/board/update", new BoardUpdateCommand(boardDao, prompt));
+    commandMap.put("/board/delete", new BoardDeleteCommand(boardDao, prompt));
+
+    commandMap.put("/game/list", new GameListCommand(gameDao));
+    commandMap.put("/game/add", new GameAddCommand(gameDao, prompt));
+    commandMap.put("/game/detail", new GameDetailCommand(gameDao, prompt));
+    commandMap.put("/game/update", new GameUpdateCommand(gameDao, prompt));
+    commandMap.put("/game/delete", new GameDeleteCommand(gameDao, prompt));
+
+    commandMap.put("/user/list", new UserListCommand(userDao));
+    commandMap.put("/user/add", new UserAddCommand(userDao, prompt));
+    commandMap.put("/user/detail", new UserDetailCommand(userDao, prompt));
+    commandMap.put("/user/update", new UserUpdateCommand(userDao, prompt));
+    commandMap.put("/user/delete", new UserDeleteCommand(userDao, prompt));
+
+    commandMap.put("/server/stop", () -> {
+      try (Socket socket = new Socket(host, port);
+          ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+          ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+        out.writeUTF("/server/stop");
+        out.flush();
+        System.out.println("서버: " + in.readUTF());
+        System.out.println("안녕!");
+      } catch (Exception e) {
+
+      }
+    });
+  }
+
+  public void service() {
     String command;
 
     while (true) {
@@ -87,60 +119,15 @@ public class ClientApp {
 
   private void processCommand(String command) {
 
-    try (/* Socket socket = new Socket(serverAddr, port); */
-        Socket socket = new Socket("localhost", 9999);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-      // System.out.println("서버와 연결되었습니다.");
+    // System.out.println("서버와 연결되었습니다.");
+    Command commandHandler = commandMap.get(command);
 
-      BoardDaoProxy boardDao = new BoardDaoProxy(in, out);
-      UserDaoProxy userDao = new UserDaoProxy(in, out);
-      GameDaoProxy gameDao = new GameDaoProxy(in, out);
-
-      HashMap<String, Command> commandMap = new HashMap<>();
-
-      commandMap.put("/board/list", new BoardListCommand(boardDao));
-      commandMap.put("/board/add", new BoardAddCommand(boardDao, prompt));
-      commandMap.put("/board/detail", new BoardDetailCommand(boardDao, prompt));
-      commandMap.put("/board/update", new BoardUpdateCommand(boardDao, prompt));
-      commandMap.put("/board/delete", new BoardDeleteCommand(boardDao, prompt));
-
-      commandMap.put("/game/list", new GameListCommand(gameDao));
-      commandMap.put("/game/add", new GameAddCommand(gameDao, prompt));
-      commandMap.put("/game/detail", new GameDetailCommand(gameDao, prompt));
-      commandMap.put("/game/update", new GameUpdateCommand(gameDao, prompt));
-      commandMap.put("/game/delete", new GameDeleteCommand(gameDao, prompt));
-
-      commandMap.put("/user/list", new UserListCommand(userDao));
-      commandMap.put("/user/add", new UserAddCommand(userDao, prompt));
-      commandMap.put("/user/detail", new UserDetailCommand(userDao, prompt));
-      commandMap.put("/user/update", new UserUpdateCommand(userDao, prompt));
-      commandMap.put("/user/delete", new UserDeleteCommand(userDao, prompt));
-
-      commandMap.put("/server/stop", () -> {
-        try {
-          out.writeUTF(command);
-          out.flush();
-          System.out.println("서버: " + in.readUTF());
-          // System.out.println("안녕!");
-        } catch (Exception e) {
-
-        }
-      });
-
-      Command commandHandler = commandMap.get(command);
-
-      if (commandHandler == null) {
-        System.out.println("실행할 수 없는 명령입니다.");
-        return;
-      }
-
-      commandHandler.execute();
-    } catch (Exception e) {
-      System.out.println("명령어 실행 중 오류 발생 : " + e.getMessage());
-      e.printStackTrace();
-
+    if (commandHandler == null) {
+      System.out.println("실행할 수 없는 명령입니다.");
+      return;
     }
+
+    commandHandler.execute();
     // System.out.println("서버와 연결을 끊었음!");
   }
 

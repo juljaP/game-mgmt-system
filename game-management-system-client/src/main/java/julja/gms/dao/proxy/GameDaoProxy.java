@@ -2,78 +2,99 @@ package julja.gms.dao.proxy;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.List;
 import julja.gms.domain.Game;
 
 public class GameDaoProxy {
 
-  ObjectInputStream in;
-  ObjectOutputStream out;
+  String host;
+  int port;
 
-  public GameDaoProxy(ObjectInputStream in, ObjectOutputStream out) {
-    this.in = in;
-    this.out = out;
+  public GameDaoProxy(String host, int port) {
+    this.host = host;
+    this.port = port;
   }
 
   public int insert(Game game) throws Exception {
-    out.writeUTF("/game/add");
-    out.writeObject(game);
-    out.flush();
+    try (Socket socket = new Socket(host, port);
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+      out.writeUTF("/game/add");
+      out.writeObject(game);
+      out.flush();
 
-    String response = in.readUTF();
-    if (response.equals("FAIL")) {
-      throw new Exception(in.readUTF());
+      String response = in.readUTF();
+      if (response.equals("FAIL")) {
+        throw new Exception(in.readUTF());
+      }
+      return 1;
     }
-    return 1;
   }
 
   @SuppressWarnings("unchecked")
   public List<Game> findAll() throws Exception {
-    out.writeUTF("/game/list");
-    out.flush();
+    try (Socket socket = new Socket(host, port);
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+      out.writeUTF("/game/list");
+      out.flush();
 
-    String response = in.readUTF();
-    if (response.equals("FAIL")) {
-      throw new Exception(in.readUTF());
+      String response = in.readUTF();
+      if (response.equals("FAIL")) {
+        throw new Exception(in.readUTF());
+      }
+      return (List<Game>) in.readObject();
     }
-    return (List<Game>) in.readObject();
   }
 
   public Game findByNo(int no) throws Exception {
-    out.writeUTF("/game/detail");
-    out.writeInt(no);
-    out.flush();
+    try (Socket socket = new Socket(host, port);
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+      out.writeUTF("/game/detail");
+      out.writeInt(no);
+      out.flush();
 
-    String response = in.readUTF();
+      String response = in.readUTF();
 
-    if (response.equals("FAIL")) {
-      throw new Exception(in.readUTF());
+      if (response.equals("FAIL")) {
+        throw new Exception(in.readUTF());
+      }
+      return (Game) in.readObject();
     }
-    return (Game) in.readObject();
   }
 
   public int update(Game game) throws Exception {
-    out.writeUTF("/game/update");
-    out.writeObject(game);
-    out.flush();
+    try (Socket socket = new Socket(host, port);
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+      out.writeUTF("/game/update");
+      out.writeObject(game);
+      out.flush();
 
-    String response = in.readUTF();
-    if (response.equals("FAIL")) {
-      throw new Exception(in.readUTF());
+      String response = in.readUTF();
+      if (response.equals("FAIL")) {
+        throw new Exception(in.readUTF());
+      }
+      return 1;
     }
-    return 1;
   }
 
   public int delete(int no) throws Exception {
-    out.writeUTF("/game/delete");
-    out.writeInt(no);
-    out.flush();
+    try (Socket socket = new Socket(host, port);
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+      out.writeUTF("/game/delete");
+      out.writeInt(no);
+      out.flush();
 
-    String response = in.readUTF();
-    if (response.equals("FAIL")) {
-      throw new Exception(in.readUTF());
+      String response = in.readUTF();
+      if (response.equals("FAIL")) {
+        throw new Exception(in.readUTF());
+      }
+      return 1;
     }
-    return 1;
   }
 
 }
