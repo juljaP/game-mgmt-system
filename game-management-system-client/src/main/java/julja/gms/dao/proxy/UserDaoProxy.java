@@ -1,25 +1,18 @@
 package julja.gms.dao.proxy;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.List;
 import julja.gms.domain.User;
 
 public class UserDaoProxy {
 
-  String host;
-  int port;
+  DaoProxyHelper daoProxyHelper;
 
   public UserDaoProxy(String host, int port) {
-    this.host = host;
-    this.port = port;
+    daoProxyHelper = new DaoProxyHelper(host, port);
   }
 
   public int insert(User user) throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+    return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/user/add");
       out.writeObject(user);
       out.flush();
@@ -29,14 +22,13 @@ public class UserDaoProxy {
         throw new Exception(in.readUTF());
       }
       return 1;
-    }
+    });
+
   }
 
   @SuppressWarnings("unchecked")
   public List<User> findAll() throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+    return (List<User>) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/user/list");
       out.flush();
 
@@ -45,13 +37,11 @@ public class UserDaoProxy {
         throw new Exception(in.readUTF());
       }
       return (List<User>) in.readObject();
-    }
+    });
   }
 
   public User findByNo(int no) throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+    return (User) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/user/detail");
       out.writeInt(no);
       out.flush();
@@ -61,13 +51,12 @@ public class UserDaoProxy {
         throw new Exception(in.readUTF());
       }
       return (User) in.readObject();
-    }
+    });
+
   }
 
   public int update(User user) throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+    return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/user/update");
       out.writeObject(user);
       out.flush();
@@ -77,13 +66,11 @@ public class UserDaoProxy {
         throw new Exception(in.readUTF());
       }
       return 1;
-    }
+    });
   }
 
   public int delete(int no) throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+    return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/user/delete");
       out.writeInt(no);
       out.flush();
@@ -93,7 +80,8 @@ public class UserDaoProxy {
         throw new Exception(in.readUTF());
       }
       return 1;
-    }
+    });
+
   }
 
 }
