@@ -36,113 +36,112 @@ public class ClientApp {
   Scanner sc = new Scanner(System.in);
   Prompt prompt = new Prompt(sc);
 
+  Deque<String> commandStack;
+  Queue<String> commandQueue;
+
+  // String host = null;
+  // int port = 0;
+
+  public ClientApp() {
+    commandStack = new ArrayDeque<>();
+    commandQueue = new LinkedList<>();
+  }
 
   public void service() {
 
-    // String serverAddr = null;
-    // int port = 0;
     Scanner sc = new Scanner(System.in);
 
     try {
-      // System.out.print("서버: ");
-      // serverAddr = sc.nextLine();
-      // System.out.print("포트: ");
-      // port = Integer.parseInt(sc.nextLine());
+      // host = prompt.inputString("서버? ");
+      // port = prompt.inputInt("포트? ");
     } catch (Exception e) {
       System.out.println("서버 주소 혹은 포트 번호가 유효하지 않습니다.");
       sc.close();
       return;
     }
 
+    String command;
+
+    while (true) {
+      command = prompt.inputString("\n명령> ");
+
+      if (command.length() == 0)
+        continue;
+
+      if (command.equalsIgnoreCase("quit")) {
+        break;
+      } else if (command.equalsIgnoreCase("history")) {
+        printCommandHistory(commandStack.iterator());
+        continue;
+      } else if (command.equalsIgnoreCase("history2")) {
+        printCommandHistory(commandQueue.iterator());
+        continue;
+      }
+      commandStack.push(command);
+      commandQueue.offer(command);
+
+      processCommand(command);
+    }
+    sc.close();
+  }
+
+  private void processCommand(String command) {
+
     try (/* Socket socket = new Socket(serverAddr, port); */
         Socket socket = new Socket("localhost", 9999);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-      System.out.println("서버와 연결되었습니다.");
+      // System.out.println("서버와 연결되었습니다.");
 
-      processCommand(in, out);
+      BoardDaoProxy boardDao = new BoardDaoProxy(in, out);
+      UserDaoProxy userDao = new UserDaoProxy(in, out);
+      GameDaoProxy gameDao = new GameDaoProxy(in, out);
 
-      System.out.println("서버와 연결을 끊었습니다.");
+      HashMap<String, Command> commandMap = new HashMap<>();
 
-    } catch (Exception e) {
-      System.out.print("예외 발생: ");
-      e.printStackTrace();
-    }
+      commandMap.put("/board/list", new BoardListCommand(boardDao));
+      commandMap.put("/board/add", new BoardAddCommand(boardDao, prompt));
+      commandMap.put("/board/detail", new BoardDetailCommand(boardDao, prompt));
+      commandMap.put("/board/update", new BoardUpdateCommand(boardDao, prompt));
+      commandMap.put("/board/delete", new BoardDeleteCommand(boardDao, prompt));
 
-    sc.close();
-  }
+      commandMap.put("/game/list", new GameListCommand(gameDao));
+      commandMap.put("/game/add", new GameAddCommand(gameDao, prompt));
+      commandMap.put("/game/detail", new GameDetailCommand(gameDao, prompt));
+      commandMap.put("/game/update", new GameUpdateCommand(gameDao, prompt));
+      commandMap.put("/game/delete", new GameDeleteCommand(gameDao, prompt));
 
-  private void processCommand(ObjectInputStream in, ObjectOutputStream out) {
+      commandMap.put("/user/list", new UserListCommand(userDao));
+      commandMap.put("/user/add", new UserAddCommand(userDao, prompt));
+      commandMap.put("/user/detail", new UserDetailCommand(userDao, prompt));
+      commandMap.put("/user/update", new UserUpdateCommand(userDao, prompt));
+      commandMap.put("/user/delete", new UserDeleteCommand(userDao, prompt));
 
-    Deque<String> stack = new ArrayDeque<>();
-    Queue<String> queue = new LinkedList<>();
-
-    BoardDaoProxy boardDao = new BoardDaoProxy(in, out);
-    UserDaoProxy userDao = new UserDaoProxy(in, out);
-    GameDaoProxy gameDao = new GameDaoProxy(in, out);
-
-    HashMap<String, Command> commandMap = new HashMap<>();
-
-    commandMap.put("/board/list", new BoardListCommand(boardDao));
-    commandMap.put("/board/add", new BoardAddCommand(boardDao, prompt));
-    commandMap.put("/board/detail", new BoardDetailCommand(boardDao, prompt));
-    commandMap.put("/board/update", new BoardUpdateCommand(boardDao, prompt));
-    commandMap.put("/board/delete", new BoardDeleteCommand(boardDao, prompt));
-
-    commandMap.put("/game/list", new GameListCommand(gameDao));
-    commandMap.put("/game/add", new GameAddCommand(gameDao, prompt));
-    commandMap.put("/game/detail", new GameDetailCommand(gameDao, prompt));
-    commandMap.put("/game/update", new GameUpdateCommand(gameDao, prompt));
-    commandMap.put("/game/delete", new GameDeleteCommand(gameDao, prompt));
-
-    commandMap.put("/user/list", new UserListCommand(userDao));
-    commandMap.put("/user/add", new UserAddCommand(userDao, prompt));
-    commandMap.put("/user/detail", new UserDetailCommand(userDao, prompt));
-    commandMap.put("/user/update", new UserUpdateCommand(userDao, prompt));
-    commandMap.put("/user/delete", new UserDeleteCommand(userDao, prompt));
-
-    try {
-      String command;
-
-      while (true) {
-        command = prompt.inputString("\n명령> ");
-
-        if (command.length() == 0) {
-          continue;
-
-        } else if (command.equalsIgnoreCase("quit") || command.equals("/server/stop")) {
+      commandMap.put("/server/stop", () -> {
+        try {
           out.writeUTF(command);
           out.flush();
           System.out.println("서버: " + in.readUTF());
           // System.out.println("안녕!");
-          break;
-        } else if (command.equalsIgnoreCase("history")) {
-          printCommandHistory(stack.iterator());
-          continue;
-        } else if (command.equalsIgnoreCase("history2")) {
-          printCommandHistory(queue.iterator());
-          continue;
-        }
-        stack.push(command);
-        queue.offer(command);
-        Command commandHandler = commandMap.get(command);
+        } catch (Exception e) {
 
-        if (commandHandler != null) {
-          try {
-            commandHandler.execute();
-          } catch (Exception e) {
-            System.out.println("명령어 실행 중 오류 발생 : " + e.getMessage());
-          }
-        } else {
-          System.out.println("실행할 수 없는 명령입니다.");
         }
+      });
+
+      Command commandHandler = commandMap.get(command);
+
+      if (commandHandler == null) {
+        System.out.println("실행할 수 없는 명령입니다.");
+        return;
       }
+
+      commandHandler.execute();
     } catch (Exception e) {
-      System.out.println("프로그램 실행 중 오류 발생!");
+      System.out.println("명령어 실행 중 오류 발생 : " + e.getMessage());
+      e.printStackTrace();
+
     }
-
-    sc.close();
-
+    // System.out.println("서버와 연결을 끊었음!");
   }
 
   private void printCommandHistory(Iterator<String> iter) {

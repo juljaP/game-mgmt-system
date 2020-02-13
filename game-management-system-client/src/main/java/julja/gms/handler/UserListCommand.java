@@ -12,7 +12,6 @@ public class UserListCommand implements Command {
     this.userDao = userDao;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void execute() {
 
