@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import julja.gms.context.ApplicationContextListener;
 import julja.gms.dao.BoardDao;
 import julja.gms.dao.GameDao;
@@ -34,6 +36,7 @@ public class ServerApp {
 
   Set<ApplicationContextListener> listeners = new HashSet<>();
   Map<String, Servlet> servletMap = new HashMap<>();
+  ExecutorService executorService = Executors.newCachedThreadPool();
   Map<String, Object> context = new HashMap<>();
 
   public void addApplicationContextListener(ApplicationContextListener listener) {
@@ -88,15 +91,16 @@ public class ServerApp {
         Socket socket = serverSocket.accept();
         System.out.println("클라이언트와 연결되었습니다.");
 
-        new Thread(() -> {
+        executorService.submit(() -> {
           processRequest(socket);
           System.out.println("-----------------------------------");
-        }).start();
+        });
       }
     } catch (Exception e) {
       System.out.println("서버 준비 중 오류 발생");
     }
     notifyApplicationDestroyed();
+    executorService.shutdown();
   }
 
   int processRequest(Socket clientSocket) {
