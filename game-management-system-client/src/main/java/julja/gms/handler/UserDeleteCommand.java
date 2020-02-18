@@ -1,14 +1,14 @@
 package julja.gms.handler;
 
-import julja.gms.dao.proxy.UserDaoProxy;
+import julja.gms.dao.UserDao;
 import julja.util.Prompt;
 
 public class UserDeleteCommand implements Command {
 
   Prompt prompt;
-  UserDaoProxy userDao;
+  UserDao userDao;
 
-  public UserDeleteCommand(UserDaoProxy userDao, Prompt prompt) {
+  public UserDeleteCommand(UserDao userDao, Prompt prompt) {
     this.userDao = userDao;
     this.prompt = prompt;
   }

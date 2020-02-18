@@ -1,9 +1,10 @@
 package julja.gms.dao.proxy;
 
 import java.util.List;
+import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
 
-public class BoardDaoProxy {
+public class BoardDaoProxy implements BoardDao {
 
   DaoProxyHelper daoProxyHelper;
 
@@ -11,6 +12,7 @@ public class BoardDaoProxy {
     daoProxyHelper = new DaoProxyHelper(host, port);
   }
 
+  @Override
   public int insert(Board board) throws Exception {
     return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/board/add");
@@ -25,6 +27,7 @@ public class BoardDaoProxy {
     });
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public List<Board> findAll() throws Exception {
     return (List<Board>) daoProxyHelper.request((in, out) -> {
@@ -40,6 +43,7 @@ public class BoardDaoProxy {
 
   }
 
+  @Override
   public Board findByNo(int no) throws Exception {
     return (Board) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/board/detail");
@@ -55,6 +59,7 @@ public class BoardDaoProxy {
     });
   }
 
+  @Override
   public int update(Board board) throws Exception {
     return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/board/update");
@@ -69,6 +74,7 @@ public class BoardDaoProxy {
     });
   }
 
+  @Override
   public int delete(int no) throws Exception {
     return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/board/delete");

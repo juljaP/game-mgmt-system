@@ -1,16 +1,16 @@
 package julja.gms.handler;
 
 import java.sql.Date;
-import julja.gms.dao.proxy.UserDaoProxy;
+import julja.gms.dao.UserDao;
 import julja.gms.domain.User;
 import julja.util.Prompt;
 
 public class UserAddCommand implements Command {
 
   Prompt prompt;
-  UserDaoProxy userDao;
+  UserDao userDao;
 
-  public UserAddCommand(UserDaoProxy userDao, Prompt prompt) {
+  public UserAddCommand(UserDao userDao, Prompt prompt) {
     this.userDao = userDao;
     this.prompt = prompt;
   }

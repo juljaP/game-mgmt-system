@@ -1,15 +1,15 @@
 package julja.gms.handler;
 
-import julja.gms.dao.proxy.BoardDaoProxy;
+import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
 import julja.util.Prompt;
 
 public class BoardDetailCommand implements Command {
 
   Prompt prompt;
-  BoardDaoProxy boardDao;
+  BoardDao boardDao;
 
-  public BoardDetailCommand(BoardDaoProxy boardDao, Prompt prompt) {
+  public BoardDetailCommand(BoardDao boardDao, Prompt prompt) {
     this.boardDao = boardDao;
     this.prompt = prompt;
   }
@@ -21,6 +21,7 @@ public class BoardDetailCommand implements Command {
       Board b = boardDao.findByNo(no);
       System.out.println("제목 : " + b.getBbsName());
       System.out.println("내용 : " + b.getBbsText());
+      System.out.println("등록일 : " + b.getToday());
       System.out.println("조회수 : " + b.getBbsHits());
     } catch (Exception e) {
       System.out.println("조회 실패!");

@@ -1,14 +1,14 @@
 package julja.gms.handler;
 
 import java.util.List;
-import julja.gms.dao.proxy.BoardDaoProxy;
+import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
 
 public class BoardListCommand implements Command {
 
-  BoardDaoProxy boardDao;
+  BoardDao boardDao;
 
-  public BoardListCommand(BoardDaoProxy boardDao) {
+  public BoardListCommand(BoardDao boardDao) {
     this.boardDao = boardDao;
   }
 
@@ -20,7 +20,7 @@ public class BoardListCommand implements Command {
       List<Board> boards = boardDao.findAll();
 
       for (Board b : boards) {
-        System.out.printf("[%d] %s | %s | %d \n", b.getNo(), b.getBbsName(), b.getBbsText(),
+        System.out.printf("[%d] %s | %s | %d \n", b.getNo(), b.getBbsName(), b.getToday(),
             b.getBbsHits());
       }
 

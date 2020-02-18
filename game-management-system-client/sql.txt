@@ -18,7 +18,7 @@ pf VARCHAR(50) NOT NULL,
 genre VARCHAR(30) NOT NULL,
 photo VARCHAR(255),
 illust VARCHAR(30),
-vo VARCHAR(100),
+vo VARCHAR(100)
 );
 
 CREATE TABLE gms_user (

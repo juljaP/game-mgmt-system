@@ -1,16 +1,15 @@
 package julja.gms.handler;
 
-import java.sql.Date;
-import julja.gms.dao.proxy.BoardDaoProxy;
+import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
 import julja.util.Prompt;
 
 public class BoardAddCommand implements Command {
 
   Prompt prompt;
-  BoardDaoProxy boardDao;
+  BoardDao boardDao;
 
-  public BoardAddCommand(BoardDaoProxy boardDao, Prompt prompt) {
+  public BoardAddCommand(BoardDao boardDao, Prompt prompt) {
     this.boardDao = boardDao;
     this.prompt = prompt;
   }
@@ -19,11 +18,11 @@ public class BoardAddCommand implements Command {
   public void execute() {
 
     Board b = new Board();
-    b.setNo(prompt.inputInt("번호? "));
+    // b.setNo(prompt.inputInt("번호? "));
     b.setBbsName(prompt.inputString("제목 : "));
     b.setBbsText(prompt.inputString("내용 : "));
-    b.setToday(new Date(System.currentTimeMillis()));
-    b.setBbsHits(0);
+    // b.setToday(new Date(System.currentTimeMillis()));
+    // b.setBbsHits(0);
     System.out.println();
 
     try {

@@ -1,14 +1,14 @@
 package julja.gms.handler;
 
 import java.util.List;
-import julja.gms.dao.proxy.UserDaoProxy;
+import julja.gms.dao.UserDao;
 import julja.gms.domain.User;
 
 public class UserListCommand implements Command {
 
-  UserDaoProxy userDao;
+  UserDao userDao;
 
-  public UserListCommand(UserDaoProxy userDao) {
+  public UserListCommand(UserDao userDao) {
     this.userDao = userDao;
   }
 

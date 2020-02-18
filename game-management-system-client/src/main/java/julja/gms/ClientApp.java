@@ -10,9 +10,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
-import julja.gms.dao.proxy.BoardDaoProxy;
-import julja.gms.dao.proxy.GameDaoProxy;
-import julja.gms.dao.proxy.UserDaoProxy;
+import julja.gms.dao.BoardDao;
+import julja.gms.dao.GameDao;
+import julja.gms.dao.UserDao;
+import julja.gms.dao.mariadb.BoardDaoImpl;
+import julja.gms.dao.mariadb.GameDaoImpl;
+import julja.gms.dao.mariadb.UserDaoImpl;
 import julja.gms.handler.BoardAddCommand;
 import julja.gms.handler.BoardDeleteCommand;
 import julja.gms.handler.BoardDetailCommand;
@@ -45,18 +48,9 @@ public class ClientApp {
     commandStack = new ArrayDeque<>();
     commandQueue = new LinkedList<>();
 
-    try {
-      host = prompt.inputString("서버? ");
-      port = prompt.inputInt("포트? ");
-    } catch (Exception e) {
-      System.out.println("서버 주소 혹은 포트 번호가 유효하지 않습니다.");
-      sc.close();
-      return;
-    }
-
-    BoardDaoProxy boardDao = new BoardDaoProxy(host, port);
-    UserDaoProxy userDao = new UserDaoProxy(host, port);
-    GameDaoProxy gameDao = new GameDaoProxy(host, port);
+    BoardDao boardDao = new BoardDaoImpl();
+    UserDao userDao = new UserDaoImpl();
+    GameDao gameDao = new GameDaoImpl();
     commandMap = new HashMap<>();
 
     commandMap.put("/board/list", new BoardListCommand(boardDao));

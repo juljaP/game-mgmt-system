@@ -1,15 +1,15 @@
 package julja.gms.handler;
 
-import julja.gms.dao.proxy.GameDaoProxy;
+import julja.gms.dao.GameDao;
 import julja.gms.domain.Game;
 import julja.util.Prompt;
 
 public class GameUpdateCommand implements Command {
 
   Prompt prompt;
-  GameDaoProxy gameDao;
+  GameDao gameDao;
 
-  public GameUpdateCommand(GameDaoProxy gameDao, Prompt prompt) {
+  public GameUpdateCommand(GameDao gameDao, Prompt prompt) {
     this.gameDao = gameDao;
     this.prompt = prompt;
   }
@@ -38,6 +38,8 @@ public class GameUpdateCommand implements Command {
           oldGame.getGameIllust()));
       newGame.setGameVoice(prompt.inputString(String.format("음성(%s) ? ", oldGame.getGameVoice()),
           oldGame.getGameVoice()));
+      newGame.setPhoto(
+          prompt.inputString(String.format("사진(%s) ? ", oldGame.getPhoto()), oldGame.getPhoto()));
 
       if (oldGame.equals(newGame)) {
         System.out.println("게임 정보 변경을 취소하였습니다.");

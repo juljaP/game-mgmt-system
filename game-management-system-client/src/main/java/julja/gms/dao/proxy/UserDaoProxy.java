@@ -1,9 +1,10 @@
 package julja.gms.dao.proxy;
 
 import java.util.List;
+import julja.gms.dao.UserDao;
 import julja.gms.domain.User;
 
-public class UserDaoProxy {
+public class UserDaoProxy implements UserDao {
 
   DaoProxyHelper daoProxyHelper;
 
@@ -11,6 +12,7 @@ public class UserDaoProxy {
     daoProxyHelper = new DaoProxyHelper(host, port);
   }
 
+  @Override
   public int insert(User user) throws Exception {
     return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/user/add");
@@ -26,6 +28,7 @@ public class UserDaoProxy {
 
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public List<User> findAll() throws Exception {
     return (List<User>) daoProxyHelper.request((in, out) -> {
@@ -40,6 +43,7 @@ public class UserDaoProxy {
     });
   }
 
+  @Override
   public User findByNo(int no) throws Exception {
     return (User) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/user/detail");
@@ -55,6 +59,7 @@ public class UserDaoProxy {
 
   }
 
+  @Override
   public int update(User user) throws Exception {
     return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/user/update");
@@ -69,6 +74,7 @@ public class UserDaoProxy {
     });
   }
 
+  @Override
   public int delete(int no) throws Exception {
     return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/user/delete");

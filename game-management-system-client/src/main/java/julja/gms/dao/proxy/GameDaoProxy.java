@@ -3,9 +3,10 @@ package julja.gms.dao.proxy;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
+import julja.gms.dao.GameDao;
 import julja.gms.domain.Game;
 
-public class GameDaoProxy {
+public class GameDaoProxy implements GameDao {
 
   DaoProxyHelper daoProxyHelper;
 
@@ -13,6 +14,7 @@ public class GameDaoProxy {
     daoProxyHelper = new DaoProxyHelper(host, port);
   }
 
+  @Override
   public int insert(Game game) throws Exception {
 
     return (int) daoProxyHelper.request((in, out) -> {
@@ -28,6 +30,7 @@ public class GameDaoProxy {
     });
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public List<Game> findAll() throws Exception {
     return (List<Game>) daoProxyHelper.request((in, out) -> {
@@ -43,6 +46,7 @@ public class GameDaoProxy {
 
   }
 
+  @Override
   public Game findByNo(int no) throws Exception {
 
     return (Game) daoProxyHelper.request(new Worker() {
@@ -64,6 +68,7 @@ public class GameDaoProxy {
 
   }
 
+  @Override
   public int update(Game game) throws Exception {
     return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/game/update");
@@ -79,6 +84,7 @@ public class GameDaoProxy {
 
   }
 
+  @Override
   public int delete(int no) throws Exception {
     return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/game/delete");

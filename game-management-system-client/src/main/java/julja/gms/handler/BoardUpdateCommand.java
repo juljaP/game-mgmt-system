@@ -1,20 +1,19 @@
 package julja.gms.handler;
 
 import java.sql.Date;
-import julja.gms.dao.proxy.BoardDaoProxy;
+import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
 import julja.util.Prompt;
 
 public class BoardUpdateCommand implements Command {
 
   Prompt prompt;
-  BoardDaoProxy boardDao;
+  BoardDao boardDao;
 
-  public BoardUpdateCommand(BoardDaoProxy boardDao, Prompt prompt) {
+  public BoardUpdateCommand(BoardDao boardDao, Prompt prompt) {
     this.boardDao = boardDao;
     this.prompt = prompt;
   }
-
 
   @Override
   public void execute() {
@@ -32,8 +31,8 @@ public class BoardUpdateCommand implements Command {
 
       Board newBoard = new Board();
       newBoard.setNo(oldBoard.getNo());
-      System.out.println("제목 : " + oldBoard.getBbsName());
-      newBoard.setBbsName(oldBoard.getBbsName());
+      newBoard.setBbsName(prompt.inputString(String.format("제목(%s)? ", oldBoard.getBbsName()),
+          oldBoard.getBbsName()));
       newBoard.setBbsText(prompt.inputString(String.format("내용(%s)? ", oldBoard.getBbsText()),
           oldBoard.getBbsText()));
       newBoard.setBbsHits(oldBoard.getBbsHits());

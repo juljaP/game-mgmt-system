@@ -1,15 +1,15 @@
 package julja.gms.handler;
 
-import julja.gms.dao.proxy.UserDaoProxy;
+import julja.gms.dao.UserDao;
 import julja.gms.domain.User;
 import julja.util.Prompt;
 
 public class UserDetailCommand implements Command {
 
   Prompt prompt;
-  UserDaoProxy userDao;
+  UserDao userDao;
 
-  public UserDetailCommand(UserDaoProxy userDao, Prompt prompt) {
+  public UserDetailCommand(UserDao userDao, Prompt prompt) {
     this.userDao = userDao;
     this.prompt = prompt;
   }

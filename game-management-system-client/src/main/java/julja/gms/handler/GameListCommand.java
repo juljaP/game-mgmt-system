@@ -1,14 +1,14 @@
 package julja.gms.handler;
 
 import java.util.List;
-import julja.gms.dao.proxy.GameDaoProxy;
+import julja.gms.dao.GameDao;
 import julja.gms.domain.Game;
 
 public class GameListCommand implements Command {
 
-  GameDaoProxy gameDao;
+  GameDao gameDao;
 
-  public GameListCommand(GameDaoProxy gameDao) {
+  public GameListCommand(GameDao gameDao) {
     this.gameDao = gameDao;
   }
 
@@ -20,7 +20,7 @@ public class GameListCommand implements Command {
 
       for (Game g : games) {
         System.out.printf("[%d] %s | %s | %s | %s\n", g.getNo(), g.getGameName(),
-            g.getGameProduction(), g.getGameDate(), g.getGameGenre());
+            g.getGamePlatform(), g.getGameGenre(), g.getGameDate());
       }
     } catch (Exception e) {
       System.out.println("통신 오류 발생.");
