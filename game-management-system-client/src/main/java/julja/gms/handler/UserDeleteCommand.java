@@ -17,8 +17,10 @@ public class UserDeleteCommand implements Command {
   public void execute() {
     try {
       int no = prompt.inputInt("회원 번호? ");
-      userDao.delete(no);
-      System.out.println("회원을 삭제했습니다.");
+      if (userDao.delete(no) > 0)
+        System.out.println("회원을 삭제했습니다.");
+      else
+        System.out.println("해당 번호의 회원이 존재하지 않습니다.");
     } catch (Exception e) {
       System.out.println("삭제 실패!");
     }

@@ -69,7 +69,6 @@ public class GameDaoImpl implements GameDao {
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM gms_game WHERE game_id=" + no)) {
 
-
       Game game = new Game();
       while (rs.next()) {
         game.setNo(rs.getInt("game_id"));

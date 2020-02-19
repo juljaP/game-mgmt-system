@@ -18,13 +18,14 @@ public class UserAddCommand implements Command {
   @Override
   public void execute() {
     User u = new User();
-    u.setNo(prompt.inputInt("번호 : "));
+    // u.setNo(prompt.inputInt("번호 : "));
     u.setUserEmail(prompt.inputString("이메일 : "));
     u.setUserPW(prompt.inputString("비밀번호 : "));
     u.setUserName(prompt.inputString("회원명 : "));
     System.out.print("가입일 : ");
-    u.setUserResisteredDate(new Date(System.currentTimeMillis()));
-    System.out.println(u.getUserResisteredDate());
+    // u.setUserResisteredDate(new Date(System.currentTimeMillis()));
+    // System.out.println(u.getUserResisteredDate());
+    System.out.println(new Date(System.currentTimeMillis()));
     System.out.println();
 
     try {

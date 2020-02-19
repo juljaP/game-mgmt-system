@@ -28,7 +28,7 @@ public class UserUpdateCommand implements Command {
           oldUser.getUserPW()));
       newUser.setUserName(prompt.inputString(String.format("회원명(%s) : ", oldUser.getUserName()),
           oldUser.getUserName()));
-      newUser.setUserResisteredDate(oldUser.getUserResisteredDate());
+      // newUser.setUserResisteredDate(oldUser.getUserResisteredDate());
 
       if (oldUser.equals(newUser)) {
         System.out.println("유저 변경을 취소했습니다.");
