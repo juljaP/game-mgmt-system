@@ -1,7 +1,6 @@
 package julja.gms.dao.mariadb;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -11,15 +10,16 @@ import julja.gms.domain.Board;
 
 public class BoardDaoImpl implements BoardDao {
 
+  Connection con;
+
+  public BoardDaoImpl(Connection con) {
+    this.con = con;
+  }
+
   @Override
   public int insert(Board board) throws Exception {
 
-    Class.forName("org.mariadb.jdbc.Driver");
-
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       con.setAutoCommit(true);
 
@@ -32,12 +32,9 @@ public class BoardDaoImpl implements BoardDao {
 
   @Override
   public List<Board> findAll() throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement();
+
+    try (Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT board_id, titl, cdt, hits FROM gms_board")) {
 
       ArrayList<Board> list = new ArrayList<>();
@@ -56,12 +53,8 @@ public class BoardDaoImpl implements BoardDao {
 
   @Override
   public Board findByNo(int no) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement();
+    try (Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM gms_board WHERE board_id=" + no)) {
 
       if (rs.next()) {
@@ -80,12 +73,8 @@ public class BoardDaoImpl implements BoardDao {
 
   @Override
   public int update(Board board) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("UPDATE gms_board SET titl='" + board.getBbsName()
           + "', conts='" + board.getBbsText() + "' WHERE board_id=" + board.getNo());
@@ -96,12 +85,8 @@ public class BoardDaoImpl implements BoardDao {
 
   @Override
   public int delete(int no) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver"); // 프록시 로딩
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("DELETE FROM gms_board WHERE board_id=" + no);
 

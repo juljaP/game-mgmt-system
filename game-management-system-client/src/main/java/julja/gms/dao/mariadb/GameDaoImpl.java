@@ -1,7 +1,6 @@
 package julja.gms.dao.mariadb;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -11,14 +10,16 @@ import julja.gms.domain.Game;
 
 public class GameDaoImpl implements GameDao {
 
+  Connection con;
+
+  public GameDaoImpl(Connection con) {
+    this.con = con;
+  }
+
   @Override
   public int insert(Game game) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       con.setAutoCommit(true);
 
@@ -35,12 +36,8 @@ public class GameDaoImpl implements GameDao {
 
   @Override
   public List<Game> findAll() throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement();
+    try (Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT game_id, titl, rdt, pf, genre FROM gms_game")) {
 
       ArrayList<Game> list = new ArrayList<>();
@@ -61,12 +58,8 @@ public class GameDaoImpl implements GameDao {
 
   @Override
   public Game findByNo(int no) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement();
+    try (Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM gms_game WHERE game_id=" + no)) {
 
       Game game = new Game();
@@ -88,12 +81,9 @@ public class GameDaoImpl implements GameDao {
 
   @Override
   public int update(Game game) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("UPDATE gms_game SET titl='" + game.getGameName() + "', pdt='"
           + game.getGameProduction() + "', rdt='" + game.getGameDate() + "', pf='"
@@ -109,10 +99,7 @@ public class GameDaoImpl implements GameDao {
   public int delete(int no) throws Exception {
     Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("DELETE FROM gms_game WHERE game_id=" + no);
 

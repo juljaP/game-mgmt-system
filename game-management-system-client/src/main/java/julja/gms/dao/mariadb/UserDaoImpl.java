@@ -1,7 +1,6 @@
 package julja.gms.dao.mariadb;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -11,14 +10,16 @@ import julja.gms.domain.User;
 
 public class UserDaoImpl implements UserDao {
 
+  Connection con;
+
+  public UserDaoImpl(Connection con) {
+    this.con = con;
+  }
+
   @Override
   public int insert(User user) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       con.setAutoCommit(true);
 
@@ -31,12 +32,8 @@ public class UserDaoImpl implements UserDao {
 
   @Override
   public List<User> findAll() throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement();
+    try (Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT user_id, email, name, rdt FROM gms_user")) {
 
       ArrayList<User> list = new ArrayList<>();
@@ -56,12 +53,8 @@ public class UserDaoImpl implements UserDao {
 
   @Override
   public User findByNo(int no) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement();
+    try (Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM gms_user WHERE user_id=" + no)) {
 
       User user = new User();
@@ -79,12 +72,8 @@ public class UserDaoImpl implements UserDao {
 
   @Override
   public int update(User user) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate(
           "UPDATE gms_user SET email='" + user.getUserEmail() + "', pw='" + user.getUserPW()
@@ -96,12 +85,8 @@ public class UserDaoImpl implements UserDao {
 
   @Override
   public int delete(int no) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("DELETE FROM gms_user WHERE user_id=" + no);
 

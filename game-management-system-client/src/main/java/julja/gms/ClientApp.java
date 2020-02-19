@@ -3,6 +3,8 @@ package julja.gms;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -40,17 +42,21 @@ public class ClientApp {
   Prompt prompt = new Prompt(sc);
   Deque<String> commandStack;
   Queue<String> commandQueue;
+  Connection con;
   HashMap<String, Command> commandMap;
   String host;
   int port;
 
-  public ClientApp() {
+  public ClientApp() throws Exception {
     commandStack = new ArrayDeque<>();
     commandQueue = new LinkedList<>();
 
-    BoardDao boardDao = new BoardDaoImpl();
-    UserDao userDao = new UserDaoImpl();
-    GameDao gameDao = new GameDaoImpl();
+    Class.forName("org.mariadb.jdbc.Driver");
+    con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
+
+    BoardDao boardDao = new BoardDaoImpl(con);
+    UserDao userDao = new UserDaoImpl(con);
+    GameDao gameDao = new GameDaoImpl(con);
     commandMap = new HashMap<>();
 
     commandMap.put("/board/list", new BoardListCommand(boardDao));
@@ -141,7 +147,7 @@ public class ClientApp {
     }
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
 
     System.out.println("게임 관리 시스템 클라이언트입니다.");
     ClientApp app = new ClientApp();
