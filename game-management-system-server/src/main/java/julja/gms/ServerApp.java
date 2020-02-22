@@ -1,7 +1,6 @@
 package julja.gms;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.net.ServerSocket;
@@ -112,31 +111,24 @@ public class ServerApp {
 
       String request = in.nextLine();
       System.out.printf("=> %s\n", request);
-      
-      out.println("ㅎㅎ");
-      out.println("ㅎㅎ");
-      out.println("!end!");
 
       /*
-      if (request.equalsIgnoreCase("/server/stop")) {
-        quit(out);
-        return 9;
-      }
-
+       * if (request.equalsIgnoreCase("/server/stop")) { quit(out); return 9; }
+       */
       Servlet servlet = servletMap.get(request);
       if (servlet != null) {
         try {
           servlet.service(in, out);
         } catch (Exception e) {
-          out.writeUTF("FAIL");
-          out.writeUTF(e.getMessage());
+          out.println("요청 처리 중 오류 발생!");
+          out.println(e.getMessage());
           System.out.print("클라이언트 요청 처리 중 오류발생: ");
           e.printStackTrace();
         }
       } else {
         notFound(out);
       }
-       */
+      out.println("!end!");
       out.flush();
       return 0;
     } catch (Exception e) {
@@ -146,9 +138,9 @@ public class ServerApp {
     }
   }
 
-  private void notFound(ObjectOutputStream out) throws IOException {
-    out.writeUTF("FAIL");
-    out.writeUTF("요청한 명령을 처리할 수 없습니다.");
+  private void notFound(PrintStream out) throws IOException {
+    out.println("FAIL");
+    out.println("요청한 명령을 처리할 수 없습니다.");
   }
 
   private void quit(ObjectOutputStream out) throws IOException {

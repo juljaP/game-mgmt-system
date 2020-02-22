@@ -7,7 +7,7 @@ public class Game implements Serializable {
 
   private static final long serialVersionUID = 4108093492957016867L;
   private int no;
-  private String gameName, gameProduction, gamePlatform, gameGenre, gameIllust, gameVoice;
+  private String gameName, gameProduction, gamePlatform, gameGenre, gameIllust, gameVoice, photo;
   private Date gameDate;
 
   public static Game valueOf(String csv) {
@@ -156,6 +156,14 @@ public class Game implements Serializable {
     } else if (!gameVoice.equals(other.gameVoice))
       return false;
     return true;
+  }
+
+  public String getPhoto() {
+    return photo;
+  }
+
+  public void setPhoto(String photo) {
+    this.photo = photo;
   }
 
 }

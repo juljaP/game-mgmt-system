@@ -1,7 +1,8 @@
 package julja.gms.servlet;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.sql.Date;
+import java.util.Scanner;
 import julja.gms.dao.GameDao;
 import julja.gms.domain.Game;
 
@@ -14,15 +15,30 @@ public class GameAddServlet implements Servlet {
   }
 
   @Override
-  public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    Game game = (Game) in.readObject();
+  public void service(Scanner in, PrintStream out) throws Exception {
+
+    Game game = new Game();
+    out.println("게임명 : \n!{}!");
+    game.setGameName(in.nextLine());
+    out.println("제작사 : \n!{}!");
+    game.setGameProduction(in.nextLine());
+    out.println("발매일 : \n!{}!");
+    game.setGameDate(Date.valueOf(in.nextLine()));
+    out.println("플랫폼 : \n!{}!");
+    game.setGamePlatform(in.nextLine());
+    out.println("장르 : \n!{}!");
+    game.setGameGenre(in.nextLine());
+    out.println("사진 : \n!{}!");
+    game.setPhoto(in.nextLine());
+    out.println("작화 : \n!{}!");
+    game.setGameIllust(in.nextLine());
+    out.println("음성 : \n!{}!");
+    game.setGameVoice(in.nextLine());
 
     if (gameDao.insert(game) > 0) {
-      out.writeUTF("OK");
-
+      out.println("게임 정보를 입력하였습니다.");
     } else {
-      out.writeUTF("FAIL");
-      out.writeUTF("같은 품번의 게임이 있습니다.");
+      out.println("게임 정보 입력을 실패했습니다.");
     }
   }
 

@@ -55,14 +55,13 @@ public class ClientApp {
     int port = 9999;
     String servletPath = null;
 
-    // ex) bitcamp://localhost:9999/board/list
+    // ex) gms://localhost:9999/
     try {
-      if (!command.startsWith("bitcamp://")) {
+      if (!command.startsWith("gms://")) {
         throw new Exception("명령어 형식이 옳지 않습니다.");
       }
 
-      String url = command.substring(10);
-      System.out.println(url);
+      String url = command.substring(6);
 
       int index = url.indexOf('/');
       String[] str = url.substring(0, index).split(":");
@@ -72,7 +71,6 @@ public class ClientApp {
         port = Integer.parseInt(str[1]);
       }
       servletPath = url.substring(index);
-      System.out.printf("=> %s\n", servletPath);
     } catch (Exception e) {
       System.out.println(e.getMessage());
       return;
@@ -90,8 +88,12 @@ public class ClientApp {
         String response = in.nextLine();
         if (response.equals("!end!")) {
           break;
+        } else if (response.contentEquals("!{}!")) {
+          String input = prompt.inputString("");
+          out.println(input);
+        } else {
+          System.out.println(response);
         }
-        System.out.println(response);
       }
     } catch (Exception e) {
       System.out.println(e.getMessage());

@@ -1,7 +1,7 @@
 package julja.gms.servlet;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
 import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
 
@@ -14,14 +14,32 @@ public class BoardUpdateServlet implements Servlet {
   }
 
   @Override
-  public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    Board board = (Board) in.readObject();
+  public void service(Scanner in, PrintStream out) throws Exception {
+
+    out.println("번호? \n!{}!");
+    out.flush();
+    int no = Integer.parseInt(in.nextLine());
+
+    Board old = boardDao.findByNo(no);
+
+    if (old == null) {
+      out.println("해당 번호의 게시글이 존재하지 않습니다.");
+      return;
+    }
+
+    Board board = new Board();
+    board.setNo(no);
+    out.println(String.format("제목(%s) : \n!{}!", old.getBbsName()));
+    board.setBbsName(in.nextLine());
+    out.println(String.format("내용(%s) : \n!{}!", old.getBbsText()));
+    board.setBbsText(in.nextLine());
+    board.setBbsHits(old.getBbsHits());
+    board.setToday(old.getToday());
 
     if (boardDao.update(board) > 0) {
-      out.writeUTF("OK");
+      out.println("게시글을 변경하였습니다.");
     } else {
-      out.writeUTF("FAIL");
-      out.writeUTF("해당 번호의 게시물이 없습니다.");
+      out.println("데이터 저장 실패.");
     }
   }
 

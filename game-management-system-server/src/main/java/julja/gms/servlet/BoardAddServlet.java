@@ -1,7 +1,7 @@
 package julja.gms.servlet;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
 import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
 
@@ -14,15 +14,19 @@ public class BoardAddServlet implements Servlet {
   }
 
   @Override
-  public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    Board board = (Board) in.readObject();
+  public void service(Scanner in, PrintStream out) throws Exception {
+
+    Board board = new Board();
+
+    out.println("제목 : \n!{}!");
+    board.setBbsName(in.nextLine());
+    out.println("내용 : \n!{}!");
+    board.setBbsText(in.nextLine());
 
     if (boardDao.insert(board) > 0) {
-      out.writeUTF("OK");
-
+      out.println("게시글을 입력하였습니다.");
     } else {
-      out.writeUTF("FAIL");
-      out.writeUTF("같은 번호의 게시물이 있습니다.");
+      out.println("게시글 입력에 실패했습니다.");
     }
   }
 

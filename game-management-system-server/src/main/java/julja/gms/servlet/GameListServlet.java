@@ -1,8 +1,10 @@
 package julja.gms.servlet;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.List;
+import java.util.Scanner;
 import julja.gms.dao.GameDao;
+import julja.gms.domain.Game;
 
 public class GameListServlet implements Servlet {
 
@@ -13,10 +15,13 @@ public class GameListServlet implements Servlet {
   }
 
   @Override
-  public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    out.writeUTF("OK");
-    out.reset();
-    out.writeObject(gameDao.findAll());
+  public void service(Scanner in, PrintStream out) throws Exception {
+    List<Game> games = gameDao.findAll();
+
+    for (Game g : games) {
+      out.printf("[%d] %s | %s | %s | %s\n", g.getNo(), g.getGameName(), g.getGamePlatform(),
+          g.getGameGenre(), g.getGameDate());
+    }
   }
 
 }

@@ -1,8 +1,10 @@
 package julja.gms.servlet;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.List;
+import java.util.Scanner;
 import julja.gms.dao.UserDao;
+import julja.gms.domain.User;
 
 public class UserListServlet implements Servlet {
 
@@ -13,10 +15,12 @@ public class UserListServlet implements Servlet {
   }
 
   @Override
-  public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    out.writeUTF("OK");
-    out.reset();
-    out.writeObject(userDao.findAll());
+  public void service(Scanner in, PrintStream out) throws Exception {
+    List<User> users = userDao.findAll();
+    for (User u : users) {
+      out.printf("[%d] %s | %s | %s\n", u.getNo(), u.getUserEmail(), u.getUserName(),
+          u.getUserResisteredDate());
+    }
   }
 
 }
