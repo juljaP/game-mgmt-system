@@ -59,7 +59,7 @@ public class ClientApp {
     int port = 9999;
     String servletPath = null;
 
-    // ex) https://localhost:9999/
+    // ex) https://localhost:9999/photoboard
     try {
       if (!command.startsWith("https://")) {
         throw new Exception("명령어 형식이 옳지 않습니다.");

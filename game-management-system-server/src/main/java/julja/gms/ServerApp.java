@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import julja.gms.context.ApplicationContextListener;
 import julja.gms.dao.BoardDao;
 import julja.gms.dao.GameDao;
+import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.UserDao;
 import julja.gms.servlet.BoardAddServlet;
 import julja.gms.servlet.BoardDeleteServlet;
@@ -25,6 +26,11 @@ import julja.gms.servlet.GameDeleteServlet;
 import julja.gms.servlet.GameDetailServlet;
 import julja.gms.servlet.GameListServlet;
 import julja.gms.servlet.GameUpdateServlet;
+import julja.gms.servlet.PhotoBoardAddServlet;
+import julja.gms.servlet.PhotoBoardDeleteServlet;
+import julja.gms.servlet.PhotoBoardDetailServlet;
+import julja.gms.servlet.PhotoBoardListServlet;
+import julja.gms.servlet.PhotoBoardUpdateServlet;
 import julja.gms.servlet.Servlet;
 import julja.gms.servlet.UserAddServlet;
 import julja.gms.servlet.UserDeleteServlet;
@@ -68,6 +74,7 @@ public class ServerApp {
     GameDao gameDao = (GameDao) context.get("gameDao");
     UserDao userDao = (UserDao) context.get("userDao");
     BoardDao boardDao = (BoardDao) context.get("boardDao");
+    PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
 
     servletMap.put("/board/add", new BoardAddServlet(boardDao));
     servletMap.put("/board/delete", new BoardDeleteServlet(boardDao));
@@ -87,6 +94,12 @@ public class ServerApp {
     servletMap.put("/user/list", new UserListServlet(userDao));
     servletMap.put("/user/update", new UserUpdateServlet(userDao));
     servletMap.put("/user/search", new UserSearchServlet(userDao));
+
+    servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao));
+    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao));
+    servletMap.put("/photoboard/add", new PhotoBoardAddServlet(photoBoardDao));
+    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(photoBoardDao));
+    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(photoBoardDao));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
       System.out.println("클라이언트 연결 대기중...");
