@@ -1,7 +1,6 @@
 package julja.gms;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -40,6 +39,7 @@ public class ServerApp {
   Map<String, Servlet> servletMap = new HashMap<>();
   ExecutorService executorService = Executors.newCachedThreadPool();
   Map<String, Object> context = new HashMap<>();
+  boolean serverStop = false;
 
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
@@ -98,15 +98,34 @@ public class ServerApp {
           processRequest(socket);
           System.out.println("-----------------------------------");
         });
+
+        if (serverStop) {
+          break;
+        }
+
       }
     } catch (Exception e) {
       System.out.println("서버 준비 중 오류 발생");
     }
-    notifyApplicationDestroyed();
+
     executorService.shutdown();
+
+    while (true) {
+      if (executorService.isTerminated()) {
+        break;
+      }
+      try {
+        Thread.sleep(500); // 0.5초마다 스레드 종료 여부 검사
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    notifyApplicationDestroyed();
+
   }
 
-  int processRequest(Socket clientSocket) {
+  void processRequest(Socket clientSocket) {
     try (Socket socket = clientSocket;
         Scanner in = new Scanner(socket.getInputStream());
         PrintStream out = new PrintStream(socket.getOutputStream())) {
@@ -114,9 +133,12 @@ public class ServerApp {
       String request = in.nextLine();
       System.out.printf("=> %s\n", request);
 
-      /*
-       * if (request.equalsIgnoreCase("/server/stop")) { quit(out); return 9; }
-       */
+
+      if (request.equalsIgnoreCase("/server/stop")) {
+        quit(out);
+        return;
+      }
+
       Servlet servlet = servletMap.get(request);
       if (servlet != null) {
         try {
@@ -132,11 +154,9 @@ public class ServerApp {
       }
       out.println("!end!");
       out.flush();
-      return 0;
     } catch (Exception e) {
       System.out.println("예외 발생:");
       e.printStackTrace();
-      return -1;
     }
   }
 
@@ -145,8 +165,10 @@ public class ServerApp {
     out.println("요청한 명령을 처리할 수 없습니다.");
   }
 
-  private void quit(ObjectOutputStream out) throws IOException {
-    out.writeUTF("OK");
+  private void quit(PrintStream out) throws IOException {
+    serverStop = true;
+    out.println("OK");
+    out.println("!end!");
     out.flush();
   }
 
