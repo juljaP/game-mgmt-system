@@ -5,14 +5,14 @@ import julja.gms.domain.Game;
 
 public interface GameDao {
 
-  public int insert(Game game) throws Exception;
+  int insert(Game game) throws Exception;
 
-  public List<Game> findAll() throws Exception;
+  List<Game> findAll() throws Exception;
 
-  public Game findByNo(int no) throws Exception;
+  Game findByNo(int no) throws Exception;
 
-  public int update(Game game) throws Exception;
+  int update(Game game) throws Exception;
 
-  public int delete(int no) throws Exception;
+  int delete(int no) throws Exception;
 
 }

@@ -71,6 +71,28 @@ public class UserDaoImpl implements UserDao {
   }
 
   @Override
+  public List<User> findByKeyword(String keyword) throws Exception {
+    try (Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery(
+            "SELECT user_id, email, name, rdt FROM gms_user WHERE user_id LIKE '%" + keyword
+                + "%' OR email LIKE '%" + keyword + "%' OR name LIKE '%" + keyword + "%'")) {
+
+      ArrayList<User> list = new ArrayList<>();
+
+      while (rs.next()) {
+        User user = new User();
+        user.setNo(rs.getInt("user_id"));
+        user.setUserEmail(rs.getString("email"));
+        user.setUserName(rs.getString("name"));
+        user.setUserResisteredDate(rs.getDate("rdt"));
+        list.add(user);
+      }
+
+      return list;
+    }
+  }
+
+  @Override
   public int update(User user) throws Exception {
 
     try (Statement stmt = con.createStatement()) {

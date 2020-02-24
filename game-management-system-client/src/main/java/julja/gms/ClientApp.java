@@ -55,13 +55,13 @@ public class ClientApp {
     int port = 9999;
     String servletPath = null;
 
-    // ex) gms://localhost:9999/
+    // ex) https://localhost:9999/
     try {
-      if (!command.startsWith("gms://")) {
+      if (!command.startsWith("https://")) {
         throw new Exception("명령어 형식이 옳지 않습니다.");
       }
 
-      String url = command.substring(6);
+      String url = command.substring(8);
 
       int index = url.indexOf('/');
       String[] str = url.substring(0, index).split(":");

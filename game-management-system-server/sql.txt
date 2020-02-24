@@ -38,6 +38,25 @@ cdt DATETIME DEFAULT now(),
 hits INT DEFAULT 0
 );
 
+CREATE TABLE gms_photo (
+photo_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+game_id INT NOT NULL,
+titl VARCHAR(255) NOT NULL,
+cdt DATETIME DEFAULT now(),
+hits INT DEFAULT 0,
+CONSTRAINT fk_photo_to_game FOREIGN KEY (game_id)
+REFERENCES gms_game (game_id)
+);
+
+CREATE TABLE gms_photo_file (
+photo_file_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+photo_id INT NOT NULL,
+file_path VARCHAR(255) NOT NULL,
+CONSTRAINT fk_photo_file_to_photo FOREIGN KEY (photo_id)
+REFERENCES gms_photo (photo_id)
+); 
+
+
 INSERT INTO gms_game(game_id, titl, rdt, pdt, pf, genre) VALUES(1, '젤다의 전설 야생의 숨결', '2018-02-01', 'Nintendo', 'Nintendo Switch', '오픈에어 어드벤처');
 INSERT INTO gms_game(titl, rdt, pdt, pf, genre) VALUES('어쌔신 크리드', '2007-11-13', '유비소프트 몬트리올', 'PS3, PC', '잠입 액션 어드벤처');
 INSERT INTO gms_game(titl, rdt, pdt, pf, genre, illust) VALUES('파이어 엠블렘 풍화설월', '2019-07-26', 'Nintendo', 'Nintendo Switch', 'SRPG', '쿠라하나 치나츠');
@@ -56,3 +75,21 @@ INSERT INTO gms_board(titl, conts) VALUES('네번째 게시글', '이제 더 이
 INSERT INTO gms_board(titl, conts) VALUES('다섯번째 게시글', '냉무.');
 INSERT INTO gms_board(titl, conts) VALUES('여섯번째 게시글', '제곧내.');
 INSERT INTO gms_board(titl, conts) VALUES('일곱번째 게시글', '1111');
+
+INSERT INTO gms_photo(photo_id, game_id, titl) VALUES(1, 1, 'Zelda');
+INSERT INTO gms_photo(photo_id, game_id, titl) VALUES(2, 2, 'Creed');
+INSERT INTO gms_photo(photo_id, game_id, titl) VALUES(3, 3, 'Fire Emblem');
+INSERT INTO gms_photo(photo_id, game_id, titl) VALUES(4, 3, '풍화설월');
+INSERT INTO gms_photo(photo_id, game_id, titl) VALUES(5, 4, 'Mario');
+
+INSERT INTO gms_photo_file(photo_file_id, photo_id, file_path) VALUES(1, 1, 'a1.gif');
+INSERT INTO gms_photo_file(photo_file_id, photo_id, file_path) VALUES(2, 1, 'a2.gif');
+INSERT INTO gms_photo_file(photo_file_id, photo_id, file_path) VALUES(3, 1, 'a3.gif');
+INSERT INTO gms_photo_file(photo_file_id, photo_id, file_path) VALUES(4, 2, 'b1.gif');
+INSERT INTO gms_photo_file(photo_file_id, photo_id, file_path) VALUES(5, 3, 'c1.gif');
+INSERT INTO gms_photo_file(photo_file_id, photo_id, file_path) VALUES(6, 3, 'c2.gif');
+INSERT INTO gms_photo_file(photo_file_id, photo_id, file_path) VALUES(7, 4, 'd1.gif');
+INSERT INTO gms_photo_file(photo_file_id, photo_id, file_path) VALUES(8, 5, 'e1.gif');
+INSERT INTO gms_photo_file(photo_file_id, photo_id, file_path) VALUES(9, 5, 'e2.gif');
+INSERT INTO gms_photo_file(photo_file_id, photo_id, file_path) VALUES(10, 5, 'e3.gif');
+INSERT INTO gms_photo_file(photo_file_id, photo_id, file_path) VALUES(11, 5, 'e4.gif');

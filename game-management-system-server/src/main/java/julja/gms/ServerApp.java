@@ -31,6 +31,7 @@ import julja.gms.servlet.UserAddServlet;
 import julja.gms.servlet.UserDeleteServlet;
 import julja.gms.servlet.UserDetailServlet;
 import julja.gms.servlet.UserListServlet;
+import julja.gms.servlet.UserSearchServlet;
 import julja.gms.servlet.UserUpdateServlet;
 
 public class ServerApp {
@@ -85,6 +86,7 @@ public class ServerApp {
     servletMap.put("/user/detail", new UserDetailServlet(userDao));
     servletMap.put("/user/list", new UserListServlet(userDao));
     servletMap.put("/user/update", new UserUpdateServlet(userDao));
+    servletMap.put("/user/search", new UserSearchServlet(userDao));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
       System.out.println("클라이언트 연결 대기중...");
