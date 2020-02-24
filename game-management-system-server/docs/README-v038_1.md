@@ -5,14 +5,14 @@
 
 ## 소스 및 결과
 
-- src/main/java/com/eomcs/domain/PhotoBoard.java 추가
-- src/main/java/com/eomcs/dao/PhotoBoardDao.java 추가
-- src/main/java/com/eomcs/dao/mariadb/PhotoBoardDaoImpl.java 추가
-- src/main/java/com/eomcs/servlet/PhotoBoardListServlet.java 추가
-- src/main/java/com/eomcs/servlet/PhotoBoardDetailServlet.java 추가
-- src/main/java/com/eomcs/servlet/PhotoBoardAddServlet.java 추가
-- src/main/java/com/eomcs/servlet/PhotoBoardUpdateServlet.java 추가
-- src/main/java/com/eomcs/servlet/PhotoBoardDeleteServlet.java 추가
+- src/main/java/julja/domain/PhotoBoard.java 추가
+- src/main/java/julja/dao/PhotoBoardDao.java 추가
+- src/main/java/julja/dao/mariadb/PhotoBoardDaoImpl.java 추가
+- src/main/java/julja/servlet/PhotoBoardListServlet.java 추가
+- src/main/java/julja/servlet/PhotoBoardDetailServlet.java 추가
+- src/main/java/julja/servlet/PhotoBoardAddServlet.java 추가
+- src/main/java/julja/servlet/PhotoBoardUpdateServlet.java 추가
+- src/main/java/julja/servlet/PhotoBoardDeleteServlet.java 추가
 - src/main/java/julja/gms/DataLoaderListener.java 변경
 - src/main/java/julja/gms/ServerApp.java 변경
 
