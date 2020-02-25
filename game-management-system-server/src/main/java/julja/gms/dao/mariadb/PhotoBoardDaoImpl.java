@@ -22,14 +22,16 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
 
     try (Statement stmt = con.createStatement()) {
 
-      con.setAutoCommit(true);
-
       int result = stmt.executeUpdate("INSERT INTO gms_photo(titl, game_id) VALUES ('"
-          + photoBoard.getTitle() + "', '" + photoBoard.getGame().getNo() + "')");
+          + photoBoard.getTitle() + "', '" + photoBoard.getGame().getNo() + "')",
+          Statement.RETURN_GENERATED_KEYS);
+
+      try (ResultSet generatedKeySet = stmt.getGeneratedKeys()) {
+        generatedKeySet.next();
+        photoBoard.setNo(generatedKeySet.getInt(1));
+      }
 
       return result;
-    } catch (Exception e) {
-      return -1;
     }
   }
 

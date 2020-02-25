@@ -7,10 +7,12 @@ import julja.gms.context.ApplicationContextListener;
 import julja.gms.dao.BoardDao;
 import julja.gms.dao.GameDao;
 import julja.gms.dao.PhotoBoardDao;
+import julja.gms.dao.PhotoFileDao;
 import julja.gms.dao.UserDao;
 import julja.gms.dao.mariadb.BoardDaoImpl;
 import julja.gms.dao.mariadb.GameDaoImpl;
 import julja.gms.dao.mariadb.PhotoBoardDaoImpl;
+import julja.gms.dao.mariadb.PhotoFileDaoImpl;
 import julja.gms.dao.mariadb.UserDaoImpl;
 
 public class DataLoaderListener implements ApplicationContextListener {
@@ -28,11 +30,13 @@ public class DataLoaderListener implements ApplicationContextListener {
       GameDao gameDao = new GameDaoImpl(con);
       BoardDao boardDao = new BoardDaoImpl(con);
       PhotoBoardDao photoBoardDao = new PhotoBoardDaoImpl(con);
+      PhotoFileDao photoFileDao = new PhotoFileDaoImpl(con);
 
       context.put("gameDao", gameDao);
       context.put("userDao", userDao);
       context.put("boardDao", boardDao);
       context.put("photoBoardDao", photoBoardDao);
+      context.put("photoFileDao", photoFileDao);
 
       System.out.println("데이터를 불러왔습니다.");
     } catch (Exception e) {

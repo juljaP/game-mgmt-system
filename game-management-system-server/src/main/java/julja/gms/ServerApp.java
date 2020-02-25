@@ -15,6 +15,7 @@ import julja.gms.context.ApplicationContextListener;
 import julja.gms.dao.BoardDao;
 import julja.gms.dao.GameDao;
 import julja.gms.dao.PhotoBoardDao;
+import julja.gms.dao.PhotoFileDao;
 import julja.gms.dao.UserDao;
 import julja.gms.servlet.BoardAddServlet;
 import julja.gms.servlet.BoardDeleteServlet;
@@ -75,6 +76,7 @@ public class ServerApp {
     UserDao userDao = (UserDao) context.get("userDao");
     BoardDao boardDao = (BoardDao) context.get("boardDao");
     PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
+    PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
 
     servletMap.put("/board/add", new BoardAddServlet(boardDao));
     servletMap.put("/board/delete", new BoardDeleteServlet(boardDao));
@@ -96,10 +98,11 @@ public class ServerApp {
     servletMap.put("/user/search", new UserSearchServlet(userDao));
 
     servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao));
-    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao));
-    servletMap.put("/photoboard/add", new PhotoBoardAddServlet(photoBoardDao));
-    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(photoBoardDao));
-    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(photoBoardDao));
+    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao, photoFileDao));
+    servletMap.put("/photoboard/add",
+        new PhotoBoardAddServlet(photoBoardDao, photoFileDao, gameDao));
+    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao));
+    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
       System.out.println("클라이언트 연결 대기중...");
