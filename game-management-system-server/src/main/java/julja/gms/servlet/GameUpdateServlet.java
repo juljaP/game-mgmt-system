@@ -1,10 +1,10 @@
 package julja.gms.servlet;
 
 import java.io.PrintStream;
-import java.sql.Date;
 import java.util.Scanner;
 import julja.gms.dao.GameDao;
 import julja.gms.domain.Game;
+import julja.util.Prompt;
 
 public class GameUpdateServlet implements Servlet {
 
@@ -17,9 +17,7 @@ public class GameUpdateServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-    out.println("번호? \n!{}!");
-    out.flush();
-    int no = Integer.parseInt(in.nextLine());
+    int no = Prompt.getInt(in, out, "번호? ");
 
     Game old = gameDao.findByNo(no);
 
@@ -30,22 +28,22 @@ public class GameUpdateServlet implements Servlet {
 
     Game game = new Game();
     game.setNo(no);
-    out.println(String.format("게임명(%s) : \n!{}!", old.getGameName()));
-    game.setGameName(in.nextLine());
-    out.println(String.format("제작사(%s) : \n!{}!", old.getGameProduction()));
-    game.setGameProduction(in.nextLine());
-    out.println(String.format("발매일(%s) : \n!{}!", old.getGameDate()));
-    game.setGameDate(Date.valueOf(in.nextLine()));
-    out.println(String.format("플랫폼(%s) : \n!{}!", old.getGamePlatform()));
-    game.setGamePlatform(in.nextLine());
-    out.println(String.format("장르(%s) : \n!{}!", old.getGameGenre()));
-    game.setGameGenre(in.nextLine());
-    out.println(String.format("작화(%s) : \n!{}!", old.getGameIllust()));
-    game.setGameIllust(in.nextLine());
-    out.println(String.format("음성(%s) : \n!{}!", old.getGameVoice()));
-    game.setGameVoice(in.nextLine());
-    out.println(String.format("사진(%s) : \n!{}!", old.getPhoto()));
-    game.setPhoto(in.nextLine());
+    game.setGameName(Prompt.getString(in, out, String.format("게임명(%s) : ", old.getGameName()),
+        old.getGameName()));
+    game.setGameProduction(Prompt.getString(in, out,
+        String.format("제작사(%s) : ", old.getGameProduction()), old.getGameProduction()));
+    game.setGameDate(Prompt.getDate(in, out, String.format("발매일(%s) : ", old.getGameDate()),
+        old.getGameDate().toString()));
+    game.setGamePlatform(Prompt.getString(in, out,
+        String.format("플랫폼(%s) : ", old.getGamePlatform()), old.getGamePlatform()));
+    game.setGameGenre(Prompt.getString(in, out, String.format("장르(%s) : ", old.getGameGenre()),
+        old.getGameGenre()));
+    game.setGameIllust(Prompt.getString(in, out, String.format("작화(%s) : ", old.getGameIllust()),
+        old.getGameIllust()));
+    game.setGameVoice(Prompt.getString(in, out, String.format("음성(%s) : ", old.getGameVoice()),
+        old.getGameVoice()));
+    game.setPhoto(
+        Prompt.getString(in, out, String.format("사진(%s) : ", old.getPhoto()), old.getPhoto()));
 
     if (gameDao.update(game) > 0) {
       out.println("게임 정보를 변경하였습니다.");

@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import julja.gms.dao.UserDao;
 import julja.gms.domain.User;
+import julja.util.Prompt;
 
 public class UserAddServlet implements Servlet {
 
@@ -17,12 +18,9 @@ public class UserAddServlet implements Servlet {
   public void service(Scanner in, PrintStream out) throws Exception {
     User user = new User();
 
-    out.println("이메일 : \n!{}!");
-    user.setUserEmail(in.nextLine());
-    out.println("비밀번호 : \n!{}!");
-    user.setUserPW(in.nextLine());
-    out.println("회원명 : \n!{}!");
-    user.setUserName(in.nextLine());
+    user.setUserEmail(Prompt.getString(in, out, "이메일 : "));
+    user.setUserPW(Prompt.getString(in, out, "비밀번호 : "));
+    user.setUserName(Prompt.getString(in, out, "회원명 : "));
 
     if (userDao.insert(user) > 0) {
       out.println("유저를 입력하였습니다.");

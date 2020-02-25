@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
+import julja.util.Prompt;
 
 public class BoardDetailServlet implements Servlet {
 
@@ -15,9 +16,8 @@ public class BoardDetailServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("번호? \n!{}!");
-    out.flush();
-    int no = Integer.parseInt(in.nextLine());
+
+    int no = Prompt.getInt(in, out, "번호? ");
 
     Board b = boardDao.findByNo(no);
 

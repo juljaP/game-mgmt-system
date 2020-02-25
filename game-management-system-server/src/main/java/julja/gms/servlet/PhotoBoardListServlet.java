@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.domain.PhotoBoard;
+import julja.util.Prompt;
 
 public class PhotoBoardListServlet implements Servlet {
 
@@ -16,10 +17,9 @@ public class PhotoBoardListServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("게임번호? \n!{}!");
-    out.flush();
 
-    int no = Integer.parseInt(in.nextLine());
+    int no = Prompt.getInt(in, out, "게임 번호? ");
+
     PhotoBoard game = photoBoardDao.findByGameNo(no);
     out.println("게임명 : " + game.getGame().getGameName());
 

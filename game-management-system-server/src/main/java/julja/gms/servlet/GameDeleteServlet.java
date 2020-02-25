@@ -3,6 +3,7 @@ package julja.gms.servlet;
 import java.io.PrintStream;
 import java.util.Scanner;
 import julja.gms.dao.GameDao;
+import julja.util.Prompt;
 
 public class GameDeleteServlet implements Servlet {
 
@@ -15,9 +16,7 @@ public class GameDeleteServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-    out.println("번호? \n!{}!");
-    out.flush();
-    int no = Integer.parseInt(in.nextLine());
+    int no = Prompt.getInt(in, out, "번호? ");
 
     if (gameDao.delete(no) > 0) {
       out.println("해당 품번의 게임을 삭제하였습니다.");

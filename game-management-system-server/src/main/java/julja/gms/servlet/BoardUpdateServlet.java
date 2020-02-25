@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
+import julja.util.Prompt;
 
 public class BoardUpdateServlet implements Servlet {
 
@@ -16,9 +17,7 @@ public class BoardUpdateServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-    out.println("번호? \n!{}!");
-    out.flush();
-    int no = Integer.parseInt(in.nextLine());
+    int no = Prompt.getInt(in, out, "번호? ");
 
     Board old = boardDao.findByNo(no);
 
@@ -29,10 +28,10 @@ public class BoardUpdateServlet implements Servlet {
 
     Board board = new Board();
     board.setNo(no);
-    out.println(String.format("제목(%s) : \n!{}!", old.getBbsName()));
-    board.setBbsName(in.nextLine());
-    out.println(String.format("내용(%s) : \n!{}!", old.getBbsText()));
-    board.setBbsText(in.nextLine());
+    board.setBbsName(
+        Prompt.getString(in, out, String.format("제목(%s) : ", old.getBbsName()), old.getBbsName()));
+    board.setBbsText(
+        Prompt.getString(in, out, String.format("내용(%s) : ", old.getBbsText()), old.getBbsText()));
     board.setBbsHits(old.getBbsHits());
     board.setToday(old.getToday());
 

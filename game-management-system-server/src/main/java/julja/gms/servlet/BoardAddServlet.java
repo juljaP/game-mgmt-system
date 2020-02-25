@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
+import julja.util.Prompt;
 
 public class BoardAddServlet implements Servlet {
 
@@ -17,11 +18,8 @@ public class BoardAddServlet implements Servlet {
   public void service(Scanner in, PrintStream out) throws Exception {
 
     Board board = new Board();
-
-    out.println("제목 : \n!{}!");
-    board.setBbsName(in.nextLine());
-    out.println("내용 : \n!{}!");
-    board.setBbsText(in.nextLine());
+    board.setBbsName(Prompt.getString(in, out, "제목 : "));
+    board.setBbsText(Prompt.getString(in, out, "내용 : "));
 
     if (boardDao.insert(board) > 0) {
       out.println("게시글을 입력하였습니다.");

@@ -10,6 +10,7 @@ import julja.gms.dao.PhotoFileDao;
 import julja.gms.domain.Game;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
+import julja.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
 
@@ -28,14 +29,8 @@ public class PhotoBoardAddServlet implements Servlet {
   public void service(Scanner in, PrintStream out) throws Exception {
 
     PhotoBoard photoBoard = new PhotoBoard();
-
-    out.println("제목 : \n!{}!");
-    out.flush();
-    photoBoard.setTitle(in.nextLine());
-
-    out.println("게임 번호 : \n!{}!");
-    out.flush();
-    int no = Integer.parseInt(in.nextLine());
+    photoBoard.setTitle(Prompt.getString(in, out, "제목 : "));
+    int no = Prompt.getInt(in, out, "게임 번호: ");
 
     Game game = gameDao.findByNo(no);
 
@@ -48,28 +43,10 @@ public class PhotoBoardAddServlet implements Servlet {
 
     if (photoBoardDao.insert(photoBoard) > 0) {
 
-      List<PhotoFile> photoFiles = new ArrayList<>();
-
-      out.println("최소 한 개의 사진 파일을 등록해야 합니다.");
-      out.println("파일명 입력 없이 그냥 엔터를 치면 파일 추가를 마칩니다.");
-
-      while (true) {
-        out.println("사진 파일? \n!{}!");
-        out.flush();
-        String filepath = in.nextLine();
-
-        if (filepath.length() == 0) {
-          if (photoFiles.size() > 0) {
-            break;
-          } else {
-            out.println("최소 한 개의 사진 파일을 등록해야 합니다.");
-            continue;
-          }
-        }
-        photoFiles.add(new PhotoFile(filepath, photoBoard.getNo()));
-      }
+      List<PhotoFile> photoFiles = uploadFiles(in, out);
 
       for (PhotoFile photoFile : photoFiles) {
+        photoFile.setBoardNo(photoBoard.getNo());
         photoFileDao.insert(photoFile);
       }
 
@@ -80,4 +57,28 @@ public class PhotoBoardAddServlet implements Servlet {
       }
     }
   }
+
+  private List<PhotoFile> uploadFiles(Scanner in, PrintStream out) {
+
+    List<PhotoFile> photoFiles = new ArrayList<>();
+
+    out.println("최소 한 개의 사진 파일을 등록해야 합니다.");
+    out.println("파일명 입력 없이 그냥 엔터를 치면 파일 추가를 마칩니다.");
+
+    while (true) {
+      String filepath = Prompt.getString(in, out, "사진 파일? ");
+
+      if (filepath.length() == 0) {
+        if (photoFiles.size() > 0) {
+          break;
+        } else {
+          out.println("최소 한 개의 사진 파일을 등록해야 합니다.");
+          continue;
+        }
+      }
+      photoFiles.add(new PhotoFile().setFilepath(filepath));
+    }
+    return photoFiles;
+  }
+
 }
