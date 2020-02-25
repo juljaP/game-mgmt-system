@@ -17,7 +17,7 @@ import julja.gms.dao.mariadb.UserDaoImpl;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
-  Connection con;
+  public static Connection con;
 
   @Override
   public void contextInitailized(Map<String, Object> context) {

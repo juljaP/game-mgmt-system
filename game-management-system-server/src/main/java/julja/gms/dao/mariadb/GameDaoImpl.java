@@ -21,8 +21,6 @@ public class GameDaoImpl implements GameDao {
 
     try (Statement stmt = con.createStatement()) {
 
-      con.setAutoCommit(true);
-
       int result = stmt.executeUpdate(
           "INSERT INTO gms_game(titl, rdt, pdt, pf, genre, photo, illust, vo) VALUES('"
               + game.getGameName() + "', '" + game.getGameDate() + "', '" + game.getGameProduction()

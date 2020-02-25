@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import julja.gms.DataLoaderListener;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
 import julja.gms.domain.PhotoBoard;
@@ -23,6 +24,8 @@ public class PhotoBoardUpdateServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
+    DataLoaderListener.con.setAutoCommit(false);
+
     int no = Prompt.getInt(in, out, "번호? ");
 
     PhotoBoard old = photoBoardDao.findByNo(no);
@@ -37,8 +40,10 @@ public class PhotoBoardUpdateServlet implements Servlet {
     photoBoard.setTitle(
         Prompt.getString(in, out, String.format("제목(%s) : ", old.getTitle()), old.getTitle()));
 
-    if (photoBoardDao.update(photoBoard) > 0) {
-
+    try {
+      if (photoBoardDao.update(photoBoard) == 0) {
+        throw new Exception("사진 게시글 변경에 실패했습니다.");
+      }
       printFiles(out, no);
 
       out.println("사진은 일부만 변경할 수 없습니다.");
@@ -54,12 +59,16 @@ public class PhotoBoardUpdateServlet implements Servlet {
           photoFile.setBoardNo(photoBoard.getNo());
           photoFileDao.insert(photoFile);
         }
+        DataLoaderListener.con.commit();
+        out.println("사진 게시글을 변경했습니다.");
       }
-
-      out.println("사진 게시글을 변경했습니다.");
-    } else {
-      out.println("사진 게시글 변경에 실패했습니다.");
+    } catch (Exception e) {
+      DataLoaderListener.con.rollback();
+      out.println(e.getMessage());
+    } finally {
+      DataLoaderListener.con.setAutoCommit(true);
     }
+
   }
 
   private void printFiles(PrintStream out, int no) throws Exception {

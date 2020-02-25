@@ -21,8 +21,6 @@ public class UserDaoImpl implements UserDao {
 
     try (Statement stmt = con.createStatement()) {
 
-      con.setAutoCommit(true);
-
       int result = stmt.executeUpdate("INSERT INTO gms_user(email, pw, name) VALUES('"
           + user.getUserEmail() + "', '" + user.getUserPW() + "', '" + user.getUserName() + "')");
 

@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import julja.gms.DataLoaderListener;
 import julja.gms.dao.GameDao;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
@@ -28,6 +29,8 @@ public class PhotoBoardAddServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
+    DataLoaderListener.con.setAutoCommit(false);
+
     PhotoBoard photoBoard = new PhotoBoard();
     photoBoard.setTitle(Prompt.getString(in, out, "제목 : "));
     int no = Prompt.getInt(in, out, "게임 번호: ");
@@ -41,7 +44,10 @@ public class PhotoBoardAddServlet implements Servlet {
 
     photoBoard.setGame(game);
 
-    if (photoBoardDao.insert(photoBoard) > 0) {
+    try {
+      if (photoBoardDao.insert(photoBoard) == 0) {
+        throw new Exception("사진 게시글 등록에 실패했습니다.");
+      }
 
       List<PhotoFile> photoFiles = uploadFiles(in, out);
 
@@ -49,12 +55,14 @@ public class PhotoBoardAddServlet implements Servlet {
         photoFile.setBoardNo(photoBoard.getNo());
         photoFileDao.insert(photoFile);
       }
+      DataLoaderListener.con.commit();
+      out.println("새 사진 게시글을 등록했습니다.");
 
-      if (photoFiles.size() > 0) {
-        out.println("새 사진 게시글을 등록했습니다.");
-      } else {
-        out.println("새 사진 게시글 등록에 실패했습니다.");
-      }
+    } catch (Exception e) {
+      DataLoaderListener.con.rollback();
+      out.println(e.getMessage());
+    } finally {
+      DataLoaderListener.con.setAutoCommit(true);
     }
   }
 
