@@ -7,6 +7,7 @@ import julja.gms.dao.mariadb.GameDaoImpl;
 import julja.gms.dao.mariadb.PhotoBoardDaoImpl;
 import julja.gms.dao.mariadb.PhotoFileDaoImpl;
 import julja.gms.dao.mariadb.UserDaoImpl;
+import julja.util.ConnectionFactory;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -17,12 +18,13 @@ public class DataLoaderListener implements ApplicationContextListener {
       String jdbcUrl = "jdbc:mariadb://localhost:3306/gmsdb";
       String username = "study";
       String password = "1111";
+      ConnectionFactory conFactory = new ConnectionFactory(jdbcUrl, username, password);
 
-      context.put("gameDao", new GameDaoImpl(jdbcUrl, username, password));
-      context.put("userDao", new UserDaoImpl(jdbcUrl, username, password));
-      context.put("boardDao", new BoardDaoImpl(jdbcUrl, username, password));
-      context.put("photoBoardDao", new PhotoBoardDaoImpl(jdbcUrl, username, password));
-      context.put("photoFileDao", new PhotoFileDaoImpl(jdbcUrl, username, password));
+      context.put("gameDao", new GameDaoImpl(conFactory));
+      context.put("userDao", new UserDaoImpl(conFactory));
+      context.put("boardDao", new BoardDaoImpl(conFactory));
+      context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
+      context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
 
       System.out.println("데이터를 불러왔습니다.");
     } catch (Exception e) {
