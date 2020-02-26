@@ -1,6 +1,7 @@
 package julja.gms.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -11,16 +12,21 @@ import julja.gms.domain.PhotoBoard;
 
 public class PhotoBoardDaoImpl implements PhotoBoardDao {
 
-  Connection con;
+  String jdbcUrl;
+  String username;
+  String password;
 
-  public PhotoBoardDaoImpl(Connection con) {
-    this.con = con;
+  public PhotoBoardDaoImpl(String jdbcUrl, String username, String password) {
+    this.jdbcUrl = jdbcUrl;
+    this.username = username;
+    this.password = password;
   }
 
   @Override
   public int insert(PhotoBoard photoBoard) throws Exception {
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("INSERT INTO gms_photo(titl, game_id) VALUES ('"
           + photoBoard.getTitle() + "', '" + photoBoard.getGame().getNo() + "')",
@@ -38,7 +44,8 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public List<PhotoBoard> findAllByNo(int no) throws Exception {
 
-    try (Statement stmt = con.createStatement();
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM gms_photo WHERE game_id=" + no)) {
 
       ArrayList<PhotoBoard> list = new ArrayList<>();
@@ -60,7 +67,8 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public PhotoBoard findByNo(int no) throws Exception {
 
-    try (Statement stmt = con.createStatement();
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement();
         ResultSet rs =
             stmt.executeQuery("SELECT p.photo_id, p.titl, p.cdt, p.hits, g.game_id, g.titl"
                 + " FROM gms_photo p JOIN gms_game g ON p.game_id = g.game_id"
@@ -87,7 +95,8 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public PhotoBoard findByGameNo(int no) throws Exception {
 
-    try (Statement stmt = con.createStatement();
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement();
         ResultSet rs =
             stmt.executeQuery("SELECT p.photo_id, p.titl, p.cdt, p.hits, g.game_id, g.titl"
                 + " FROM gms_photo p JOIN gms_game g ON p.game_id = g.game_id WHERE p.game_id="
@@ -114,7 +123,8 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int update(PhotoBoard photoBoard) throws Exception {
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("UPDATE gms_photo SET titl='" + photoBoard.getTitle()
           + "' WHERE photo_id=" + photoBoard.getNo());
@@ -126,7 +136,8 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("DELETE FROM gms_photo WHERE photo_id=" + no);
 

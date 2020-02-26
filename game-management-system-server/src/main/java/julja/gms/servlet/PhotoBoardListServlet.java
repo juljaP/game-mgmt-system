@@ -21,6 +21,12 @@ public class PhotoBoardListServlet implements Servlet {
     int no = Prompt.getInt(in, out, "게임 번호? ");
 
     PhotoBoard game = photoBoardDao.findByGameNo(no);
+
+    if (game == null) {
+      out.println("해당하는 번호의 게임이 존재하지 않습니다.");
+      return;
+    }
+
     out.println("게임명 : " + game.getGame().getGameName());
 
     List<PhotoBoard> photoboards = photoBoardDao.findAllByNo(no);

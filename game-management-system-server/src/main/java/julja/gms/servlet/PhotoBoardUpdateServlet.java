@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import julja.gms.DataLoaderListener;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
 import julja.gms.domain.PhotoBoard;
@@ -24,7 +23,6 @@ public class PhotoBoardUpdateServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-    DataLoaderListener.con.setAutoCommit(false);
 
     int no = Prompt.getInt(in, out, "번호? ");
 
@@ -59,14 +57,12 @@ public class PhotoBoardUpdateServlet implements Servlet {
           photoFile.setBoardNo(photoBoard.getNo());
           photoFileDao.insert(photoFile);
         }
-        DataLoaderListener.con.commit();
         out.println("사진 게시글을 변경했습니다.");
       }
     } catch (Exception e) {
-      DataLoaderListener.con.rollback();
       out.println(e.getMessage());
     } finally {
-      DataLoaderListener.con.setAutoCommit(true);
+
     }
 
   }

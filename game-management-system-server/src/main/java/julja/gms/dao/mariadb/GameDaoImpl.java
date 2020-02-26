@@ -1,6 +1,7 @@
 package julja.gms.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -10,16 +11,21 @@ import julja.gms.domain.Game;
 
 public class GameDaoImpl implements GameDao {
 
-  Connection con;
+  String jdbcUrl;
+  String username;
+  String password;
 
-  public GameDaoImpl(Connection con) {
-    this.con = con;
+  public GameDaoImpl(String jdbcUrl, String username, String password) {
+    this.jdbcUrl = jdbcUrl;
+    this.username = username;
+    this.password = password;
   }
 
   @Override
   public int insert(Game game) throws Exception {
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate(
           "INSERT INTO gms_game(titl, rdt, pdt, pf, genre, photo, illust, vo) VALUES('"
@@ -35,7 +41,8 @@ public class GameDaoImpl implements GameDao {
   @Override
   public List<Game> findAll() throws Exception {
 
-    try (Statement stmt = con.createStatement();
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT game_id, titl, rdt, pf, genre FROM gms_game")) {
 
       ArrayList<Game> list = new ArrayList<>();
@@ -57,7 +64,8 @@ public class GameDaoImpl implements GameDao {
   @Override
   public Game findByNo(int no) throws Exception {
 
-    try (Statement stmt = con.createStatement();
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM gms_game WHERE game_id=" + no)) {
 
       Game game = new Game();
@@ -81,7 +89,8 @@ public class GameDaoImpl implements GameDao {
   public int update(Game game) throws Exception {
 
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("UPDATE gms_game SET titl='" + game.getGameName() + "', pdt='"
           + game.getGameProduction() + "', rdt='" + game.getGameDate() + "', pf='"
@@ -97,7 +106,8 @@ public class GameDaoImpl implements GameDao {
   public int delete(int no) throws Exception {
     Class.forName("org.mariadb.jdbc.Driver");
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("DELETE FROM gms_game WHERE game_id=" + no);
 

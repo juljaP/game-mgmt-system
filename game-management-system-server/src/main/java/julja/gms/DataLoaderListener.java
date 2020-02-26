@@ -1,14 +1,7 @@
 package julja.gms;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.Map;
 import julja.gms.context.ApplicationContextListener;
-import julja.gms.dao.BoardDao;
-import julja.gms.dao.GameDao;
-import julja.gms.dao.PhotoBoardDao;
-import julja.gms.dao.PhotoFileDao;
-import julja.gms.dao.UserDao;
 import julja.gms.dao.mariadb.BoardDaoImpl;
 import julja.gms.dao.mariadb.GameDaoImpl;
 import julja.gms.dao.mariadb.PhotoBoardDaoImpl;
@@ -17,26 +10,19 @@ import julja.gms.dao.mariadb.UserDaoImpl;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
-  public static Connection con;
-
   @Override
   public void contextInitailized(Map<String, Object> context) {
     try {
-      Class.forName("org.mariadb.jdbc.Driver");
-      con = DriverManager.getConnection( //
-          "jdbc:mariadb://localhost:3306/gmsdb", "study", "1111");
 
-      UserDao userDao = new UserDaoImpl(con);
-      GameDao gameDao = new GameDaoImpl(con);
-      BoardDao boardDao = new BoardDaoImpl(con);
-      PhotoBoardDao photoBoardDao = new PhotoBoardDaoImpl(con);
-      PhotoFileDao photoFileDao = new PhotoFileDaoImpl(con);
+      String jdbcUrl = "jdbc:mariadb://localhost:3306/gmsdb";
+      String username = "study";
+      String password = "1111";
 
-      context.put("gameDao", gameDao);
-      context.put("userDao", userDao);
-      context.put("boardDao", boardDao);
-      context.put("photoBoardDao", photoBoardDao);
-      context.put("photoFileDao", photoFileDao);
+      context.put("gameDao", new GameDaoImpl(jdbcUrl, username, password));
+      context.put("userDao", new UserDaoImpl(jdbcUrl, username, password));
+      context.put("boardDao", new BoardDaoImpl(jdbcUrl, username, password));
+      context.put("photoBoardDao", new PhotoBoardDaoImpl(jdbcUrl, username, password));
+      context.put("photoFileDao", new PhotoFileDaoImpl(jdbcUrl, username, password));
 
       System.out.println("데이터를 불러왔습니다.");
     } catch (Exception e) {
@@ -47,10 +33,7 @@ public class DataLoaderListener implements ApplicationContextListener {
 
   @Override
   public void contextDestroyed(Map<String, Object> context) {
-    try {
-      con.close();
-    } catch (Exception e) {
-    }
+
     System.out.println("데이터를 저장하였습니다.");
   }
 

@@ -2,7 +2,6 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import julja.gms.DataLoaderListener;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
 import julja.util.Prompt;
@@ -20,7 +19,6 @@ public class PhotoBoardDeleteServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
     int no = Prompt.getInt(in, out, "번호? ");
-    DataLoaderListener.con.setAutoCommit(false);
     try {
       photoFileDao.deleteAll(no);
 
@@ -28,12 +26,10 @@ public class PhotoBoardDeleteServlet implements Servlet {
         throw new Exception("해당 번호의 사진 게시글이 없습니다.");
       }
       out.println("사진 게시글을 삭제했습니다.");
-      DataLoaderListener.con.commit();
     } catch (Exception e) {
-      DataLoaderListener.con.rollback();
       out.println(e.getMessage());
     } finally {
-      DataLoaderListener.con.setAutoCommit(true);
+
     }
   }
 
