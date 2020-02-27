@@ -1,6 +1,7 @@
 package julja.gms.servlet;
 
 import java.io.PrintStream;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,6 +11,7 @@ import julja.gms.dao.PhotoFileDao;
 import julja.gms.domain.Game;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
+import julja.util.ConnectionFactory;
 import julja.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
@@ -17,12 +19,14 @@ public class PhotoBoardAddServlet implements Servlet {
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
   GameDao gameDao;
+  ConnectionFactory conFactory;
 
   public PhotoBoardAddServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao,
-      GameDao gameDao) {
+      GameDao gameDao, ConnectionFactory conFactory) {
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
     this.gameDao = gameDao;
+    this.conFactory = conFactory;
   }
 
   @Override
@@ -40,6 +44,8 @@ public class PhotoBoardAddServlet implements Servlet {
     }
 
     photoBoard.setGame(game);
+    Connection con = conFactory.getConnection();
+    con.setAutoCommit(false);
 
     try {
       if (photoBoardDao.insert(photoBoard) == 0) {
@@ -52,11 +58,14 @@ public class PhotoBoardAddServlet implements Servlet {
         photoFile.setBoardNo(photoBoard.getNo());
         photoFileDao.insert(photoFile);
       }
+      con.commit();
       out.println("새 사진 게시글을 등록했습니다.");
 
     } catch (Exception e) {
+      con.rollback();
       out.println(e.getMessage());
     } finally {
+      con.setAutoCommit(true);
     }
   }
 

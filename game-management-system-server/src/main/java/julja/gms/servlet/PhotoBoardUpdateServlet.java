@@ -1,6 +1,7 @@
 package julja.gms.servlet;
 
 import java.io.PrintStream;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,21 +9,24 @@ import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
+import julja.util.ConnectionFactory;
 import julja.util.Prompt;
 
 public class PhotoBoardUpdateServlet implements Servlet {
 
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
+  ConnectionFactory conFactory;
 
-  public PhotoBoardUpdateServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao) {
+  public PhotoBoardUpdateServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao,
+      ConnectionFactory conFactory) {
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
+    this.conFactory = conFactory;
   }
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-
 
     int no = Prompt.getInt(in, out, "번호? ");
 
@@ -37,6 +41,9 @@ public class PhotoBoardUpdateServlet implements Servlet {
     photoBoard.setNo(no);
     photoBoard.setTitle(
         Prompt.getString(in, out, String.format("제목(%s) : ", old.getTitle()), old.getTitle()));
+
+    Connection con = conFactory.getConnection();
+    con.setAutoCommit(false);
 
     try {
       if (photoBoardDao.update(photoBoard) == 0) {
@@ -57,12 +64,14 @@ public class PhotoBoardUpdateServlet implements Servlet {
           photoFile.setBoardNo(photoBoard.getNo());
           photoFileDao.insert(photoFile);
         }
+        con.commit();
         out.println("사진 게시글을 변경했습니다.");
       }
     } catch (Exception e) {
+      con.rollback();
       out.println(e.getMessage());
     } finally {
-
+      con.setAutoCommit(true);
     }
 
   }

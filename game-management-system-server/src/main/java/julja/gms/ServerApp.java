@@ -107,9 +107,11 @@ public class ServerApp {
     servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao));
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/add",
-        new PhotoBoardAddServlet(photoBoardDao, photoFileDao, gameDao));
-    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao));
-    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao));
+        new PhotoBoardAddServlet(photoBoardDao, photoFileDao, gameDao, conFactory));
+    servletMap.put("/photoboard/delete",
+        new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao, conFactory));
+    servletMap.put("/photoboard/update",
+        new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao, conFactory));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
       System.out.println("클라이언트 연결 대기중...");
