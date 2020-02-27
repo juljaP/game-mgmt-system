@@ -25,6 +25,7 @@ public class DataLoaderListener implements ApplicationContextListener {
       context.put("boardDao", new BoardDaoImpl(conFactory));
       context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
       context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
+      context.put("connectionFactory", conFactory);
 
       System.out.println("데이터를 불러왔습니다.");
     } catch (Exception e) {

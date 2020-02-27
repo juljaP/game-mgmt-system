@@ -17,6 +17,9 @@ import julja.gms.dao.GameDao;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
 import julja.gms.dao.UserDao;
+import julja.gms.dao.mariadb.BoardDaoImpl;
+import julja.gms.dao.mariadb.GameDaoImpl;
+import julja.gms.dao.mariadb.UserDaoImpl;
 import julja.gms.servlet.BoardAddServlet;
 import julja.gms.servlet.BoardDeleteServlet;
 import julja.gms.servlet.BoardDetailServlet;
@@ -39,6 +42,7 @@ import julja.gms.servlet.UserDetailServlet;
 import julja.gms.servlet.UserListServlet;
 import julja.gms.servlet.UserSearchServlet;
 import julja.gms.servlet.UserUpdateServlet;
+import julja.util.ConnectionFactory;
 
 public class ServerApp {
 
@@ -72,9 +76,11 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    GameDao gameDao = (GameDao) context.get("gameDao");
-    UserDao userDao = (UserDao) context.get("userDao");
-    BoardDao boardDao = (BoardDao) context.get("boardDao");
+    ConnectionFactory conFactory = (ConnectionFactory) context.get("connectionFactory");
+
+    GameDao gameDao = (GameDaoImpl) context.get("gameDao");
+    UserDao userDao = (UserDaoImpl) context.get("userDao");
+    BoardDao boardDao = (BoardDaoImpl) context.get("boardDao");
     PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
     PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
 
@@ -112,6 +118,7 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
+          conFactory.removeConnection();
           System.out.println("-----------------------------------");
         });
 
