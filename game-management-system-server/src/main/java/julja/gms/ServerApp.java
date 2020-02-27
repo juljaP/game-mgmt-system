@@ -43,6 +43,7 @@ import julja.gms.servlet.UserListServlet;
 import julja.gms.servlet.UserSearchServlet;
 import julja.gms.servlet.UserUpdateServlet;
 import julja.sql.ConnectionProxy;
+import julja.sql.PlatformTransactionManager;
 import julja.util.ConnectionFactory;
 
 public class ServerApp {
@@ -84,6 +85,7 @@ public class ServerApp {
     BoardDao boardDao = (BoardDaoImpl) context.get("boardDao");
     PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
     PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
+    PlatformTransactionManager txManager = (PlatformTransactionManager) context.get("txManager");
 
     servletMap.put("/board/add", new BoardAddServlet(boardDao));
     servletMap.put("/board/delete", new BoardDeleteServlet(boardDao));
@@ -107,11 +109,11 @@ public class ServerApp {
     servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao));
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/add",
-        new PhotoBoardAddServlet(photoBoardDao, photoFileDao, gameDao, conFactory));
+        new PhotoBoardAddServlet(photoBoardDao, photoFileDao, gameDao, conFactory, txManager));
     servletMap.put("/photoboard/delete",
-        new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao, conFactory));
+        new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao, conFactory, txManager));
     servletMap.put("/photoboard/update",
-        new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao, conFactory));
+        new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao, conFactory, txManager));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
       System.out.println("클라이언트 연결 대기중...");

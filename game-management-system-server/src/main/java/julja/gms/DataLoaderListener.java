@@ -7,6 +7,7 @@ import julja.gms.dao.mariadb.GameDaoImpl;
 import julja.gms.dao.mariadb.PhotoBoardDaoImpl;
 import julja.gms.dao.mariadb.PhotoFileDaoImpl;
 import julja.gms.dao.mariadb.UserDaoImpl;
+import julja.sql.PlatformTransactionManager;
 import julja.util.ConnectionFactory;
 
 public class DataLoaderListener implements ApplicationContextListener {
@@ -19,6 +20,7 @@ public class DataLoaderListener implements ApplicationContextListener {
       String username = "study";
       String password = "1111";
       ConnectionFactory conFactory = new ConnectionFactory(jdbcUrl, username, password);
+      PlatformTransactionManager txManager = new PlatformTransactionManager(conFactory);
 
       context.put("gameDao", new GameDaoImpl(conFactory));
       context.put("userDao", new UserDaoImpl(conFactory));
@@ -26,17 +28,16 @@ public class DataLoaderListener implements ApplicationContextListener {
       context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
       context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
       context.put("connectionFactory", conFactory);
+      context.put("txManager", txManager);
 
       System.out.println("데이터를 불러왔습니다.");
     } catch (Exception e) {
       e.printStackTrace();
     }
-
   }
 
   @Override
   public void contextDestroyed(Map<String, Object> context) {
-
     System.out.println("데이터를 저장하였습니다.");
   }
 
