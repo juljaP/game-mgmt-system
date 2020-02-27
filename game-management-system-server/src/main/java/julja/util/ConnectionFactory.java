@@ -2,6 +2,7 @@ package julja.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import julja.sql.ConnectionProxy;
 
 public class ConnectionFactory {
 
@@ -21,17 +22,18 @@ public class ConnectionFactory {
     if (con != null) {
       return con;
     }
-    con = DriverManager.getConnection(jdbcUrl, userName, password);
+    con = new ConnectionProxy(DriverManager.getConnection(jdbcUrl, userName, password));
     connectionLocal.set(con);
     return con;
   }
 
-  public void removeConnection() {
+  public Connection removeConnection() {
     Connection con = connectionLocal.get();
     if (con != null) {
       connectionLocal.remove();
       System.out.println("Connection 삭제!");
     }
+    return con;
   }
 
 }

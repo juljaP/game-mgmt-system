@@ -42,6 +42,7 @@ import julja.gms.servlet.UserDetailServlet;
 import julja.gms.servlet.UserListServlet;
 import julja.gms.servlet.UserSearchServlet;
 import julja.gms.servlet.UserUpdateServlet;
+import julja.sql.ConnectionProxy;
 import julja.util.ConnectionFactory;
 
 public class ServerApp {
@@ -118,7 +119,13 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
-          conFactory.removeConnection();
+          ConnectionProxy con = (ConnectionProxy) conFactory.removeConnection();
+          if (con != null) {
+            try {
+              con.realClose();
+            } catch (Exception e) {
+            }
+          }
           System.out.println("-----------------------------------");
         });
 
