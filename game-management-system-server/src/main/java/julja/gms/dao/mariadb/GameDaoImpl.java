@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import julja.gms.dao.GameDao;
 import julja.gms.domain.Game;
-import julja.util.ConnectionFactory;
+import julja.sql.DataSource;
 
 public class GameDaoImpl implements GameDao {
 
-  ConnectionFactory conFactory;
+  DataSource conFactory;
 
-  public GameDaoImpl(ConnectionFactory conFactory) {
+  public GameDaoImpl(DataSource conFactory) {
     this.conFactory = conFactory;
   }
 

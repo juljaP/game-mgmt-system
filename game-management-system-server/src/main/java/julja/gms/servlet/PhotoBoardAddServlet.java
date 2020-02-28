@@ -10,8 +10,8 @@ import julja.gms.dao.PhotoFileDao;
 import julja.gms.domain.Game;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
+import julja.sql.DataSource;
 import julja.sql.PlatformTransactionManager;
-import julja.util.ConnectionFactory;
 import julja.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
@@ -19,11 +19,11 @@ public class PhotoBoardAddServlet implements Servlet {
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
   GameDao gameDao;
-  ConnectionFactory conFactory;
+  DataSource conFactory;
   PlatformTransactionManager txManager;
 
   public PhotoBoardAddServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao,
-      GameDao gameDao, ConnectionFactory conFactory, PlatformTransactionManager txManager) {
+      GameDao gameDao, DataSource conFactory, PlatformTransactionManager txManager) {
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
     this.gameDao = gameDao;

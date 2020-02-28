@@ -43,8 +43,8 @@ import julja.gms.servlet.UserListServlet;
 import julja.gms.servlet.UserSearchServlet;
 import julja.gms.servlet.UserUpdateServlet;
 import julja.sql.ConnectionProxy;
+import julja.sql.DataSource;
 import julja.sql.PlatformTransactionManager;
-import julja.util.ConnectionFactory;
 
 public class ServerApp {
 
@@ -78,7 +78,7 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    ConnectionFactory conFactory = (ConnectionFactory) context.get("connectionFactory");
+    DataSource dataSource = (DataSource) context.get("dataSource");
 
     GameDao gameDao = (GameDaoImpl) context.get("gameDao");
     UserDao userDao = (UserDaoImpl) context.get("userDao");
@@ -109,11 +109,11 @@ public class ServerApp {
     servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao));
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/add",
-        new PhotoBoardAddServlet(photoBoardDao, photoFileDao, gameDao, conFactory, txManager));
+        new PhotoBoardAddServlet(photoBoardDao, photoFileDao, gameDao, dataSource, txManager));
     servletMap.put("/photoboard/delete",
-        new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao, conFactory, txManager));
+        new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao, dataSource, txManager));
     servletMap.put("/photoboard/update",
-        new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao, conFactory, txManager));
+        new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao, dataSource, txManager));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
       System.out.println("클라이언트 연결 대기중...");
@@ -123,10 +123,10 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
-          ConnectionProxy con = (ConnectionProxy) conFactory.removeConnection();
+          ConnectionProxy con = (ConnectionProxy) dataSource.removeConnection();
           if (con != null) {
             try {
-              con.realClose();
+              dataSource.removeConnection();
             } catch (Exception e) {
             }
           }

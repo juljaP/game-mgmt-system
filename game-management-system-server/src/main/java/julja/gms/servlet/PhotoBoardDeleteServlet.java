@@ -4,22 +4,22 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
+import julja.sql.DataSource;
 import julja.sql.PlatformTransactionManager;
-import julja.util.ConnectionFactory;
 import julja.util.Prompt;
 
 public class PhotoBoardDeleteServlet implements Servlet {
 
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
-  ConnectionFactory conFactory;
+  DataSource dataSource;
   PlatformTransactionManager txManager;
 
   public PhotoBoardDeleteServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao,
-      ConnectionFactory conFactory, PlatformTransactionManager txManager) {
+      DataSource dataSource, PlatformTransactionManager txManager) {
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
-    this.conFactory = conFactory;
+    this.dataSource = dataSource;
     this.txManager = txManager;
   }
 

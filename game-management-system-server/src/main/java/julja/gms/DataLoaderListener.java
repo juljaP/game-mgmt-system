@@ -7,8 +7,8 @@ import julja.gms.dao.mariadb.GameDaoImpl;
 import julja.gms.dao.mariadb.PhotoBoardDaoImpl;
 import julja.gms.dao.mariadb.PhotoFileDaoImpl;
 import julja.gms.dao.mariadb.UserDaoImpl;
+import julja.sql.DataSource;
 import julja.sql.PlatformTransactionManager;
-import julja.util.ConnectionFactory;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -19,15 +19,15 @@ public class DataLoaderListener implements ApplicationContextListener {
       String jdbcUrl = "jdbc:mariadb://localhost:3306/gmsdb";
       String username = "study";
       String password = "1111";
-      ConnectionFactory conFactory = new ConnectionFactory(jdbcUrl, username, password);
-      PlatformTransactionManager txManager = new PlatformTransactionManager(conFactory);
+      DataSource dataSource = new DataSource(jdbcUrl, username, password);
+      PlatformTransactionManager txManager = new PlatformTransactionManager(dataSource);
 
-      context.put("gameDao", new GameDaoImpl(conFactory));
-      context.put("userDao", new UserDaoImpl(conFactory));
-      context.put("boardDao", new BoardDaoImpl(conFactory));
-      context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
-      context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
-      context.put("connectionFactory", conFactory);
+      context.put("gameDao", new GameDaoImpl(dataSource));
+      context.put("userDao", new UserDaoImpl(dataSource));
+      context.put("boardDao", new BoardDaoImpl(dataSource));
+      context.put("photoBoardDao", new PhotoBoardDaoImpl(dataSource));
+      context.put("photoFileDao", new PhotoFileDaoImpl(dataSource));
+      context.put("dataSource", dataSource);
       context.put("txManager", txManager);
 
       System.out.println("데이터를 불러왔습니다.");

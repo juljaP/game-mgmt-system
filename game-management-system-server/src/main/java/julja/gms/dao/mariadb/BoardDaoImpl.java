@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
-import julja.util.ConnectionFactory;
+import julja.sql.DataSource;
 
 public class BoardDaoImpl implements BoardDao {
 
-  ConnectionFactory conFactory;
+  DataSource conFactory;
 
-  public BoardDaoImpl(ConnectionFactory conFactory) {
+  public BoardDaoImpl(DataSource conFactory) {
     this.conFactory = conFactory;
   }
 

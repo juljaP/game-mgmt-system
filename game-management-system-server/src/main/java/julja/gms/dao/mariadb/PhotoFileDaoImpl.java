@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import julja.gms.dao.PhotoFileDao;
 import julja.gms.domain.PhotoFile;
-import julja.util.ConnectionFactory;
+import julja.sql.DataSource;
 
 public class PhotoFileDaoImpl implements PhotoFileDao {
 
-  ConnectionFactory conFactory;
+  DataSource conFactory;
 
-  public PhotoFileDaoImpl(ConnectionFactory conFactory) {
+  public PhotoFileDaoImpl(DataSource conFactory) {
     this.conFactory = conFactory;
   }
 

@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import julja.gms.dao.UserDao;
 import julja.gms.domain.User;
-import julja.util.ConnectionFactory;
+import julja.sql.DataSource;
 
 public class UserDaoImpl implements UserDao {
 
-  ConnectionFactory conFactory;
+  DataSource conFactory;
 
-  public UserDaoImpl(ConnectionFactory conFactory) {
+  public UserDaoImpl(DataSource conFactory) {
     this.conFactory = conFactory;
   }
 

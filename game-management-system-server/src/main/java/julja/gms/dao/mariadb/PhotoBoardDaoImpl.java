@@ -8,13 +8,13 @@ import java.util.List;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.domain.Game;
 import julja.gms.domain.PhotoBoard;
-import julja.util.ConnectionFactory;
+import julja.sql.DataSource;
 
 public class PhotoBoardDaoImpl implements PhotoBoardDao {
 
-  ConnectionFactory conFactory;
+  DataSource conFactory;
 
-  public PhotoBoardDaoImpl(ConnectionFactory conFactory) {
+  public PhotoBoardDaoImpl(DataSource conFactory) {
     this.conFactory = conFactory;
   }
 
