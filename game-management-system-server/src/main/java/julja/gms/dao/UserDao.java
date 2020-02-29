@@ -19,4 +19,8 @@ public interface UserDao {
     return null;
   }
 
+  default User findByEmailAndPassword(String email, String password) throws Exception {
+    return null;
+  }
+
 }

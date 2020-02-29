@@ -22,8 +22,9 @@ public class UserDaoImpl implements UserDao {
 
     try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
 
-      int result = stmt.executeUpdate("INSERT INTO gms_user(email, pw, name) VALUES('"
-          + user.getUserEmail() + "', '" + user.getUserPW() + "', '" + user.getUserName() + "')");
+      int result =
+          stmt.executeUpdate("INSERT INTO gms_user(email, pw, name) VALUES('" + user.getUserEmail()
+              + "', password('" + user.getUserPW() + "'), '" + user.getUserName() + "')");
 
       return result;
     }
@@ -99,9 +100,9 @@ public class UserDaoImpl implements UserDao {
 
     try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
 
-      int result = stmt.executeUpdate(
-          "UPDATE gms_user SET email='" + user.getUserEmail() + "', pw='" + user.getUserPW()
-              + "', name='" + user.getUserName() + "' WHERE user_id =" + user.getNo());
+      int result = stmt.executeUpdate("UPDATE gms_user SET email='" + user.getUserEmail()
+          + "', pw=password('" + user.getUserPW() + "'), name='" + user.getUserName()
+          + "' WHERE user_id =" + user.getNo());
 
       return result;
     }
@@ -115,6 +116,27 @@ public class UserDaoImpl implements UserDao {
       int result = stmt.executeUpdate("DELETE FROM gms_user WHERE user_id=" + no);
 
       return result;
+    }
+  }
+
+  @Override
+  public User findByEmailAndPassword(String email, String password) throws Exception {
+
+    try (Connection con = conFactory.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM gms_user WHERE email='" + email
+            + "' AND pw=password('" + password + "')")) {
+
+      User user = new User();
+      while (rs.next()) {
+        user.setNo(rs.getInt("user_id"));
+        user.setUserEmail(rs.getString("email"));
+        user.setUserPW(rs.getString("pw"));
+        user.setUserResisteredDate(rs.getDate("rdt"));
+        user.setUserName(rs.getString("name"));
+      }
+
+      return user;
     }
   }
 

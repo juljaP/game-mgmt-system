@@ -30,6 +30,7 @@ import julja.gms.servlet.GameDeleteServlet;
 import julja.gms.servlet.GameDetailServlet;
 import julja.gms.servlet.GameListServlet;
 import julja.gms.servlet.GameUpdateServlet;
+import julja.gms.servlet.LoginServlet;
 import julja.gms.servlet.PhotoBoardAddServlet;
 import julja.gms.servlet.PhotoBoardDeleteServlet;
 import julja.gms.servlet.PhotoBoardDetailServlet;
@@ -98,6 +99,8 @@ public class ServerApp {
     servletMap.put("/game/detail", new GameDetailServlet(gameDao));
     servletMap.put("/game/list", new GameListServlet(gameDao));
     servletMap.put("/game/update", new GameUpdateServlet(gameDao));
+
+    servletMap.put("/auth/login", new LoginServlet(userDao));
 
     servletMap.put("/user/add", new UserAddServlet(userDao));
     servletMap.put("/user/delete", new UserDeleteServlet(userDao));
