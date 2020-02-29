@@ -12,6 +12,7 @@ import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
 import julja.sql.DataSource;
 import julja.sql.PlatformTransactionManager;
+import julja.sql.TransactionTemplate;
 import julja.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
@@ -19,16 +20,16 @@ public class PhotoBoardAddServlet implements Servlet {
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
   GameDao gameDao;
-  DataSource conFactory;
-  PlatformTransactionManager txManager;
+  DataSource dataSource;
+  TransactionTemplate transactionTemplate;
 
   public PhotoBoardAddServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao,
-      GameDao gameDao, DataSource conFactory, PlatformTransactionManager txManager) {
+      GameDao gameDao, DataSource dataSource, PlatformTransactionManager txManager) {
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
     this.gameDao = gameDao;
-    this.conFactory = conFactory;
-    this.txManager = txManager;
+    this.dataSource = dataSource;
+    this.transactionTemplate = new TransactionTemplate(txManager);
   }
 
   @Override
@@ -47,9 +48,7 @@ public class PhotoBoardAddServlet implements Servlet {
 
     photoBoard.setGame(game);
 
-    txManager.beginTransaction();
-
-    try {
+    transactionTemplate.execute(() -> {
       if (photoBoardDao.insert(photoBoard) == 0) {
         throw new Exception("사진 게시글 등록에 실패했습니다.");
       }
@@ -60,13 +59,9 @@ public class PhotoBoardAddServlet implements Servlet {
         photoFile.setBoardNo(photoBoard.getNo());
         photoFileDao.insert(photoFile);
       }
-      txManager.commit();
       out.println("새 사진 게시글을 등록했습니다.");
-
-    } catch (Exception e) {
-      txManager.rollback();
-      out.println(e.getMessage());
-    }
+      return null;
+    });
   }
 
   private List<PhotoFile> uploadFiles(Scanner in, PrintStream out) {
