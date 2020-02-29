@@ -1,8 +1,8 @@
 package julja.gms.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import julja.gms.dao.BoardDao;
@@ -20,10 +20,12 @@ public class BoardDaoImpl implements BoardDao {
   @Override
   public int insert(Board board) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
-
-      int result = stmt.executeUpdate("INSERT INTO gms_board(titl, conts) VALUES ('"
-          + board.getBbsName() + "', '" + board.getBbsText() + "')");
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt =
+            con.prepareStatement("INSERT INTO gms_board(titl, conts) VALUES (?, ?)")) {
+      stmt.setString(1, board.getBbsName());
+      stmt.setString(2, board.getBbsText());
+      int result = stmt.executeUpdate();
 
       return result;
     }
@@ -34,8 +36,9 @@ public class BoardDaoImpl implements BoardDao {
 
 
     try (Connection con = conFactory.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT board_id, titl, cdt, hits FROM gms_board")) {
+        PreparedStatement stmt =
+            con.prepareStatement("SELECT board_id, titl, cdt, hits FROM gms_board");
+        ResultSet rs = stmt.executeQuery()) {
 
       ArrayList<Board> list = new ArrayList<>();
 
@@ -55,8 +58,9 @@ public class BoardDaoImpl implements BoardDao {
   public Board findByNo(int no) throws Exception {
 
     try (Connection con = conFactory.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM gms_board WHERE board_id=" + no)) {
+        PreparedStatement stmt = con.prepareStatement("SELECT * FROM gms_board WHERE board_id=?")) {
+      stmt.setInt(1, no);
+      ResultSet rs = stmt.executeQuery();
 
       if (rs.next()) {
         Board board = new Board();
@@ -75,10 +79,14 @@ public class BoardDaoImpl implements BoardDao {
   @Override
   public int update(Board board) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt =
+            con.prepareStatement("UPDATE gms_board SET titl=?, conts=? WHERE board_id=?")) {
 
-      int result = stmt.executeUpdate("UPDATE gms_board SET titl='" + board.getBbsName()
-          + "', conts='" + board.getBbsText() + "' WHERE board_id=" + board.getNo());
+      stmt.setString(1, board.getBbsName());
+      stmt.setString(2, board.getBbsText());
+      stmt.setInt(3, board.getNo());
+      int result = stmt.executeUpdate();
 
       return result;
     }
@@ -87,9 +95,11 @@ public class BoardDaoImpl implements BoardDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt = con.prepareStatement("DELETE FROM gms_board WHERE board_id=?")) {
+      stmt.setInt(1, no);
 
-      int result = stmt.executeUpdate("DELETE FROM gms_board WHERE board_id=" + no);
+      int result = stmt.executeUpdate();
 
       return result;
     }

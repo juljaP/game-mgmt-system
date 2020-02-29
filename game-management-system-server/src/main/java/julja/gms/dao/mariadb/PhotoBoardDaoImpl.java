@@ -1,8 +1,8 @@
 package julja.gms.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import julja.gms.dao.PhotoBoardDao;
@@ -21,11 +21,14 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int insert(PhotoBoard photoBoard) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt =
+            con.prepareStatement("INSERT INTO gms_photo(titl, game_id) VALUES (?, ?)",
+                PreparedStatement.RETURN_GENERATED_KEYS)) {
+      stmt.setString(1, photoBoard.getTitle());
+      stmt.setInt(2, photoBoard.getGame().getNo());
 
-      int result = stmt.executeUpdate("INSERT INTO gms_photo(titl, game_id) VALUES ('"
-          + photoBoard.getTitle() + "', '" + photoBoard.getGame().getNo() + "')",
-          Statement.RETURN_GENERATED_KEYS);
+      int result = stmt.executeUpdate();
 
       try (ResultSet generatedKeySet = stmt.getGeneratedKeys()) {
         generatedKeySet.next();
@@ -40,8 +43,10 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   public List<PhotoBoard> findAllByNo(int no) throws Exception {
 
     try (Connection con = conFactory.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM gms_photo WHERE game_id=" + no)) {
+        PreparedStatement stmt = con.prepareStatement("SELECT * FROM gms_photo WHERE game_id=?")) {
+
+      stmt.setInt(1, no);
+      ResultSet rs = stmt.executeQuery();
 
       ArrayList<PhotoBoard> list = new ArrayList<>();
 
@@ -63,11 +68,11 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   public PhotoBoard findByNo(int no) throws Exception {
 
     try (Connection con = conFactory.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs =
-            stmt.executeQuery("SELECT p.photo_id, p.titl, p.cdt, p.hits, g.game_id, g.titl"
-                + " FROM gms_photo p JOIN gms_game g ON p.game_id = g.game_id"
-                + " WHERE p.photo_id=" + no)) {
+        PreparedStatement stmt = con.prepareStatement(
+            "SELECT p.photo_id, p.titl, p.cdt, p.hits, g.game_id, g.titl FROM gms_photo p JOIN gms_game g ON p.game_id = g.game_id WHERE p.photo_id=?")) {
+
+      stmt.setInt(1, no);
+      ResultSet rs = stmt.executeQuery();
 
       Game game = new Game();
 
@@ -91,11 +96,10 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   public PhotoBoard findByGameNo(int no) throws Exception {
 
     try (Connection con = conFactory.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs =
-            stmt.executeQuery("SELECT p.photo_id, p.titl, p.cdt, p.hits, g.game_id, g.titl"
-                + " FROM gms_photo p JOIN gms_game g ON p.game_id = g.game_id WHERE p.game_id="
-                + no)) {
+        PreparedStatement stmt = con.prepareStatement(
+            "SELECT p.photo_id, p.titl, p.cdt, p.hits, g.game_id, g.titl FROM gms_photo p JOIN gms_game g ON p.game_id = g.game_id WHERE p.game_id=?")) {
+      stmt.setInt(1, no);
+      ResultSet rs = stmt.executeQuery();
 
       Game game = new Game();
 
@@ -118,10 +122,12 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int update(PhotoBoard photoBoard) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
-
-      int result = stmt.executeUpdate("UPDATE gms_photo SET titl='" + photoBoard.getTitle()
-          + "' WHERE photo_id=" + photoBoard.getNo());
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt =
+            con.prepareStatement("UPDATE gms_photo SET titl=? WHERE photo_id=?")) {
+      stmt.setString(1, photoBoard.getTitle());
+      stmt.setInt(2, photoBoard.getNo());
+      int result = stmt.executeUpdate();
 
       return result;
     }
@@ -130,9 +136,10 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
-
-      int result = stmt.executeUpdate("DELETE FROM gms_photo WHERE photo_id=" + no);
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt = con.prepareStatement("DELETE FROM gms_photo WHERE photo_id=?")) {
+      stmt.setInt(1, no);
+      int result = stmt.executeUpdate();
 
       return result;
     }

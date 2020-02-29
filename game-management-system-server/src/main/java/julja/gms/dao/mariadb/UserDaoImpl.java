@@ -1,8 +1,8 @@
 package julja.gms.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import julja.gms.dao.UserDao;
@@ -20,11 +20,13 @@ public class UserDaoImpl implements UserDao {
   @Override
   public int insert(User user) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
-
-      int result =
-          stmt.executeUpdate("INSERT INTO gms_user(email, pw, name) VALUES('" + user.getUserEmail()
-              + "', password('" + user.getUserPW() + "'), '" + user.getUserName() + "')");
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt = con
+            .prepareStatement("INSERT INTO gms_user(email, pw, name) VALUES(?, password(?), ?)")) {
+      stmt.setString(1, user.getUserEmail());
+      stmt.setString(2, user.getUserPW());
+      stmt.setString(3, user.getUserName());
+      int result = stmt.executeUpdate();
 
       return result;
     }
@@ -34,8 +36,9 @@ public class UserDaoImpl implements UserDao {
   public List<User> findAll() throws Exception {
 
     try (Connection con = conFactory.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT user_id, email, name, rdt FROM gms_user")) {
+        PreparedStatement stmt =
+            con.prepareStatement("SELECT user_id, email, name, rdt FROM gms_user")) {
+      ResultSet rs = stmt.executeQuery();
 
       ArrayList<User> list = new ArrayList<>();
 
@@ -56,8 +59,9 @@ public class UserDaoImpl implements UserDao {
   public User findByNo(int no) throws Exception {
 
     try (Connection con = conFactory.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM gms_user WHERE user_id=" + no)) {
+        PreparedStatement stmt = con.prepareStatement("SELECT * FROM gms_user WHERE user_id=?")) {
+      stmt.setInt(1, no);
+      ResultSet rs = stmt.executeQuery();
 
       User user = new User();
       while (rs.next()) {
@@ -75,10 +79,12 @@ public class UserDaoImpl implements UserDao {
   @Override
   public List<User> findByKeyword(String keyword) throws Exception {
     try (Connection con = conFactory.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery(
-            "SELECT user_id, email, name, rdt FROM gms_user WHERE user_id LIKE '%" + keyword
-                + "%' OR email LIKE '%" + keyword + "%' OR name LIKE '%" + keyword + "%'")) {
+        PreparedStatement stmt = con.prepareStatement(
+            "SELECT user_id, email, name, rdt FROM gms_user WHERE user_id LIKE ? OR email LIKE ? OR name LIKE ?")) {
+      stmt.setString(1, "%" + keyword + "%");
+      stmt.setString(2, "%" + keyword + "%");
+      stmt.setString(3, "%" + keyword + "%");
+      ResultSet rs = stmt.executeQuery();
 
       ArrayList<User> list = new ArrayList<>();
 
@@ -98,11 +104,15 @@ public class UserDaoImpl implements UserDao {
   @Override
   public int update(User user) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt = con.prepareStatement(
+            "UPDATE gms_user SET email=?, pw=password(?), name=? WHERE user_id=?")) {
+      stmt.setString(1, user.getUserEmail());
+      stmt.setString(2, user.getUserPW());
+      stmt.setString(3, user.getUserName());
+      stmt.setInt(4, user.getNo());
 
-      int result = stmt.executeUpdate("UPDATE gms_user SET email='" + user.getUserEmail()
-          + "', pw=password('" + user.getUserPW() + "'), name='" + user.getUserName()
-          + "' WHERE user_id =" + user.getNo());
+      int result = stmt.executeUpdate();
 
       return result;
     }
@@ -111,9 +121,10 @@ public class UserDaoImpl implements UserDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
-
-      int result = stmt.executeUpdate("DELETE FROM gms_user WHERE user_id=" + no);
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt = con.prepareStatement("DELETE FROM gms_user WHERE user_id=?")) {
+      stmt.setInt(1, no);
+      int result = stmt.executeUpdate();
 
       return result;
     }
@@ -123,9 +134,11 @@ public class UserDaoImpl implements UserDao {
   public User findByEmailAndPassword(String email, String password) throws Exception {
 
     try (Connection con = conFactory.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM gms_user WHERE email='" + email
-            + "' AND pw=password('" + password + "')")) {
+        PreparedStatement stmt =
+            con.prepareStatement("SELECT * FROM gms_user WHERE email=? AND pw=password(?)")) {
+      stmt.setString(1, email);
+      stmt.setString(2, password);
+      ResultSet rs = stmt.executeQuery();
 
       User user = new User();
       while (rs.next()) {

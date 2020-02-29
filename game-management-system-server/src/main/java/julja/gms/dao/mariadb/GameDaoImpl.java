@@ -1,8 +1,8 @@
 package julja.gms.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import julja.gms.dao.GameDao;
@@ -20,14 +20,19 @@ public class GameDaoImpl implements GameDao {
   @Override
   public int insert(Game game) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt = con.prepareStatement(
+            "INSERT INTO gms_game(titl, rdt, pdt, pf, genre, photo, illust, vo) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")) {
 
-      int result = stmt.executeUpdate(
-          "INSERT INTO gms_game(titl, rdt, pdt, pf, genre, photo, illust, vo) VALUES('"
-              + game.getGameName() + "', '" + game.getGameDate() + "', '" + game.getGameProduction()
-              + "', '" + game.getGamePlatform() + "', '" + game.getGameGenre() + "', '"
-              + game.getPhoto() + "', '" + game.getGameIllust() + "', '" + game.getGameVoice()
-              + "')");
+      stmt.setString(1, game.getGameName());
+      stmt.setDate(2, game.getGameDate());
+      stmt.setString(3, game.getGameProduction());
+      stmt.setString(4, game.getGamePlatform());
+      stmt.setString(5, game.getGameGenre());
+      stmt.setString(6, game.getPhoto());
+      stmt.setString(7, game.getGameIllust());
+      stmt.setString(8, game.getGameVoice());
+      int result = stmt.executeUpdate();
 
       return result;
     }
@@ -37,9 +42,9 @@ public class GameDaoImpl implements GameDao {
   public List<Game> findAll() throws Exception {
 
     try (Connection con = conFactory.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT game_id, titl, rdt, pf, genre FROM gms_game")) {
-
+        PreparedStatement stmt =
+            con.prepareStatement("SELECT game_id, titl, rdt, pf, genre FROM gms_game")) {
+      ResultSet rs = stmt.executeQuery();
       ArrayList<Game> list = new ArrayList<>();
 
       while (rs.next()) {
@@ -60,8 +65,10 @@ public class GameDaoImpl implements GameDao {
   public Game findByNo(int no) throws Exception {
 
     try (Connection con = conFactory.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM gms_game WHERE game_id=" + no)) {
+        PreparedStatement stmt = con.prepareStatement("SELECT * FROM gms_game WHERE game_id=?")) {
+
+      stmt.setInt(1, no);
+      ResultSet rs = stmt.executeQuery();
 
       Game game = new Game();
       while (rs.next()) {
@@ -83,14 +90,20 @@ public class GameDaoImpl implements GameDao {
   @Override
   public int update(Game game) throws Exception {
 
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt = con.prepareStatement(
+            "UPDATE gms_game SET titl=?, pdt=?, rdt=?, pf=?, genre=?, illust=?, vo=?, photo=? WHRER game_id=?")) {
+      stmt.setString(1, game.getGameName());
+      stmt.setString(2, game.getGameProduction());
+      stmt.setDate(3, game.getGameDate());
+      stmt.setString(4, game.getGamePlatform());
+      stmt.setString(5, game.getGameGenre());
+      stmt.setString(6, game.getGameIllust());
+      stmt.setString(7, game.getGameVoice());
+      stmt.setString(8, game.getPhoto());
+      stmt.setInt(9, game.getNo());
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
-
-      int result = stmt.executeUpdate("UPDATE gms_game SET titl='" + game.getGameName() + "', pdt='"
-          + game.getGameProduction() + "', rdt='" + game.getGameDate() + "', pf='"
-          + game.getGamePlatform() + "', genre='" + game.getGameGenre() + "', illust='"
-          + game.getGameIllust() + "', vo='" + game.getGameVoice() + "', photo='" + game.getPhoto()
-          + "' WHERE game_id=" + game.getNo());
+      int result = stmt.executeUpdate();
 
       return result;
     }
@@ -98,11 +111,11 @@ public class GameDaoImpl implements GameDao {
 
   @Override
   public int delete(int no) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt = con.prepareStatement("DELETE FROM gms_game WHERE game_id=?")) {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
-
-      int result = stmt.executeUpdate("DELETE FROM gms_game WHERE game_id=" + no);
+      stmt.setInt(1, no);
+      int result = stmt.executeUpdate();
 
       return result;
     }

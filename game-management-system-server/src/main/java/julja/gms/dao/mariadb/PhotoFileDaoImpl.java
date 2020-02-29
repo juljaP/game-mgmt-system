@@ -1,8 +1,8 @@
 package julja.gms.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import julja.gms.dao.PhotoFileDao;
@@ -19,10 +19,12 @@ public class PhotoFileDaoImpl implements PhotoFileDao {
 
   @Override
   public int insert(PhotoFile photoFile) throws Exception {
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
-
-      int result = stmt.executeUpdate("INSERT INTO gms_photo_file(photo_id, file_path) VALUES ("
-          + photoFile.getBoardNo() + ", '" + photoFile.getFilepath() + "')");
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt =
+            con.prepareStatement("INSERT INTO gms_photo_file(photo_id, file_path) VALUES (?, ?)")) {
+      stmt.setInt(1, photoFile.getBoardNo());
+      stmt.setString(2, photoFile.getFilepath());
+      int result = stmt.executeUpdate();
 
       return result;
     }
@@ -31,9 +33,11 @@ public class PhotoFileDaoImpl implements PhotoFileDao {
   @Override
   public List<PhotoFile> findAll(int boardNo) throws Exception {
     try (Connection con = conFactory.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs =
-            stmt.executeQuery("SELECT * FROM gms_photo_file WHERE photo_id=" + boardNo)) {
+        PreparedStatement stmt =
+            con.prepareStatement("SELECT * FROM gms_photo_file WHERE photo_id=?")) {
+
+      stmt.setInt(1, boardNo);
+      ResultSet rs = stmt.executeQuery();
 
       ArrayList<PhotoFile> list = new ArrayList<>();
 
@@ -50,9 +54,11 @@ public class PhotoFileDaoImpl implements PhotoFileDao {
 
   @Override
   public int deleteAll(int boardNo) throws Exception {
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
-
-      int result = stmt.executeUpdate("DELETE FROM gms_photo_file WHERE photo_id=" + boardNo);
+    try (Connection con = conFactory.getConnection();
+        PreparedStatement stmt =
+            con.prepareStatement("DELETE FROM gms_photo_file WHERE photo_id=?")) {
+      stmt.setInt(1, boardNo);
+      int result = stmt.executeUpdate();
 
       return result;
     }
