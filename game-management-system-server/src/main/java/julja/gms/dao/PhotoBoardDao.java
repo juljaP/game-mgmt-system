@@ -9,8 +9,6 @@ public interface PhotoBoardDao {
 
   List<PhotoBoard> findAllByNo(int no) throws Exception;
 
-  PhotoBoard findByGameNo(int no) throws Exception;
-
   PhotoBoard findByNo(int no) throws Exception;
 
   int update(PhotoBoard photoBoard) throws Exception;

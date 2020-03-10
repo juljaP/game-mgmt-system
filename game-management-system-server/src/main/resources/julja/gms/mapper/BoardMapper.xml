@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="BoardMapper">
+
+  <resultMap type="Board" id="BoardMap">
+    <id column="board_id" property="no"/>
+    <result column="titl" property="bbsName"/>
+    <result column="conts" property="bbsText"/>
+    <result column="cdt" property="today"/>
+    <result column="hits" property="bbsHits"/>
+  </resultMap>
+  
+  <select id="selectAll" resultMap="BoardMap">
+    SELECT board_id, titl, cdt, hits 
+    FROM gms_board
+  </select>
+  
+  <insert id="insertBoard" parameterType="Board">
+    INSERT INTO gms_board(titl, conts) 
+    VALUES (#{bbsName}, #{bbsText})
+  </insert>
+  
+  <select id="selectDetail" resultMap="BoardMap" parameterType="int">
+    SELECT * 
+    FROM gms_board 
+    WHERE board_id=#{no}
+  </select>
+  
+  <update id="updateBoard" parameterType="Board">
+    UPDATE gms_board 
+    SET 
+      titl=#{bbsName}, 
+      conts=#{bbsText} 
+    WHERE board_id=#{no}
+  </update>
+  
+  <delete id="deleteBoard" parameterType="int">
+    DELETE FROM gms_board 
+    WHERE board_id=#{no}
+  </delete>
+  
+</mapper>

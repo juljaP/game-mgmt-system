@@ -1,7 +1,6 @@
 package julja.gms.servlet;
 
 import java.io.PrintStream;
-import java.util.List;
 import java.util.Scanner;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
@@ -31,16 +30,12 @@ public class PhotoBoardDetailServlet implements Servlet {
       out.println("조회수 : " + photoBoard.getHits());
       out.println("게임명 : " + photoBoard.getGame().getGameName());
 
-      out.println("사진 파일 : ");
-      List<PhotoFile> photoFiles = photoFileDao.findAll(no);
 
-      for (PhotoFile photoFile : photoFiles) {
+      out.println("사진 파일 : ");
+      for (PhotoFile photoFile : photoBoard.getFiles()) {
         out.printf(">%s\n", photoFile.getFilepath());
         out.flush();
       }
-    } else {
-      out.println("해당 번호의 사진 게시글이 없습니다.");
     }
   }
-
 }

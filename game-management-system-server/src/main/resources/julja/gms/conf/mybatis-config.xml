@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+  <properties resource="julja/gms/conf/jdbc.properties"></properties>
+
+  <typeAliases>
+    <typeAlias type="julja.gms.domain.Board" alias="Board"/>
+    <typeAlias type="julja.gms.domain.Game" alias="Game"/>
+    <typeAlias type="julja.gms.domain.PhotoBoard" alias="PhotoBoard"/>
+    <typeAlias type="julja.gms.domain.PhotoFile" alias="PhotoFile"/>
+    <typeAlias type="julja.gms.domain.User" alias="User"/>
+  </typeAliases>
+
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+  
+  <mappers>
+    <mapper resource="julja/gms/mapper/BoardMapper.xml"/>
+    <mapper resource="julja/gms/mapper/GameMapper.xml"/>
+    <mapper resource="julja/gms/mapper/PhotoBoardMapper.xml"/>
+    <mapper resource="julja/gms/mapper/PhotoFileMapper.xml"/>
+    <mapper resource="julja/gms/mapper/UserMapper.xml"/>
+  </mappers>
+</configuration>

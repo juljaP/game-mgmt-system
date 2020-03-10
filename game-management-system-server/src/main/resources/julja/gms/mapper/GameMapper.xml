@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="GameMapper">
+
+  <resultMap type="Game" id="GameMap">
+    <id column="game_id" property="no"/>
+    <result column="titl" property="gameName"/>
+    <result column="rdt" property="gameDate"/>
+    <result column="pdt" property="gameProduction"/>
+    <result column="pf" property="gamePlatform"/>
+    <result column="genre" property="gameGenre"/>
+    <result column="photo" property="photo"/>
+    <result column="illust" property="gameIllust"/>
+    <result column="vo" property="gameVoice"/>
+  </resultMap>
+  
+  <insert id="insertGame" parameterType="Game">
+    INSERT INTO gms_game(titl, rdt, pdt, pf, genre, photo, illust, vo) 
+    VALUES(
+      #{gameName}, 
+      #{gameDate}, 
+      #{gameProduction}, 
+      #{gamePlatform}, 
+      #{gameGenre}, 
+      #{photo}, 
+      #{gameIllust}, 
+      #{gameVoice})
+  </insert>
+  
+  <select id="selectAll" resultMap="GameMap">
+    SELECT game_id, titl, rdt, pf, genre 
+    FROM gms_game
+  </select>
+  
+  <select id="selectDetail" resultMap="GameMap" parameterType="int">
+    SELECT * 
+    FROM gms_game 
+    WHERE game_id=#{no}
+  </select>
+  
+  <update id="updateGame" parameterType="Game">
+    UPDATE gms_game 
+    SET 
+      titl=#{gameName}, 
+      pdt=#{gameProduction}, 
+      rdt=#{gameDate}, 
+      pf=#{gamePlatform}, 
+      genre=#{gameGenre}, 
+      illust=#{gameIllust}, 
+      vo=#{gameVoice}, 
+      photo=#{photo} 
+    WHERE game_id=#{no}
+  </update>
+  
+  <delete id="deleteGame" parameterType="int">
+    DELETE FROM gms_game 
+    WHERE game_id=#{no}
+  </delete>
+  
+</mapper>

@@ -108,14 +108,14 @@ public class ServerApp {
     servletMap.put("/user/list", new UserListServlet(userDao));
     servletMap.put("/user/update", new UserUpdateServlet(userDao));
     servletMap.put("/user/search", new UserSearchServlet(userDao));
-
-    servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao));
+    // delete
+    servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao, gameDao));
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/add",
         new PhotoBoardAddServlet(photoBoardDao, photoFileDao, gameDao, dataSource, txManager));
     servletMap.put("/photoboard/delete",
-        new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao, dataSource, txManager));
-    servletMap.put("/photoboard/update",
+        new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao, txManager));
+    servletMap.put("/photoboard/update", //
         new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao, dataSource, txManager));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {

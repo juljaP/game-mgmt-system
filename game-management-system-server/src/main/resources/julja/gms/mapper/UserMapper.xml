@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="UserMapper">
+
+  <resultMap type="User" id="UserMap">
+    <id column="user_id" property="no"/>
+    <result column="email" property="userEmail"/>
+    <result column="pw" property="userPW"/>
+    <result column="name" property="userName"/>
+    <result column="rdt" property="userResisteredDate"/>
+  </resultMap>
+  
+  <insert id="insertUser" parameterType="User">
+    INSERT INTO gms_user(email, pw, name) 
+    VALUES(#{userEmail}, password(#{userPW}), #{userName})
+  </insert>
+  
+  <select id="selectAll" resultMap="UserMap">
+    SELECT user_id, email, name, rdt 
+    FROM gms_user
+  </select>
+  
+  <select id="selectDetail" resultMap="UserMap">
+    SELECT * 
+    FROM gms_user 
+    WHERE user_id=#{no}
+  </select>
+  
+  <select id="selectByKeyword" resultMap="UserMap">
+    SELECT user_id, email, name, rdt 
+    FROM gms_user 
+    WHERE user_id LIKE #{key} OR email LIKE #{key} OR name LIKE #{key}
+  </select>
+  
+  <update id="updateUser" parameterType="User">
+    UPDATE gms_user 
+    SET 
+      email=#{userEmail}, 
+      pw=password(#{userPW}), 
+      name=#{userName} 
+    WHERE user_id=#{no}
+  </update>
+  
+  <delete id="deleteUser" parameterType="int">
+    DELETE FROM gms_user 
+    WHERE user_id=#{no}
+  </delete>
+  
+  <select id="login" resultMap="UserMap" parameterType="map">
+    SELECT * FROM gms_user 
+    WHERE email=#{email} AND pw=password(#{password})
+  </select>
+
+</mapper>

@@ -2,6 +2,7 @@ package julja.gms.domain;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 
 public class PhotoBoard implements Serializable {
 
@@ -10,7 +11,17 @@ public class PhotoBoard implements Serializable {
   int no, hits;
   String title;
   Date creadtedDate;
+  List<PhotoFile> files;
   Game game;
+
+
+  public List<PhotoFile> getFiles() {
+    return files;
+  }
+
+  public void setFiles(List<PhotoFile> files) {
+    this.files = files;
+  }
 
   public int getNo() {
     return no;
