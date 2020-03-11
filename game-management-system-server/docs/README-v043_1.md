@@ -1,6 +1,4 @@
-# 43_1 - MyBatis SQL 맵퍼 프레임워크 사용하여 JDBC 코드 대체하기
-
-## 학습목표
+# 43_1 - MyBatis SQL 맵퍼 프레임워크 사용하여 JDBC 코드 대체
 
 - Mybatis SQL 맵퍼의 특징과 동작 원리 이해
 - Mybatis 퍼시스턴스 프레임워크 설정하고 사용
@@ -10,8 +8,8 @@
 - build.gradle 변경
 - src/main/java/julja/gms/domain/PhotoBoard.java 변경
 - src/main/java/julja/gms/dao/mariadb/BoardDaoImpl.java 변경
-- src/main/java/julja/gms/dao/mariadb/LessonDaoImpl.java 변경
-- src/main/java/julja/gms/dao/mariadb/MemberDaoImpl.java 변경
+- src/main/java/julja/gms/dao/mariadb/GameDaoImpl.java 변경
+- src/main/java/julja/gms/dao/mariadb/UserDaoImpl.java 변경
 - src/main/java/julja/gms/dao/mariadb/PhotoBoardDaoImpl.java 변경
 - src/main/java/julja/gms/dao/mariadb/PhotoFileDaoImpl.java 변경
 - src/main/java/julja/gms/servlet/PhotoBoardDetailServlet.java 변경
@@ -20,8 +18,8 @@
 - src/main/resources/julja/gms/conf/mybatis-config.xml 추가
 - src/main/resources/julja/gms/conf/jdbc.properties 추가
 - src/main/resources/julja/gms/mapper/BoardMapper.xml 추가
-- src/main/resources/julja/gms/mapper/LessonMapper.xml 추가
-- src/main/resources/julja/gms/mapper/MemberMapper.xml 추가
+- src/main/resources/julja/gms/mapper/GameMapper.xml 추가
+- src/main/resources/julja/gms/mapper/UserMapper.xml 추가
 - src/main/resources/julja/gms/mapper/PhotoBoardMapper.xml 추가
 - src/main/resources/julja/gms/mapper/PhotoFileMapper.xml 추가
 
@@ -56,31 +54,31 @@
   - SqlSessionFactory 객체 준비
   - BoardDaoImpl 에 주입
 
-### 4: MemberDaoImpl 에 Mybatis 적용
+### 4: UserDaoImpl 에 Mybatis 적용
 
-- julja.gms.dao.mariadb.MemberDaoImpl 클래스 변경
-  - SQL 뜯어내어 MemberMapper.xml로 옮기기
+- julja.gms.dao.mariadb.UserDaoImpl 클래스 변경
+  - SQL 뜯어내어 UserMapper.xml로 옮기기
   - JDBC 코드 뜯어내고 그 자리에 Mybatis 클래스로 대체
-- julja/gms/mapper/MemberMapper.xml 추가
-  - MemberDaoImpl 에 있던 SQL문 이 파일로 옮기기
+- julja/gms/mapper/UserMapper.xml 추가
+  - UserDaoImpl 에 있던 SQL문 이 파일로 옮기기
 - julja/gms/conf/mybatis-config.xml 변경 
-  - MemberMapper 파일의 경로 등록
+  - UserMapper 파일의 경로 등록
 - julja.gms.DataLoaderListener 변경
   - SqlSessionFactory 객체 준비
-  - MemberDaoImpl 에 주입
+  - UserDaoImpl 에 주입
 
-### 5: LessonDaoImpl 에 Mybatis 적용
+### 5: GameDaoImpl 에 Mybatis 적용
 
-- julja.gms.dao.mariadb.LessonDaoImpl 클래스 변경
-  - SQL 뜯어내어 LessonMapper.xml로 옮기기
+- julja.gms.dao.mariadb.GameDaoImpl 클래스 변경
+  - SQL 뜯어내어 GameMapper.xml로 옮기기
   - JDBC 코드 뜯어내고 그 자리에 Mybatis 클래스로 대체
-- julja/gms/mapper/LessonMapper.xml 추가
-  - LessonDaoImpl 에 있던 SQL문 이 파일로 옮기기
+- julja/gms/mapper/GameMapper.xml 추가
+  - GameDaoImpl 에 있던 SQL문 이 파일로 옮기기
 - julja/gms/conf/mybatis-config.xml 변경 
-  - LessonMapper 파일의 경로 등록
+  - GameMapper 파일의 경로 등록
 - julja.gms.DataLoaderListener 변경
   - SqlSessionFactory 객체 준비
-  - LessonDaoImpl 에 주입
+  - GameDaoImpl 에 주입
 
 ### 6: PhotoBoardDaoImpl 에 Mybatis 적용
 
