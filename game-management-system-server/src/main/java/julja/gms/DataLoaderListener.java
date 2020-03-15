@@ -7,12 +7,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import com.eomcs.sql.MybatisDaoFactory;
 import julja.gms.context.ApplicationContextListener;
-import julja.gms.dao.BoardDao;
 import julja.gms.dao.GameDao;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
 import julja.gms.dao.UserDao;
-import julja.gms.service.impl.BoardServiceImpl;
+import julja.gms.service.impl.BoardServiceImpl2;
 import julja.gms.service.impl.GameServiceImpl;
 import julja.gms.service.impl.PhotoBoardServiceImpl;
 import julja.gms.service.impl.UserServiceImpl;
@@ -34,7 +33,7 @@ public class DataLoaderListener implements ApplicationContextListener {
 
       GameDao gameDao = daoFactory.createDao(GameDao.class);
       UserDao userDao = daoFactory.createDao(UserDao.class);
-      BoardDao boardDao = daoFactory.createDao(BoardDao.class);
+      // BoardDao boardDao = daoFactory.createDao(BoardDao.class);
       PhotoBoardDao photoBoardDao = daoFactory.createDao(PhotoBoardDao.class);
       PhotoFileDao photoFileDao = daoFactory.createDao(PhotoFileDao.class);
 
@@ -46,7 +45,7 @@ public class DataLoaderListener implements ApplicationContextListener {
       context.put("gameService", new GameServiceImpl(gameDao));
       context.put("photoBoardService",
           new PhotoBoardServiceImpl(photoBoardDao, photoFileDao, txManager));
-      context.put("boardService", new BoardServiceImpl(boardDao));
+      context.put("boardService", new BoardServiceImpl2(sqlSessionFactory));
       context.put("userService", new UserServiceImpl(userDao));
 
       System.out.println("데이터를 불러왔습니다.");

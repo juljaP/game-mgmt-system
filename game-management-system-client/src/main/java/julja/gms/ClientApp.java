@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import julja.util.Prompt;
 
 public class ClientApp {
@@ -53,27 +55,34 @@ public class ClientApp {
     sc.close();
   }
 
+  @SuppressWarnings("unused")
   private void processCommand(String command) {
     String host = null;
+    String protocol = null;
     int port = 9999;
     String servletPath = null;
 
     // ex) https://localhost:9999/photoboard
+    Pattern[] pattern = new Pattern[2];
+    pattern[0] = Pattern.compile("^([a-zA-Z]*)://([\\w\\d.]*):([0-9]{0,5})(.*)$");
+    pattern[1] = Pattern.compile("^([a-zA-Z]*)://([\\w\\d.]*)(.*)$");
     try {
-      if (!command.startsWith("https://")) {
-        throw new Exception("명령어 형식이 옳지 않습니다.");
+      Matcher matcher = null;
+      for (Pattern p : pattern) {
+        matcher = p.matcher(command);
+        if (matcher.find())
+          break;
+      }
+      protocol = matcher.group(1);
+      host = matcher.group(2);
+
+      if (matcher.groupCount() == 3) {
+        servletPath = matcher.group(3);
+      } else {
+        port = Integer.parseInt(matcher.group(3));
+        servletPath = matcher.group(4);
       }
 
-      String url = command.substring(8);
-
-      int index = url.indexOf('/');
-      String[] str = url.substring(0, index).split(":");
-      host = str[0];
-
-      if (str.length == 2) {
-        port = Integer.parseInt(str[1]);
-      }
-      servletPath = url.substring(index);
     } catch (Exception e) {
       System.out.println(e.getMessage());
       return;
