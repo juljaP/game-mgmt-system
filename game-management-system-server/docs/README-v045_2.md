@@ -5,15 +5,15 @@
 
 ## 소스 및 결과
 
-- src/main/java/com/eomcs/lms/service/impl/BoardServiceImpl2.java 추가
-- src/main/java/com/eomcs/lms/DataLoaderListener.java 변경
+- src/main/java/julja/gms/service/impl/BoardServiceImpl2.java 추가
+- src/main/java/julja/gms/DataLoaderListener.java 변경
 
 
 ### 1: BoardServiceImpl 에 대해서 Mybatis DAO 자동 생성기 적용
 
-- com.eomcs.lms.service.impl.BoardServiceImpl2 추가
+- julja.gms.service.impl.BoardServiceImpl2 추가
   - BoardDao 구현체를 직접 주입하는 대신에 SqlSessionFactory 주입
   - BoardDao를 사용할 때 마다 SqlSession 객체를 통해 만들어 쓴다. 
   
-- com.eomcs.lms.DataLoaderListener 변경
+- julja.gms.DataLoaderListener 변경
   - BoardService 구현체를 BoardServiceImpl2로 교체
