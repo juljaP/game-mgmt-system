@@ -4,25 +4,17 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import julja.gms.dao.PhotoBoardDao;
-import julja.gms.dao.PhotoFileDao;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
-import julja.sql.PlatformTransactionManager;
-import julja.sql.TransactionTemplate;
+import julja.gms.service.PhotoBoardService;
 import julja.util.Prompt;
 
 public class PhotoBoardUpdateServlet implements Servlet {
 
-  PhotoBoardDao photoBoardDao;
-  PhotoFileDao photoFileDao;
-  TransactionTemplate transactionTemplate;
+  PhotoBoardService photoBoardService;
 
-  public PhotoBoardUpdateServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao,
-      PlatformTransactionManager txManager) {
-    this.photoBoardDao = photoBoardDao;
-    this.photoFileDao = photoFileDao;
-    this.transactionTemplate = new TransactionTemplate(txManager);
+  public PhotoBoardUpdateServlet(PhotoBoardService photoBoardService) {
+    this.photoBoardService = photoBoardService;
   }
 
   @Override
@@ -30,7 +22,7 @@ public class PhotoBoardUpdateServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    PhotoBoard old = photoBoardDao.findByNo(no);
+    PhotoBoard old = photoBoardService.findByNo(no);
 
     if (old == null) {
       out.println("해당 번호의 사진 게시글이 없습니다.");
@@ -42,7 +34,7 @@ public class PhotoBoardUpdateServlet implements Servlet {
     photoBoard.setTitle(
         Prompt.getString(in, out, String.format("제목(%s) : ", old.getTitle()), old.getTitle()));
 
-    printFiles(out, no);
+    printFiles(out, old);
     out.println("사진은 일부만 변경할 수 없습니다.");
     out.println("전체를 새로 등록해야 합니다.");
     String response = Prompt.getString(in, out, "사진을 변경하시겠습니까?(Y/N)");
@@ -50,26 +42,13 @@ public class PhotoBoardUpdateServlet implements Servlet {
     if (response.equalsIgnoreCase("Y")) {
       photoBoard.setFiles(uploadFiles(in, out));
     }
+    photoBoardService.update(photoBoard);
 
-    transactionTemplate.execute(() -> {
-      if (photoBoardDao.update(photoBoard) == 0) {
-        throw new Exception("사진 게시글 변경에 실패했습니다.");
-      }
-
-      if (photoBoard.getFiles() != null) {
-        // 첨부파일을 변경한다면,
-        photoFileDao.deleteAll(no);
-        photoFileDao.insert(photoBoard);
-      }
-
-      out.println("사진 게시글을 변경했습니다.");
-      return null;
-    });
   }
 
-  private void printFiles(PrintStream out, int no) throws Exception {
+  private void printFiles(PrintStream out, PhotoBoard photoBoard) throws Exception {
     out.println("사진 파일 : ");
-    List<PhotoFile> oldPhotoFiles = photoFileDao.findAll(no);
+    List<PhotoFile> oldPhotoFiles = photoBoard.getFiles();
 
     for (PhotoFile photoFile : oldPhotoFiles) {
       out.printf(">%s\n", photoFile.getFilepath());

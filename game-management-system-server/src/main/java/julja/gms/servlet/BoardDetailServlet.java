@@ -2,16 +2,16 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
+import julja.gms.service.BoardService;
 import julja.util.Prompt;
 
 public class BoardDetailServlet implements Servlet {
 
-  BoardDao boardDao;
+  BoardService boardService;
 
-  public BoardDetailServlet(BoardDao boardDao) {
-    this.boardDao = boardDao;
+  public BoardDetailServlet(BoardService boardService) {
+    this.boardService = boardService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class BoardDetailServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    Board b = boardDao.findByNo(no);
+    Board b = boardService.findByNo(no);
 
     if (b != null) {
       out.println("제목 : " + b.getBbsName());

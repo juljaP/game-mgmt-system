@@ -2,27 +2,24 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import julja.gms.dao.PhotoBoardDao;
-import julja.gms.dao.PhotoFileDao;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
+import julja.gms.service.PhotoBoardService;
 import julja.util.Prompt;
 
 public class PhotoBoardDetailServlet implements Servlet {
 
-  PhotoBoardDao photoBoardDao;
-  PhotoFileDao photoFileDao;
+  PhotoBoardService photoBoardService;
 
-  public PhotoBoardDetailServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao) {
-    this.photoBoardDao = photoBoardDao;
-    this.photoFileDao = photoFileDao;
+  public PhotoBoardDetailServlet(PhotoBoardService photoBoardService) {
+    this.photoBoardService = photoBoardService;
   }
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
     int no = Prompt.getInt(in, out, "번호? ");
 
-    PhotoBoard photoBoard = photoBoardDao.findByNo(no);
+    PhotoBoard photoBoard = photoBoardService.findByNo(no);
 
     if (photoBoard != null) {
       out.println("제목 : " + photoBoard.getTitle());

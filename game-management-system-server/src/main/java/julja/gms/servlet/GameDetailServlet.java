@@ -2,16 +2,16 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import julja.gms.dao.GameDao;
 import julja.gms.domain.Game;
+import julja.gms.service.GameService;
 import julja.util.Prompt;
 
 public class GameDetailServlet implements Servlet {
 
-  GameDao gameDao;
+  GameService gameService;
 
-  public GameDetailServlet(GameDao gameDao) {
-    this.gameDao = gameDao;
+  public GameDetailServlet(GameService gameService) {
+    this.gameService = gameService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class GameDetailServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    Game g = gameDao.findByNo(no);
+    Game g = gameService.findByNo(no);
 
     if (g != null) {
       out.printf("게임명 : %s\n", g.getGameName());

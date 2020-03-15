@@ -2,16 +2,16 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import julja.gms.dao.UserDao;
 import julja.gms.domain.User;
+import julja.gms.service.UserService;
 import julja.util.Prompt;
 
 public class LoginServlet implements Servlet {
 
-  UserDao userDao;
+  UserService userService;
 
-  public LoginServlet(UserDao userDao) {
-    this.userDao = userDao;
+  public LoginServlet(UserService userService) {
+    this.userService = userService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class LoginServlet implements Servlet {
     String email = Prompt.getString(in, out, "이메일? ");
     String password = Prompt.getString(in, out, "암호? ");
 
-    User u = userDao.findByEmailAndPassword(email, password);
+    User u = userService.findByEmailAndPassword(email, password);
     if (u != null) {
       out.printf("'%s'님 환영합니다.\n", u.getUserName());
     } else {

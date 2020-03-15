@@ -2,16 +2,16 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import julja.gms.dao.GameDao;
 import julja.gms.domain.Game;
+import julja.gms.service.GameService;
 import julja.util.Prompt;
 
 public class GameUpdateServlet implements Servlet {
 
-  GameDao gameDao;
+  GameService gameService;
 
-  public GameUpdateServlet(GameDao gameDao) {
-    this.gameDao = gameDao;
+  public GameUpdateServlet(GameService gameService) {
+    this.gameService = gameService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class GameUpdateServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    Game old = gameDao.findByNo(no);
+    Game old = gameService.findByNo(no);
 
     if (old == null) {
       out.println("해당 번호의 게임이 존재하지 않습니다.");
@@ -45,7 +45,7 @@ public class GameUpdateServlet implements Servlet {
     game.setPhoto(
         Prompt.getString(in, out, String.format("사진(%s) : ", old.getPhoto()), old.getPhoto()));
 
-    if (gameDao.update(game) > 0) {
+    if (gameService.update(game) > 0) {
       out.println("게임 정보를 변경하였습니다.");
     } else {
       out.println("데이터 저장 실패.");

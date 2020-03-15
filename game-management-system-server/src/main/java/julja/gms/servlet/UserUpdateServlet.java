@@ -2,16 +2,16 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import julja.gms.dao.UserDao;
 import julja.gms.domain.User;
+import julja.gms.service.UserService;
 import julja.util.Prompt;
 
 public class UserUpdateServlet implements Servlet {
 
-  UserDao userDao;
+  UserService userService;
 
-  public UserUpdateServlet(UserDao userDao) {
-    this.userDao = userDao;
+  public UserUpdateServlet(UserService userService) {
+    this.userService = userService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class UserUpdateServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    User old = userDao.findByNo(no);
+    User old = userService.findByNo(no);
 
     if (old == null) {
       out.println("해당 번호의 유저가 없습니다.");
@@ -36,7 +36,7 @@ public class UserUpdateServlet implements Servlet {
     user.setUserName(Prompt.getString(in, out, String.format("회원명(%s) : ", old.getUserName()),
         old.getUserName()));
     user.setUserResisteredDate(old.getUserResisteredDate());
-    if (userDao.update(user) > 0) {
+    if (userService.update(user) > 0) {
       out.println("유저 정보를 변경하였습니다.");
     } else {
       out.println("데이터 저장 실패.");

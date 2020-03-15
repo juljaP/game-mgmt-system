@@ -5,17 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import julja.gms.dao.GameDao;
 import julja.gms.domain.Game;
+import julja.gms.service.GameService;
 import julja.gms.servlet.Servlet;
 import julja.util.Prompt;
 
 public class GameSearchServlet implements Servlet {
 
-  GameDao gameDao;
+  GameService gameService;
 
-  public GameSearchServlet(GameDao gameDao) {
-    this.gameDao = gameDao;
+  public GameSearchServlet(GameService gameService) {
+    this.gameService = gameService;
   }
 
   @Override
@@ -51,7 +51,7 @@ public class GameSearchServlet implements Servlet {
     out.println("------------------------------------------------");
     out.println("[검색결과]");
 
-    List<Game> games = gameDao.findByKeyword(params);
+    List<Game> games = gameService.findByKeyword(params);
 
     for (Game g : games) {
       out.printf("[%d] %s | %s | %s | %s\n", g.getNo(), g.getGameName(), g.getGamePlatform(),

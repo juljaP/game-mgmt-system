@@ -4,30 +4,24 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import julja.gms.dao.GameDao;
-import julja.gms.dao.PhotoBoardDao;
-import julja.gms.dao.PhotoFileDao;
 import julja.gms.domain.Game;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
-import julja.sql.PlatformTransactionManager;
+import julja.gms.service.GameService;
+import julja.gms.service.PhotoBoardService;
 import julja.sql.TransactionTemplate;
 import julja.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
 
-  PhotoBoardDao photoBoardDao;
-  PhotoFileDao photoFileDao;
-  GameDao gameDao;
+  PhotoBoardService photoBoardService;
+  GameService gameService;
 
   TransactionTemplate transactionTemplate;
 
-  public PhotoBoardAddServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao,
-      GameDao gameDao, PlatformTransactionManager txManager) {
-    this.photoBoardDao = photoBoardDao;
-    this.photoFileDao = photoFileDao;
-    this.gameDao = gameDao;
-    this.transactionTemplate = new TransactionTemplate(txManager);
+  public PhotoBoardAddServlet(PhotoBoardService photoBoardService, GameService gameService) {
+    this.photoBoardService = photoBoardService;
+    this.gameService = gameService;
   }
 
   @Override
@@ -37,7 +31,7 @@ public class PhotoBoardAddServlet implements Servlet {
     photoBoard.setTitle(Prompt.getString(in, out, "제목 : "));
     int no = Prompt.getInt(in, out, "게임 번호: ");
 
-    Game game = gameDao.findByNo(no);
+    Game game = gameService.findByNo(no);
 
     if (game == null) {
       out.println("게임 번호가 유효하지 않습니다.");
@@ -49,18 +43,9 @@ public class PhotoBoardAddServlet implements Servlet {
     List<PhotoFile> photoFiles = uploadFiles(in, out);
     photoBoard.setFiles(photoFiles);
 
-    transactionTemplate.execute(() -> {
-      if (photoBoardDao.insert(photoBoard) == 0) {
-        throw new Exception("사진 게시글 등록에 실패했습니다.");
-      }
+    photoBoardService.insert(photoBoard);
+    out.println("새 사진 게시글을 등록했습니다.");
 
-      for (PhotoFile photoFile : photoFiles) {
-        photoFile.setBoardNo(photoBoard.getNo());
-      }
-      photoFileDao.insert(photoBoard);
-      out.println("새 사진 게시글을 등록했습니다.");
-      return null;
-    });
   }
 
   private List<PhotoFile> uploadFiles(Scanner in, PrintStream out) {

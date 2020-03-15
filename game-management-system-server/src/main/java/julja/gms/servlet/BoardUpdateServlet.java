@@ -2,16 +2,16 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
+import julja.gms.service.BoardService;
 import julja.util.Prompt;
 
 public class BoardUpdateServlet implements Servlet {
 
-  BoardDao boardDao;
+  BoardService boardService;
 
-  public BoardUpdateServlet(BoardDao boardDao) {
-    this.boardDao = boardDao;
+  public BoardUpdateServlet(BoardService boardService) {
+    this.boardService = boardService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class BoardUpdateServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    Board old = boardDao.findByNo(no);
+    Board old = boardService.findByNo(no);
 
     if (old == null) {
       out.println("해당 번호의 게시글이 존재하지 않습니다.");
@@ -35,7 +35,7 @@ public class BoardUpdateServlet implements Servlet {
     board.setBbsHits(old.getBbsHits());
     board.setToday(old.getToday());
 
-    if (boardDao.update(board) > 0) {
+    if (boardService.update(board) > 0) {
       out.println("게시글을 변경하였습니다.");
     } else {
       out.println("데이터 저장 실패.");

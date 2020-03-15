@@ -2,15 +2,15 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import julja.gms.dao.UserDao;
+import julja.gms.service.UserService;
 import julja.util.Prompt;
 
 public class UserDeleteServlet implements Servlet {
 
-  UserDao userDao;
+  UserService userService;
 
-  public UserDeleteServlet(UserDao userDao) {
-    this.userDao = userDao;
+  public UserDeleteServlet(UserService userService) {
+    this.userService = userService;
   }
 
   @Override
@@ -18,7 +18,7 @@ public class UserDeleteServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    if (userDao.delete(no) > 0) {
+    if (userService.delete(no) > 0) {
       out.println("해당 번호의 유저를 삭제하였습니다.");
     } else {
       out.println("해당 번호의 유저가 없습니다.");

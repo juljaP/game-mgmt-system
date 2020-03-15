@@ -2,16 +2,16 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import julja.gms.dao.UserDao;
 import julja.gms.domain.User;
+import julja.gms.service.UserService;
 import julja.util.Prompt;
 
 public class UserDetailServlet implements Servlet {
 
-  UserDao userDao;
+  UserService userService;
 
-  public UserDetailServlet(UserDao userDao) {
-    this.userDao = userDao;
+  public UserDetailServlet(UserService userService) {
+    this.userService = userService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class UserDetailServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    User u = userDao.findByNo(no);
+    User u = userService.findByNo(no);
     if (u != null) {
       out.printf("회원명 : %s\n", u.getUserName());
       out.printf("비밀번호 : %s\n", u.getUserPW());

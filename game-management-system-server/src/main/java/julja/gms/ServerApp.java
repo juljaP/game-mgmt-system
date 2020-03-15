@@ -13,11 +13,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.ibatis.session.SqlSessionFactory;
 import julja.gms.context.ApplicationContextListener;
-import julja.gms.dao.BoardDao;
-import julja.gms.dao.GameDao;
-import julja.gms.dao.PhotoBoardDao;
-import julja.gms.dao.PhotoFileDao;
-import julja.gms.dao.UserDao;
+import julja.gms.service.BoardService;
+import julja.gms.service.GameService;
+import julja.gms.service.PhotoBoardService;
+import julja.gms.service.UserService;
 import julja.gms.servlet.BoardAddServlet;
 import julja.gms.servlet.BoardDeleteServlet;
 import julja.gms.servlet.BoardDetailServlet;
@@ -41,7 +40,6 @@ import julja.gms.servlet.UserDetailServlet;
 import julja.gms.servlet.UserListServlet;
 import julja.gms.servlet.UserSearchServlet;
 import julja.gms.servlet.UserUpdateServlet;
-import julja.sql.PlatformTransactionManager;
 import julja.sql.SqlSessionFactoryProxy;
 
 public class ServerApp {
@@ -76,43 +74,38 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    GameDao gameDao = (GameDao) context.get("gameDao");
-    UserDao userDao = (UserDao) context.get("userDao");
-    BoardDao boardDao = (BoardDao) context.get("boardDao");
-    PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
-    PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
+    GameService gameService = (GameService) context.get("gameService");
+    UserService userService = (UserService) context.get("userService");
+    BoardService boardService = (BoardService) context.get("boardService");
+    PhotoBoardService photoBoardService = (PhotoBoardService) context.get("photoBoardService");
     SqlSessionFactory sqlSessionFactory = (SqlSessionFactory) context.get("sqlSessionFactory");
-    PlatformTransactionManager txManager = (PlatformTransactionManager) context.get("txManager");
 
-    servletMap.put("/board/add", new BoardAddServlet(boardDao));
-    servletMap.put("/board/delete", new BoardDeleteServlet(boardDao));
-    servletMap.put("/board/detail", new BoardDetailServlet(boardDao));
-    servletMap.put("/board/list", new BoardListServlet(boardDao));
-    servletMap.put("/board/update", new BoardUpdateServlet(boardDao));
+    servletMap.put("/board/add", new BoardAddServlet(boardService));
+    servletMap.put("/board/delete", new BoardDeleteServlet(boardService));
+    servletMap.put("/board/detail", new BoardDetailServlet(boardService));
+    servletMap.put("/board/list", new BoardListServlet(boardService));
+    servletMap.put("/board/update", new BoardUpdateServlet(boardService));
 
-    servletMap.put("/game/add", new GameAddServlet(gameDao));
-    servletMap.put("/game/delete", new GameDeleteServlet(gameDao));
-    servletMap.put("/game/detail", new GameDetailServlet(gameDao));
-    servletMap.put("/game/list", new GameListServlet(gameDao));
-    servletMap.put("/game/update", new GameUpdateServlet(gameDao));
-    servletMap.put("/game/search", new GameSearchServlet(gameDao));
+    servletMap.put("/game/add", new GameAddServlet(gameService));
+    servletMap.put("/game/delete", new GameDeleteServlet(gameService));
+    servletMap.put("/game/detail", new GameDetailServlet(gameService));
+    servletMap.put("/game/list", new GameListServlet(gameService));
+    servletMap.put("/game/update", new GameUpdateServlet(gameService));
+    servletMap.put("/game/search", new GameSearchServlet(gameService));
 
-    servletMap.put("/auth/login", new LoginServlet(userDao));
+    servletMap.put("/auth/login", new LoginServlet(userService));
 
-    servletMap.put("/user/add", new UserAddServlet(userDao));
-    servletMap.put("/user/delete", new UserDeleteServlet(userDao));
-    servletMap.put("/user/detail", new UserDetailServlet(userDao));
-    servletMap.put("/user/list", new UserListServlet(userDao));
-    servletMap.put("/user/update", new UserUpdateServlet(userDao));
-    servletMap.put("/user/search", new UserSearchServlet(userDao));
-    servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao, gameDao));
-    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao, photoFileDao));
-    servletMap.put("/photoboard/add",
-        new PhotoBoardAddServlet(photoBoardDao, photoFileDao, gameDao, txManager));
-    servletMap.put("/photoboard/delete",
-        new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao, txManager));
-    servletMap.put("/photoboard/update", //
-        new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao, txManager));
+    servletMap.put("/user/add", new UserAddServlet(userService));
+    servletMap.put("/user/delete", new UserDeleteServlet(userService));
+    servletMap.put("/user/detail", new UserDetailServlet(userService));
+    servletMap.put("/user/list", new UserListServlet(userService));
+    servletMap.put("/user/update", new UserUpdateServlet(userService));
+    servletMap.put("/user/search", new UserSearchServlet(userService));
+    servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardService, gameService));
+    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardService));
+    servletMap.put("/photoboard/add", new PhotoBoardAddServlet(photoBoardService, gameService));
+    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(photoBoardService));
+    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(photoBoardService));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
       System.out.println("클라이언트 연결 대기중...");

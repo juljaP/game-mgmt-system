@@ -2,16 +2,16 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import julja.gms.dao.GameDao;
 import julja.gms.domain.Game;
+import julja.gms.service.GameService;
 import julja.util.Prompt;
 
 public class GameAddServlet implements Servlet {
 
-  GameDao gameDao;
+  GameService gameService;
 
-  public GameAddServlet(GameDao gameDao) {
-    this.gameDao = gameDao;
+  public GameAddServlet(GameService gameService) {
+    this.gameService = gameService;
   }
 
   @Override
@@ -27,7 +27,7 @@ public class GameAddServlet implements Servlet {
     game.setGameIllust(Prompt.getString(in, out, "작화 : "));
     game.setGameVoice(Prompt.getString(in, out, "음성 : "));
 
-    if (gameDao.insert(game) > 0) {
+    if (gameService.insert(game) > 0) {
       out.println("게임 정보를 입력하였습니다.");
     } else {
       out.println("게임 정보 입력을 실패했습니다.");
