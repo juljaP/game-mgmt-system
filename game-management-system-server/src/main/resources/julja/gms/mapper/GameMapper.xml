@@ -17,6 +17,11 @@
     <result column="vo" property="gameVoice"/>
   </resultMap>
   
+  <sql id="select1">
+    SELECT *
+    FROM gms_game
+  </sql>
+  
   <insert id="insertGame" parameterType="Game">
     INSERT INTO gms_game(titl, rdt, pdt, pf, genre, photo, illust, vo) 
     VALUES(
@@ -30,28 +35,35 @@
       #{gameVoice})
   </insert>
   
-  <select id="selectAll" resultMap="GameMap">
-    SELECT game_id, titl, rdt, pf, genre 
-    FROM gms_game
+  <select id="selectGame" resultMap="GameMap">
+    <include refid="select1"/>
+    <where>
+      <if test="gameName!=null">titl LIKE CONCAT('%', #{gameName}, '%')</if>
+      <if test="gameProduction!=null">AND pdt LIKE CONCAT('%', #{gameProduction}, '%')</if>
+      <if test="gamePlatform!=null">AND pf LIKE CONCAT('%', #{gamePlatform}, '%')</if>
+      <if test="gameGenre!=null">AND genre LIKE CONCAT('%', #{gameGenre}, '%')</if>
+      <if test="gameIllust!=null">AND illust LIKE CONCAT('%', #{gameIllust}, '%')</if>
+      <if test="gameVoice!=null">AND vo LIKE CONCAT('%', #{gameVoice}, '%')</if>
+    </where>
   </select>
   
   <select id="selectDetail" resultMap="GameMap" parameterType="int">
-    SELECT * 
-    FROM gms_game 
+    <include refid="select1"/>
     WHERE game_id=#{no}
   </select>
   
   <update id="updateGame" parameterType="Game">
     UPDATE gms_game 
-    SET 
-      titl=#{gameName}, 
-      pdt=#{gameProduction}, 
-      rdt=#{gameDate}, 
-      pf=#{gamePlatform}, 
-      genre=#{gameGenre}, 
-      illust=#{gameIllust}, 
-      vo=#{gameVoice}, 
-      photo=#{photo} 
+    <set>
+      <if test="gameName!=null and gameName != ''">titl=#{gameName},</if>
+      <if test="gameProduction!=null and gameProduction != ''">pdt=#{gameProduction},</if>
+      <if test="gameDate!=null">rdt=#{gameDate},</if> 
+      <if test="gamePlatform!=null and gamePlatform != ''">pf=#{gamePlatform},</if> 
+      <if test="gameGenre!=null and gameGenre != ''">genre=#{gameGenre},</if> 
+      <if test="gameIllust!=null and gameIllust != ''">illust=#{gameIllust},</if> 
+      <if test="gameVoice!=null and gameVoice != ''">vo=#{gameVoice},</if> 
+      <if test="photo!=null and photo != ''">photo=#{photo}</if> 
+    </set>
     WHERE game_id=#{no}
   </update>
   

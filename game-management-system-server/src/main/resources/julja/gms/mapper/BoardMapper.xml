@@ -13,9 +13,13 @@
     <result column="hits" property="bbsHits"/>
   </resultMap>
   
-  <select id="selectAll" resultMap="BoardMap">
-    SELECT board_id, titl, cdt, hits 
+  <sql id="select1">
+    SELECT *
     FROM gms_board
+  </sql>
+  
+  <select id="selectAll" resultMap="BoardMap">
+    <include refid="select1"/>
   </select>
   
   <insert id="insertBoard" parameterType="Board">
@@ -24,8 +28,7 @@
   </insert>
   
   <select id="selectDetail" resultMap="BoardMap" parameterType="int">
-    SELECT * 
-    FROM gms_board 
+    <include refid="select1"/>
     WHERE board_id=#{no}
   </select>
   

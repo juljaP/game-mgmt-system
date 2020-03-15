@@ -13,7 +13,10 @@
   
   <insert id="insertPhotoFile" parameterType="PhotoFile">
     INSERT INTO gms_photo_file(photo_id, file_path) 
-    VALUES (#{boardNo}, #{filepath})
+    VALUES 
+    <foreach collection="files" item="file" separator=",">
+      (#{no}, #{file.filepath})
+    </foreach>
   </insert>
   
   <select id="selectAll" resultMap="PhotoFileMap" parameterType="int">

@@ -95,6 +95,7 @@ public class ServerApp {
     servletMap.put("/game/detail", new GameDetailServlet(gameDao));
     servletMap.put("/game/list", new GameListServlet(gameDao));
     servletMap.put("/game/update", new GameUpdateServlet(gameDao));
+    servletMap.put("/game/search", new GameSearchServlet(gameDao));
 
     servletMap.put("/auth/login", new LoginServlet(userDao));
 

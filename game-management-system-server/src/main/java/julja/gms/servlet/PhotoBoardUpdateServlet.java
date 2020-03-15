@@ -42,26 +42,26 @@ public class PhotoBoardUpdateServlet implements Servlet {
     photoBoard.setTitle(
         Prompt.getString(in, out, String.format("제목(%s) : ", old.getTitle()), old.getTitle()));
 
+    printFiles(out, no);
+    out.println("사진은 일부만 변경할 수 없습니다.");
+    out.println("전체를 새로 등록해야 합니다.");
+    String response = Prompt.getString(in, out, "사진을 변경하시겠습니까?(Y/N)");
+
+    if (response.equalsIgnoreCase("Y")) {
+      photoBoard.setFiles(uploadFiles(in, out));
+    }
+
     transactionTemplate.execute(() -> {
       if (photoBoardDao.update(photoBoard) == 0) {
         throw new Exception("사진 게시글 변경에 실패했습니다.");
       }
-      printFiles(out, no);
 
-      out.println("사진은 일부만 변경할 수 없습니다.");
-      out.println("전체를 새로 등록해야 합니다.");
-      String response = Prompt.getString(in, out, "사진을 변경하시겠습니까?(Y/N)");
-
-      if (response.equalsIgnoreCase("Y")) {
+      if (photoBoard.getFiles() != null) {
+        // 첨부파일을 변경한다면,
         photoFileDao.deleteAll(no);
-
-        List<PhotoFile> photoFiles = uploadFiles(in, out);
-
-        for (PhotoFile photoFile : photoFiles) {
-          photoFile.setBoardNo(photoBoard.getNo());
-          photoFileDao.insert(photoFile);
-        }
+        photoFileDao.insert(photoBoard);
       }
+
       out.println("사진 게시글을 변경했습니다.");
       return null;
     });
