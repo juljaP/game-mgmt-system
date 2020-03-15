@@ -20,7 +20,6 @@ public class UserDaoImpl implements UserDao {
 
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       int count = sqlSession.insert("UserMapper.insertUser", user);
-      sqlSession.commit();
       return count;
     }
   }
@@ -53,7 +52,6 @@ public class UserDaoImpl implements UserDao {
 
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       int count = sqlSession.update("UserMapper.updateUser", user);
-      sqlSession.commit();
       return count;
     }
   }
@@ -63,7 +61,6 @@ public class UserDaoImpl implements UserDao {
 
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       int count = sqlSession.delete("UserMapper.deleteUser", no);
-      sqlSession.commit();
       return count;
     }
   }

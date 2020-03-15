@@ -19,7 +19,6 @@ public class GameDaoImpl implements GameDao {
 
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       int count = sqlSession.insert("GameMapper.insertGame", game);
-      sqlSession.commit();
       return count;
     }
   }
@@ -45,7 +44,6 @@ public class GameDaoImpl implements GameDao {
 
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       int count = sqlSession.update("GameMapper.updateGame", game);
-      sqlSession.commit();
       return count;
     }
   }
@@ -54,7 +52,6 @@ public class GameDaoImpl implements GameDao {
   public int delete(int no) throws Exception {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       int count = sqlSession.delete("GameMapper.deleteGame", no);
-      sqlSession.commit();
       return count;
     }
   }

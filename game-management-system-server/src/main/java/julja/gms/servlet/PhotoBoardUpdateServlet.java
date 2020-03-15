@@ -8,7 +8,6 @@ import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
-import julja.sql.DataSource;
 import julja.sql.PlatformTransactionManager;
 import julja.sql.TransactionTemplate;
 import julja.util.Prompt;
@@ -17,14 +16,12 @@ public class PhotoBoardUpdateServlet implements Servlet {
 
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
-  DataSource dataSource;
   TransactionTemplate transactionTemplate;
 
   public PhotoBoardUpdateServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao,
-      DataSource dataSource, PlatformTransactionManager txManager) {
+      PlatformTransactionManager txManager) {
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
-    this.dataSource = dataSource;
     this.transactionTemplate = new TransactionTemplate(txManager);
   }
 

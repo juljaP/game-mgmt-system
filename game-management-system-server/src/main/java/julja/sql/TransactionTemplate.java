@@ -14,11 +14,8 @@ public class TransactionTemplate {
 
     try {
       Object result = null;
-
-      action.doInTransaction();
-
+      result = action.doInTransaction();
       txManager.commit();
-
       return result;
 
     } catch (Exception e) {
@@ -26,5 +23,4 @@ public class TransactionTemplate {
       throw e;
     }
   }
-
 }

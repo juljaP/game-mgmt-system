@@ -11,15 +11,13 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.apache.ibatis.session.SqlSessionFactory;
 import julja.gms.context.ApplicationContextListener;
 import julja.gms.dao.BoardDao;
 import julja.gms.dao.GameDao;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
 import julja.gms.dao.UserDao;
-import julja.gms.dao.mariadb.BoardDaoImpl;
-import julja.gms.dao.mariadb.GameDaoImpl;
-import julja.gms.dao.mariadb.UserDaoImpl;
 import julja.gms.servlet.BoardAddServlet;
 import julja.gms.servlet.BoardDeleteServlet;
 import julja.gms.servlet.BoardDetailServlet;
@@ -43,9 +41,8 @@ import julja.gms.servlet.UserDetailServlet;
 import julja.gms.servlet.UserListServlet;
 import julja.gms.servlet.UserSearchServlet;
 import julja.gms.servlet.UserUpdateServlet;
-import julja.sql.ConnectionProxy;
-import julja.sql.DataSource;
 import julja.sql.PlatformTransactionManager;
+import julja.sql.SqlSessionFactoryProxy;
 
 public class ServerApp {
 
@@ -79,13 +76,12 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    DataSource dataSource = (DataSource) context.get("dataSource");
-
-    GameDao gameDao = (GameDaoImpl) context.get("gameDao");
-    UserDao userDao = (UserDaoImpl) context.get("userDao");
-    BoardDao boardDao = (BoardDaoImpl) context.get("boardDao");
+    GameDao gameDao = (GameDao) context.get("gameDao");
+    UserDao userDao = (UserDao) context.get("userDao");
+    BoardDao boardDao = (BoardDao) context.get("boardDao");
     PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
     PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
+    SqlSessionFactory sqlSessionFactory = (SqlSessionFactory) context.get("sqlSessionFactory");
     PlatformTransactionManager txManager = (PlatformTransactionManager) context.get("txManager");
 
     servletMap.put("/board/add", new BoardAddServlet(boardDao));
@@ -108,15 +104,14 @@ public class ServerApp {
     servletMap.put("/user/list", new UserListServlet(userDao));
     servletMap.put("/user/update", new UserUpdateServlet(userDao));
     servletMap.put("/user/search", new UserSearchServlet(userDao));
-    // delete
     servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao, gameDao));
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/add",
-        new PhotoBoardAddServlet(photoBoardDao, photoFileDao, gameDao, dataSource, txManager));
+        new PhotoBoardAddServlet(photoBoardDao, photoFileDao, gameDao, txManager));
     servletMap.put("/photoboard/delete",
         new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao, txManager));
     servletMap.put("/photoboard/update", //
-        new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao, dataSource, txManager));
+        new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao, txManager));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
       System.out.println("클라이언트 연결 대기중...");
@@ -126,13 +121,7 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
-          ConnectionProxy con = (ConnectionProxy) dataSource.removeConnection();
-          if (con != null) {
-            try {
-              dataSource.removeConnection();
-            } catch (Exception e) {
-            }
-          }
+          ((SqlSessionFactoryProxy) sqlSessionFactory).closeSession();
           System.out.println("-----------------------------------");
         });
 
