@@ -1,6 +1,7 @@
 package julja.gms.service;
 
 import java.util.List;
+import java.util.Map;
 import julja.gms.domain.User;
 
 public interface UserService {
@@ -19,8 +20,7 @@ public interface UserService {
     return null;
   }
 
-  default User findByEmailAndPassword(String email, String password) throws Exception {
+  default User findByEmailAndPassword(Map<String, Object> params) throws Exception {
     return null;
   }
-
 }

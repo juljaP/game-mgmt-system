@@ -1,6 +1,7 @@
 package julja.gms.dao;
 
 import java.util.List;
+import java.util.Map;
 import julja.gms.domain.User;
 
 public interface UserDao {
@@ -19,7 +20,7 @@ public interface UserDao {
     return null;
   }
 
-  default User findByEmailAndPassword(String email, String password) throws Exception {
+  default User findByEmailAndPassword(Map<String, Object> params) throws Exception {
     return null;
   }
 

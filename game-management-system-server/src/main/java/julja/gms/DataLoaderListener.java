@@ -5,17 +5,13 @@ import java.util.Map;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import com.eomcs.sql.MybatisDaoFactory;
 import julja.gms.context.ApplicationContextListener;
 import julja.gms.dao.BoardDao;
 import julja.gms.dao.GameDao;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
 import julja.gms.dao.UserDao;
-import julja.gms.dao.mariadb.BoardDaoImpl;
-import julja.gms.dao.mariadb.GameDaoImpl;
-import julja.gms.dao.mariadb.PhotoBoardDaoImpl;
-import julja.gms.dao.mariadb.PhotoFileDaoImpl;
-import julja.gms.dao.mariadb.UserDaoImpl;
 import julja.gms.service.impl.BoardServiceImpl;
 import julja.gms.service.impl.GameServiceImpl;
 import julja.gms.service.impl.PhotoBoardServiceImpl;
@@ -33,11 +29,14 @@ public class DataLoaderListener implements ApplicationContextListener {
       InputStream inputStream = Resources.getResourceAsStream("julja/gms/conf/mybatis-config.xml");
       SqlSessionFactory sqlSessionFactory =
           new SqlSessionFactoryProxy((new SqlSessionFactoryBuilder().build(inputStream)));
-      GameDao gameDao = new GameDaoImpl(sqlSessionFactory);
-      UserDao userDao = new UserDaoImpl(sqlSessionFactory);
-      BoardDao boardDao = new BoardDaoImpl(sqlSessionFactory);
-      PhotoBoardDao photoBoardDao = new PhotoBoardDaoImpl(sqlSessionFactory);
-      PhotoFileDao photoFileDao = new PhotoFileDaoImpl(sqlSessionFactory);
+
+      MybatisDaoFactory daoFactory = new MybatisDaoFactory(sqlSessionFactory);
+
+      GameDao gameDao = daoFactory.createDao(GameDao.class);
+      UserDao userDao = daoFactory.createDao(UserDao.class);
+      BoardDao boardDao = daoFactory.createDao(BoardDao.class);
+      PhotoBoardDao photoBoardDao = daoFactory.createDao(PhotoBoardDao.class);
+      PhotoFileDao photoFileDao = daoFactory.createDao(PhotoFileDao.class);
 
       context.put("sqlSessionFactory", sqlSessionFactory);
 

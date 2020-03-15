@@ -1,6 +1,8 @@
 package julja.gms.servlet;
 
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import julja.gms.domain.User;
 import julja.gms.service.UserService;
@@ -19,7 +21,11 @@ public class LoginServlet implements Servlet {
     String email = Prompt.getString(in, out, "이메일? ");
     String password = Prompt.getString(in, out, "암호? ");
 
-    User u = userService.findByEmailAndPassword(email, password);
+    Map<String, Object> params = new HashMap<>();
+    params.put("email", email);
+    params.put("password", password);
+
+    User u = userService.findByEmailAndPassword(params);
     if (u != null) {
       out.printf("'%s'님 환영합니다.\n", u.getUserName());
     } else {

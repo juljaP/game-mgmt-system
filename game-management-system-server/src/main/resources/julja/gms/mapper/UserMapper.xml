@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
-<mapper namespace="UserMapper">
+<mapper namespace="julja.gms.dao.UserDao">
 
   <resultMap type="User" id="UserMap">
     <id column="user_id" property="no"/>
@@ -18,26 +18,26 @@
     FROM gms_user 
   </sql>
   
-  <insert id="insertUser" parameterType="User">
+  <insert id="insert" parameterType="User">
     INSERT INTO gms_user(email, pw, name) 
     VALUES(#{userEmail}, password(#{userPW}), #{userName})
   </insert>
   
-  <select id="selectAll" resultMap="UserMap">
+  <select id="findAll" resultMap="UserMap">
     <include refid="select1"/>
   </select>
   
-  <select id="selectDetail" resultMap="UserMap">
+  <select id="findByNo" resultMap="UserMap">
     <include refid="select1"/>
     WHERE user_id=#{no}
   </select>
   
-  <select id="selectByKeyword" resultMap="UserMap">
+  <select id="findByKeyword" resultMap="UserMap">
     <include refid="select1"/>
     WHERE user_id LIKE #{key} OR email LIKE #{key} OR name LIKE #{key}
   </select>
   
-  <update id="updateUser" parameterType="User">
+  <update id="update" parameterType="User">
     UPDATE gms_user 
     <set>
       <if test="userEmail!=null and userEmail!=''">email=#{userEmail},</if> 
@@ -47,12 +47,12 @@
     WHERE user_id=#{no}
   </update>
   
-  <delete id="deleteUser" parameterType="int">
+  <delete id="delete" parameterType="int">
     DELETE FROM gms_user 
     WHERE user_id=#{no}
   </delete>
   
-  <select id="login" resultMap="UserMap" parameterType="map">
+  <select id="findByEmailAndPassword" resultMap="UserMap" parameterType="map">
     <include refid="select1"/>
     WHERE email=#{email} AND pw=password(#{password})
   </select>
