@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Scanner;
 import julja.gms.domain.User;
 import julja.gms.service.UserService;
+import julja.util.Component;
 import julja.util.Prompt;
 
+@Component("/user/search")
 public class UserSearchServlet implements Servlet {
 
   UserService userService;

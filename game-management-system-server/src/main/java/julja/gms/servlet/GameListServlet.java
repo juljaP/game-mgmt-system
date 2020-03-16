@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Scanner;
 import julja.gms.domain.Game;
 import julja.gms.service.GameService;
+import julja.util.Component;
 
+@Component("/game/list")
 public class GameListServlet implements Servlet {
 
   GameService gameService;

@@ -4,7 +4,9 @@ import java.util.List;
 import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
 import julja.gms.service.BoardService;
+import julja.util.Component;
 
+@Component
 public class BoardServiceImpl implements BoardService {
 
   BoardDao boardDao;

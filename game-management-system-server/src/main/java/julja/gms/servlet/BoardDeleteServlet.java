@@ -3,8 +3,10 @@ package julja.gms.servlet;
 import java.io.PrintStream;
 import java.util.Scanner;
 import julja.gms.service.BoardService;
+import julja.util.Component;
 import julja.util.Prompt;
 
+@Component("/board/delete")
 public class BoardDeleteServlet implements Servlet {
 
   BoardService boardService;

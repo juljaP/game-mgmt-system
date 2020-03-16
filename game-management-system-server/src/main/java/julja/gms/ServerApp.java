@@ -13,42 +13,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.ibatis.session.SqlSessionFactory;
 import julja.gms.context.ApplicationContextListener;
-import julja.gms.service.BoardService;
-import julja.gms.service.GameService;
-import julja.gms.service.PhotoBoardService;
-import julja.gms.service.UserService;
-import julja.gms.servlet.BoardAddServlet;
-import julja.gms.servlet.BoardDeleteServlet;
-import julja.gms.servlet.BoardDetailServlet;
-import julja.gms.servlet.BoardListServlet;
-import julja.gms.servlet.BoardUpdateServlet;
-import julja.gms.servlet.GameAddServlet;
-import julja.gms.servlet.GameDeleteServlet;
-import julja.gms.servlet.GameDetailServlet;
-import julja.gms.servlet.GameListServlet;
-import julja.gms.servlet.GameUpdateServlet;
-import julja.gms.servlet.LoginServlet;
-import julja.gms.servlet.PhotoBoardAddServlet;
-import julja.gms.servlet.PhotoBoardDeleteServlet;
-import julja.gms.servlet.PhotoBoardDetailServlet;
-import julja.gms.servlet.PhotoBoardListServlet;
-import julja.gms.servlet.PhotoBoardUpdateServlet;
 import julja.gms.servlet.Servlet;
-import julja.gms.servlet.UserAddServlet;
-import julja.gms.servlet.UserDeleteServlet;
-import julja.gms.servlet.UserDetailServlet;
-import julja.gms.servlet.UserListServlet;
-import julja.gms.servlet.UserSearchServlet;
-import julja.gms.servlet.UserUpdateServlet;
 import julja.sql.SqlSessionFactoryProxy;
+import julja.util.ApplicationContext;
 
 public class ServerApp {
 
   Set<ApplicationContextListener> listeners = new HashSet<>();
-  Map<String, Servlet> servletMap = new HashMap<>();
   ExecutorService executorService = Executors.newCachedThreadPool();
   Map<String, Object> context = new HashMap<>();
   boolean serverStop = false;
+  ApplicationContext iocContainer;
 
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
@@ -73,39 +48,9 @@ public class ServerApp {
   public void service() {
 
     notifyApplicationInitialized();
-
-    GameService gameService = (GameService) context.get("gameService");
-    UserService userService = (UserService) context.get("userService");
-    BoardService boardService = (BoardService) context.get("boardService");
-    PhotoBoardService photoBoardService = (PhotoBoardService) context.get("photoBoardService");
+    iocContainer = (ApplicationContext) context.get("iocContainer");
     SqlSessionFactory sqlSessionFactory = (SqlSessionFactory) context.get("sqlSessionFactory");
 
-    servletMap.put("/board/add", new BoardAddServlet(boardService));
-    servletMap.put("/board/delete", new BoardDeleteServlet(boardService));
-    servletMap.put("/board/detail", new BoardDetailServlet(boardService));
-    servletMap.put("/board/list", new BoardListServlet(boardService));
-    servletMap.put("/board/update", new BoardUpdateServlet(boardService));
-
-    servletMap.put("/game/add", new GameAddServlet(gameService));
-    servletMap.put("/game/delete", new GameDeleteServlet(gameService));
-    servletMap.put("/game/detail", new GameDetailServlet(gameService));
-    servletMap.put("/game/list", new GameListServlet(gameService));
-    servletMap.put("/game/update", new GameUpdateServlet(gameService));
-    servletMap.put("/game/search", new GameSearchServlet(gameService));
-
-    servletMap.put("/auth/login", new LoginServlet(userService));
-
-    servletMap.put("/user/add", new UserAddServlet(userService));
-    servletMap.put("/user/delete", new UserDeleteServlet(userService));
-    servletMap.put("/user/detail", new UserDetailServlet(userService));
-    servletMap.put("/user/list", new UserListServlet(userService));
-    servletMap.put("/user/update", new UserUpdateServlet(userService));
-    servletMap.put("/user/search", new UserSearchServlet(userService));
-    servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardService, gameService));
-    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardService));
-    servletMap.put("/photoboard/add", new PhotoBoardAddServlet(photoBoardService, gameService));
-    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(photoBoardService));
-    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(photoBoardService));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
       System.out.println("클라이언트 연결 대기중...");
@@ -159,7 +104,7 @@ public class ServerApp {
         return;
       }
 
-      Servlet servlet = servletMap.get(request);
+      Servlet servlet = (Servlet) iocContainer.getBean(request);
       if (servlet != null) {
         try {
           servlet.service(in, out);
@@ -195,7 +140,7 @@ public class ServerApp {
   public static void main(String[] args) throws Exception {
     System.out.println("게임 관리 시스템 서버입니다.");
     ServerApp app = new ServerApp();
-    app.addApplicationContextListener(new DataLoaderListener());
+    app.addApplicationContextListener(new ContextLoaderListener());
     app.service();
   }
 

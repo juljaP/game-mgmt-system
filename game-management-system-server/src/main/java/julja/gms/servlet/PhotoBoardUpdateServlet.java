@@ -7,8 +7,10 @@ import java.util.Scanner;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
 import julja.gms.service.PhotoBoardService;
+import julja.util.Component;
 import julja.util.Prompt;
 
+@Component("/photoboard/update")
 public class PhotoBoardUpdateServlet implements Servlet {
 
   PhotoBoardService photoBoardService;

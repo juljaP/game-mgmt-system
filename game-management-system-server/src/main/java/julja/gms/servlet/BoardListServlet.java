@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Scanner;
 import julja.gms.domain.Board;
 import julja.gms.service.BoardService;
+import julja.util.Component;
 
+@Component("/board/list")
 public class BoardListServlet implements Servlet {
 
   BoardService boardService;

@@ -4,8 +4,10 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import julja.gms.domain.Game;
 import julja.gms.service.GameService;
+import julja.util.Component;
 import julja.util.Prompt;
 
+@Component("/game/update")
 public class GameUpdateServlet implements Servlet {
 
   GameService gameService;

@@ -7,8 +7,10 @@ import julja.gms.domain.Game;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.service.GameService;
 import julja.gms.service.PhotoBoardService;
+import julja.util.Component;
 import julja.util.Prompt;
 
+@Component("/photoboard/list")
 public class PhotoBoardListServlet implements Servlet {
 
   PhotoBoardService photoBoardService;

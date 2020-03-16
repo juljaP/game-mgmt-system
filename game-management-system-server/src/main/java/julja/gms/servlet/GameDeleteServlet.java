@@ -3,8 +3,10 @@ package julja.gms.servlet;
 import java.io.PrintStream;
 import java.util.Scanner;
 import julja.gms.service.GameService;
+import julja.util.Component;
 import julja.util.Prompt;
 
+@Component("/game/delete")
 public class GameDeleteServlet implements Servlet {
 
   GameService gameService;

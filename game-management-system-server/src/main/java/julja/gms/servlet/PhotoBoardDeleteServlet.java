@@ -3,8 +3,10 @@ package julja.gms.servlet;
 import java.io.PrintStream;
 import java.util.Scanner;
 import julja.gms.service.PhotoBoardService;
+import julja.util.Component;
 import julja.util.Prompt;
 
+@Component("/photoboard/delete")
 public class PhotoBoardDeleteServlet implements Servlet {
 
   PhotoBoardService photoBoardService;

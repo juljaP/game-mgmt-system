@@ -10,8 +10,10 @@ import julja.gms.domain.PhotoFile;
 import julja.gms.service.GameService;
 import julja.gms.service.PhotoBoardService;
 import julja.sql.TransactionTemplate;
+import julja.util.Component;
 import julja.util.Prompt;
 
+@Component("/photoboard/add")
 public class PhotoBoardAddServlet implements Servlet {
 
   PhotoBoardService photoBoardService;

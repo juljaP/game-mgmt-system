@@ -29,10 +29,10 @@
 
 - src/main/java/julja/util/Component.java 추가
 - src/main/java/julja/util/ApplicationContext.java 추가
-- src/main/java/julja/lms/service/impl/BoardServiceImpl2.java 삭제
-- src/main/java/julja/lms/service/impl/XxxServiceImpl.java 변경
-- src/main/java/julja/lms/servlet/XxxServlet.java 변경
-- src/main/java/julja/lms/DataLoaderListener.java 의 이름 변경
+- src/main/java/julja/gms/service/impl/BoardServiceImpl2.java 삭제
+- src/main/java/julja/gms/service/impl/XxxServiceImpl.java 변경
+- src/main/java/julja/gms/servlet/XxxServlet.java 변경
+- src/main/java/julja/gms/DataLoaderListener.java 의 이름 변경
   - ContextLoaderListener.java 로 이름 변경
   
   
@@ -43,9 +43,9 @@
 
 - julja.util.ApplicationContext 클래스 변경
   - 패키지명 입력받아서 해당 패키지 뒤져 모든 클래스의 이름을 가져온다.
-- julja.lms.DataLoaderListener의 이름 변경
+- julja.gms.DataLoaderListener의 이름 변경
   - 애플리케이션 실행할 때 사용할 객체나 환경 준비->'ContextLoaderListener'라 변경
-- julja.lms.ContextLoaderListener 변경
+- julja.gms.ContextLoaderListener 변경
   - ApplicationContext 객체 생성하여 맵에 보관
   
 ### 3: 객체 생성할 수 있는 concrete class만 추출
@@ -71,7 +71,7 @@
 
 - julja.util.Component 애노테이션 추가
   - 빈의 이름 설정하는 애노테이션 정의
-- julja.lms.servlet.XxxServlet 변경
+- julja.gms.servlet.XxxServlet 변경
   - 클래스에 Component 애노테이션 적용하여 이름 지정
 - julja.util.ApplicationContext 클래스 변경
   - 객체 객체풀에 저장할 때 Component 애노테이션에서 이름 가져와서 저장
@@ -81,12 +81,12 @@
 - julja.util.ApplicationContext 클래스 변경
   - 외부에서 생성한 객체 등록한 addBean() 메서드 추가
   - 내부에서 생성한 객체 꺼낼 수 있도록 getBean() 메서드 추가
-- julja.lms.ServerApp 변경
+- julja.gms.ServerApp 변경
   - ApplicationContext 사용하여 객체 관리
   
 ### 7: @Component 애노테이션이 붙은 객체만 관리
 
-- julja.lms.servlet.impl.XxxServiceImpl 변경
+- julja.gms.servlet.impl.XxxServiceImpl 변경
   - 클래스에 Component 애노테이션 적용
 - julja.util.ApplicationContext 클래스 변경
   - @Component가 붙은 클래스만 찾아내 객체 생성
@@ -96,13 +96,13 @@
   
 ### 8: IoC 컨테이너의 이점 활용
 
-- julja.lms.servlet.HelloServlet 추가
+- julja.gms.servlet.HelloServlet 추가
   - 클라이언트가 "/hello" 요청했 때 "안녕하세요!"하고 인사말 응답
   - IoC 컨테이너 도입하면, 새 명령 처리하는 서블릿이 추가되더라도 기존 코드(예: ServerApp) 변경할 필요 없음
   
 ### 9: IoC 컨테이너의 이점 활용 II
 
-- julja.lms.servlet.HelloServlet 삭제
+- julja.gms.servlet.HelloServlet 삭제
   - 기존 코드 손댈 필요 없음
   
   

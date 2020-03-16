@@ -7,7 +7,9 @@ import julja.gms.domain.PhotoBoard;
 import julja.gms.service.PhotoBoardService;
 import julja.sql.PlatformTransactionManager;
 import julja.sql.TransactionTemplate;
+import julja.util.Component;
 
+@Component
 public class PhotoBoardServiceImpl implements PhotoBoardService {
 
   PhotoBoardDao photoBoardDao;

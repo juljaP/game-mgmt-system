@@ -6,8 +6,10 @@ import java.util.Map;
 import java.util.Scanner;
 import julja.gms.domain.User;
 import julja.gms.service.UserService;
+import julja.util.Component;
 import julja.util.Prompt;
 
+@Component("/auth/login")
 public class LoginServlet implements Servlet {
 
   UserService userService;

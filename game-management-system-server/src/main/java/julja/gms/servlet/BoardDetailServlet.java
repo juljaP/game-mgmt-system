@@ -4,8 +4,10 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import julja.gms.domain.Board;
 import julja.gms.service.BoardService;
+import julja.util.Component;
 import julja.util.Prompt;
 
+@Component("/board/detail")
 public class BoardDetailServlet implements Servlet {
 
   BoardService boardService;

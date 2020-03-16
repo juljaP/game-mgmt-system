@@ -4,7 +4,9 @@ import java.util.List;
 import julja.gms.dao.GameDao;
 import julja.gms.domain.Game;
 import julja.gms.service.GameService;
+import julja.util.Component;
 
+@Component
 public class GameServiceImpl implements GameService {
 
   GameDao gameDao;

@@ -4,7 +4,9 @@ import java.util.List;
 import julja.gms.dao.UserDao;
 import julja.gms.domain.User;
 import julja.gms.service.UserService;
+import julja.util.Component;
 
+@Component
 public class UserServiceImpl implements UserService {
 
   UserDao userDao;
