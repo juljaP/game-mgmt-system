@@ -3,9 +3,9 @@ package julja.gms.servlet;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import julja.gms.domain.User;
 import julja.gms.service.UserService;
-import julja.util.Component;
 
 @Component("/user/list")
 public class UserListServlet implements Servlet {

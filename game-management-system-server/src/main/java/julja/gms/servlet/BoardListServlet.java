@@ -3,9 +3,9 @@ package julja.gms.servlet;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import julja.gms.domain.Board;
 import julja.gms.service.BoardService;
-import julja.util.Component;
 
 @Component("/board/list")
 public class BoardListServlet implements Servlet {

@@ -12,10 +12,10 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.context.ApplicationContext;
 import julja.gms.context.ApplicationContextListener;
 import julja.gms.servlet.Servlet;
 import julja.sql.SqlSessionFactoryProxy;
-import julja.util.ApplicationContext;
 
 public class ServerApp {
 
@@ -90,6 +90,7 @@ public class ServerApp {
 
   }
 
+  @SuppressWarnings("unused")
   void processRequest(Socket clientSocket) {
     try (Socket socket = clientSocket;
         Scanner in = new Scanner(socket.getInputStream());
@@ -104,7 +105,8 @@ public class ServerApp {
         return;
       }
 
-      Servlet servlet = (Servlet) iocContainer.getBean(request);
+      Servlet servlet = null;
+      // (Servlet) iocContainer.getBean(request);
       if (servlet != null) {
         try {
           servlet.service(in, out);

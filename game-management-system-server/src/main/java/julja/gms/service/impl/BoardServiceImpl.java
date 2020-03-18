@@ -1,10 +1,10 @@
 package julja.gms.service.impl;
 
 import java.util.List;
+import org.springframework.stereotype.Component;
 import julja.gms.dao.BoardDao;
 import julja.gms.domain.Board;
 import julja.gms.service.BoardService;
-import julja.util.Component;
 
 @Component
 public class BoardServiceImpl implements BoardService {

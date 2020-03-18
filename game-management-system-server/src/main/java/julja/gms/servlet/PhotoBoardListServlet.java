@@ -3,11 +3,11 @@ package julja.gms.servlet;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import julja.gms.domain.Game;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.service.GameService;
 import julja.gms.service.PhotoBoardService;
-import julja.util.Component;
 import julja.util.Prompt;
 
 @Component("/photoboard/list")

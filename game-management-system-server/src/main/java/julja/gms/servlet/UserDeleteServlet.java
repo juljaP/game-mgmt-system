@@ -2,8 +2,8 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import julja.gms.service.UserService;
-import julja.util.Component;
 import julja.util.Prompt;
 
 @Component("/user/delete")

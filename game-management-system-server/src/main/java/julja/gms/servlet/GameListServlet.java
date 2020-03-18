@@ -3,9 +3,9 @@ package julja.gms.servlet;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import julja.gms.domain.Game;
 import julja.gms.service.GameService;
-import julja.util.Component;
 
 @Component("/game/list")
 public class GameListServlet implements Servlet {
