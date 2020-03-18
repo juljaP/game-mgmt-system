@@ -3,6 +3,7 @@ package julja.gms.service.impl;
 import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import julja.gms.dao.PhotoBoardDao;
 import julja.gms.dao.PhotoFileDao;
@@ -23,6 +24,7 @@ public class PhotoBoardServiceImpl implements PhotoBoardService {
     this.transactionTemplate = new TransactionTemplate(txManager);
   }
 
+  @Transactional
   @Override
   public void insert(PhotoBoard photoBoard) throws Exception {
     if (photoBoardDao.insert(photoBoard) == 0) {
@@ -41,6 +43,7 @@ public class PhotoBoardServiceImpl implements PhotoBoardService {
     return photoBoardDao.findByNo(no);
   }
 
+  @Transactional
   @Override
   public void update(PhotoBoard photoBoard) throws Exception {
     if (photoBoardDao.update(photoBoard) == 0) {
@@ -53,6 +56,7 @@ public class PhotoBoardServiceImpl implements PhotoBoardService {
     }
   }
 
+  @Transactional
   @Override
   public void delete(int no) throws Exception {
     photoFileDao.deleteAll(no);
