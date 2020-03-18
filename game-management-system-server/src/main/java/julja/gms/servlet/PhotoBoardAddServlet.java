@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionTemplate;
 import julja.gms.domain.Game;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
 import julja.gms.service.GameService;
 import julja.gms.service.PhotoBoardService;
-import julja.sql.TransactionTemplate;
 import julja.util.Prompt;
 
 @Component("/photoboard/add")

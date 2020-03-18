@@ -1,63 +1,59 @@
 package julja.gms;
 
-import java.io.InputStream;
-import org.apache.ibatis.io.Resources;
+import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import julja.gms.dao.BoardDao;
-import julja.gms.dao.GameDao;
-import julja.gms.dao.PhotoBoardDao;
-import julja.gms.dao.PhotoFileDao;
-import julja.gms.dao.UserDao;
-import julja.sql.MybatisDaoFactory;
-import julja.sql.PlatformTransactionManager;
-import julja.sql.SqlSessionFactoryProxy;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.PlatformTransactionManager;
 
+@ComponentScan(value = "julja.gms")
+@PropertySource("classpath:julja/gms/conf/jdbc.properties")
+@MapperScan("julja.gms.dao")
 public class AppConfig {
 
-  public AppConfig() {
-    // TODO Auto-generated constructor stub
+  @Value("${jdbc.driver}")
+  String jdbcDriver;
+  @Value("${jdbc.url}")
+  String jdbcUrl;
+  @Value("${jdbc.username}")
+  String jdbcUsername;
+  @Value("${jdbc.password}")
+  String jdbcPassword;
+
+  public AppConfig() {}
+
+  @Bean
+  public DataSource dataSource() {
+    DriverManagerDataSource ds = new DriverManagerDataSource();
+    ds.setDriverClassName(jdbcDriver);
+    ds.setUrl(jdbcUrl);
+    ds.setUsername(jdbcUsername);
+    ds.setPassword(jdbcPassword);
+    return ds;
   }
 
   @Bean
-  public SqlSessionFactory sqlSessionFactory() throws Exception {
-    InputStream inputStream = Resources.getResourceAsStream("julja/gms/conf/mybatis-config.xml");
-    return new SqlSessionFactoryProxy(new SqlSessionFactoryBuilder().build(inputStream));
+  public SqlSessionFactory sqlSessionFactory(DataSource dataSource, ApplicationContext appCtx)
+      throws Exception {
+    SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+    sqlSessionFactoryBean.setDataSource(dataSource);
+    sqlSessionFactoryBean.setTypeAliasesPackage("julja.gms.domain");
+    sqlSessionFactoryBean
+        .setMapperLocations(appCtx.getResources("classpath:julja/gms/mapper/*Mapper.xml"));
+
+    return sqlSessionFactoryBean.getObject();
   }
 
   @Bean
-  public MybatisDaoFactory daoFactory(SqlSessionFactory sqlSessionFactory) {
-    return new MybatisDaoFactory(sqlSessionFactory);
-  }
-
-  @Bean
-  public PlatformTransactionManager txManager(SqlSessionFactory sqlSessionFactory) {
-    return new PlatformTransactionManager(sqlSessionFactory);
-  }
-
-  @Bean
-  public GameDao gameDao(MybatisDaoFactory daoFactory) {
-    return daoFactory.createDao(GameDao.class);
-  }
-
-  @Bean
-  public UserDao userDao(MybatisDaoFactory daoFactory) {
-    return daoFactory.createDao(UserDao.class);
-  }
-
-  @Bean
-  public BoardDao boardDao(MybatisDaoFactory daoFactory) {
-    return daoFactory.createDao(BoardDao.class);
-  }
-
-  @Bean
-  public PhotoBoardDao photoBoardDao(MybatisDaoFactory daoFactory) {
-    return daoFactory.createDao(PhotoBoardDao.class);
-  }
-
-  public PhotoFileDao photoFileDao(MybatisDaoFactory daoFactory) {
-    return daoFactory.createDao(PhotoFileDao.class);
+  public PlatformTransactionManager platformTransactionManager(DataSource dataSource) {
+    return new DataSourceTransactionManager(dataSource);
   }
 
 }

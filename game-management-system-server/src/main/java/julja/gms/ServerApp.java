@@ -11,11 +11,9 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.context.ApplicationContext;
 import julja.gms.context.ApplicationContextListener;
 import julja.gms.servlet.Servlet;
-import julja.sql.SqlSessionFactoryProxy;
 
 public class ServerApp {
 
@@ -49,7 +47,6 @@ public class ServerApp {
 
     notifyApplicationInitialized();
     iocContainer = (ApplicationContext) context.get("iocContainer");
-    SqlSessionFactory sqlSessionFactory = (SqlSessionFactory) context.get("sqlSessionFactory");
 
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
@@ -60,7 +57,6 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
-          ((SqlSessionFactoryProxy) sqlSessionFactory).closeSession();
           System.out.println("-----------------------------------");
         });
 
