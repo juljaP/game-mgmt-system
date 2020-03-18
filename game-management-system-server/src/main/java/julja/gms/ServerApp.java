@@ -101,8 +101,7 @@ public class ServerApp {
         return;
       }
 
-      Servlet servlet = null;
-      // (Servlet) iocContainer.getBean(request);
+      Servlet servlet = (Servlet) iocContainer.getBean(request);
       if (servlet != null) {
         try {
           servlet.service(in, out);
