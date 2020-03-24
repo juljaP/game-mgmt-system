@@ -1,26 +1,35 @@
-# 52_1 - 애노테이션을 이용한 트랜잭션 제어
+# 53_1 - Log4j 1.2.x 이용한 애플리케이션 로그 처리
 
-- @Transactional, @EnableTransactionManagement
+## `Log4j` 라이브러리
+- 개발 중에는 로그 자세하게 출력하고 개발이 완료된 후에는 중요 로그만 출력하도록 조정하는 기능 제공
+- 로그의 출력 형식 지정할 수 있다. 
+- 출력 대상도 콘솔, 파일, 네트워크, DB 등 다양하게 지정할 수 있다.
 
 ## 소스 및 결과
 
 - src/main/java/julja/gms/DatabaseConfig.java 변경
-- src/main/java/julja/gms/service/impl/PhotoBoardServiceImpl.java 변경
- 
+- src/main/java/julja/gms/AppConfig.java 변경 
+- src/main/java/julja/gms/MybatisConfig.java 변경 
+- src/main/java/julja/gms/ServiceApp.java 변경 
 
-### 1: 애노테이션으로 트랜잭션을 제어할 수 있도록 해당 기능을 활성화
+### 1: Log4j 1.2.x 라이브러리 추가
 
-- julja.gms.DatabaseConfig 변경
-  - @Transactional 애노테이션 기능을 활성화시키기 위해서 
-    @EnableTransactionManagement 애노테이션을 추가로 선언
+- 라이브러리 정보 알아내기
+    - `mvnrepository.com`에서 `log4j` 검색
+- build.gradle
+    - `log4j` 라이브러리 정보 추가
+    - `$ gradle eclipse` 실행하여 이클립스 설정 파일 갱신
+    - 이클립스 워크스페이스에 로딩되어 있는 클래스 갱신
 
-#### @EnableTransactionManagement 
 
-메서드에 @Transactional 이 붙어 있으면 해당 메서드를 트랜잭션으로 묶기 위해 프록시 객체 자동 생성
-  
-### 2: @Transactional 애노테이션으로 트랜잭션을 제어
+### 2: Log4j 설정 파일 추가
 
-- julja.gms.service.impl.PhotoBoardServiceImpl 변경
-  - TransactionTemplate을 사용하는 대신에 @Transactional 애노테이션을 붙인다.
-  - add(), update(), delete()을 변경
-  
+- src/main/resources/log4j.properties 추가
+  - 자바 classpath 루트에 log4j 설정 파일 두기
+  - log4j의 출력 범위와 출력 대상, 출력 형식 설정하는 파일
+
+
+### 3: 각 클래스의 로그 출력 Log4j로 전환
+
+- julja.gms.ServerApp 변경
+  - 기존의 출력 log4j로 전환
