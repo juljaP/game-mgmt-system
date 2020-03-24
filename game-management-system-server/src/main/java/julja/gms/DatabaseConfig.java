@@ -2,6 +2,8 @@ package julja.gms;
 
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.ApplicationContext;
@@ -15,9 +17,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @MapperScan("julja.gms.dao")
 public class DatabaseConfig {
+  
+  static Logger logger = LogManager.getLogger(DatabaseConfig.class);
 
   public DatabaseConfig() {
-    System.out.println("DatabaseConfig 객체 생성!");
+    logger.info("DatabaseConfig 객체 생성!");
   }
 
   @Bean

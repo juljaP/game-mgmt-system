@@ -11,11 +11,15 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import julja.gms.context.ApplicationContextListener;
 import julja.gms.servlet.Servlet;
 
 public class ServerApp {
+
+  static Logger logger = LogManager.getLogger(ServerApp.class);
 
   Set<ApplicationContextListener> listeners = new HashSet<>();
   ExecutorService executorService = Executors.newCachedThreadPool();

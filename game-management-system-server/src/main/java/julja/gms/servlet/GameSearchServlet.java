@@ -1,4 +1,4 @@
-package julja.gms;
+package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Scanner;
 import julja.gms.domain.Game;
 import julja.gms.service.GameService;
-import julja.gms.servlet.Servlet;
 import julja.util.Prompt;
 
 public class GameSearchServlet implements Servlet {

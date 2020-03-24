@@ -23,7 +23,7 @@ public class ContextLoaderListener implements ApplicationContextListener {
 
       ApplicationContext appCtx = new AnnotationConfigApplicationContext(AppConfig.class);
       context.put("iocContainer", appCtx);
-      printBeans(appCtx);
+      // printBeans(appCtx);
 
       System.out.println("------------------------------------------");
 
@@ -55,6 +55,7 @@ public class ContextLoaderListener implements ApplicationContextListener {
     return null;
   }
 
+  @SuppressWarnings("unused")
   private void printBeans(ApplicationContext appCtx) {
     System.out.println("---- Spring IoC 컨테이너에 들어있는 객체들 ----");
     String[] beanNames = appCtx.getBeanDefinitionNames();
