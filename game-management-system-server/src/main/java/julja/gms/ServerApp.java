@@ -2,6 +2,8 @@ package julja.gms;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -54,14 +56,14 @@ public class ServerApp {
 
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
-      System.out.println("클라이언트 연결 대기중...");
+      ServerApp.logger.info("클라이언트 연결 대기중...");
       while (true) {
         Socket socket = serverSocket.accept();
-        System.out.println("클라이언트와 연결되었습니다.");
+        ServerApp.logger.info("클라이언트와 연결되었습니다.");
 
         executorService.submit(() -> {
           processRequest(socket);
-          System.out.println("-----------------------------------");
+          ServerApp.logger.info("-----------------------------------");
         });
 
         if (serverStop) {
@@ -70,7 +72,7 @@ public class ServerApp {
 
       }
     } catch (Exception e) {
-      System.out.println("서버 준비 중 오류 발생");
+      ServerApp.logger.error(String.format("서버 준비 중 오류 발생: %s", e.getMessage()));
     }
 
     executorService.shutdown();
@@ -90,14 +92,13 @@ public class ServerApp {
 
   }
 
-  @SuppressWarnings("unused")
   void processRequest(Socket clientSocket) {
     try (Socket socket = clientSocket;
         Scanner in = new Scanner(socket.getInputStream());
         PrintStream out = new PrintStream(socket.getOutputStream())) {
 
       String request = in.nextLine();
-      System.out.printf("=> %s\n", request);
+      ServerApp.logger.info(String.format("=> %s\n", request));
 
 
       if (request.equalsIgnoreCase("/server/stop")) {
@@ -112,8 +113,12 @@ public class ServerApp {
         } catch (Exception e) {
           out.println("요청 처리 중 오류 발생!");
           out.println(e.getMessage());
-          System.out.print("클라이언트 요청 처리 중 오류발생: ");
-          e.printStackTrace();
+          
+          logger.info("클라이언트 요청 처리 중 오류발생: ");
+          logger.info(e.getMessage());
+          StringWriter strWriter = new StringWriter();
+          e.printStackTrace(new PrintWriter(strWriter));
+          logger.debug(strWriter.toString());
         }
       } else {
         notFound(out);
@@ -121,8 +126,10 @@ public class ServerApp {
       out.println("!end!");
       out.flush();
     } catch (Exception e) {
-      System.out.println("예외 발생:");
-      e.printStackTrace();
+      logger.error(String.format("예외 발생: %s", e.getMessage()));
+      StringWriter strWriter = new StringWriter();
+      e.printStackTrace(new PrintWriter(strWriter));
+      logger.debug(strWriter.toString());
     }
   }
 
@@ -139,7 +146,7 @@ public class ServerApp {
   }
 
   public static void main(String[] args) throws Exception {
-    System.out.println("게임 관리 시스템 서버입니다.");
+    ServerApp.logger.info("게임 관리 시스템 서버입니다.");
     ServerApp app = new ServerApp();
     app.addApplicationContextListener(new ContextLoaderListener());
     app.service();

@@ -1,13 +1,15 @@
 package julja.gms;
 
 import javax.sql.DataSource;
+import org.apache.ibatis.logging.LogFactory;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Configuration
 @PropertySource("classpath:julja/gms/conf/jdbc.properties")
@@ -19,22 +21,17 @@ public class MybatisConfig {
     MybatisConfig.logger.info("MybatisConfig 객체 생성!");
   }
 
-  @Value("${jdbc.driver}")
-  String jdbcDriver;
-  @Value("${jdbc.url}")
-  String jdbcUrl;
-  @Value("${jdbc.username}")
-  String jdbcUsername;
-  @Value("${jdbc.password}")
-  String jdbcPassword;
-
   @Bean
-  public DataSource dataSource() {
-    DriverManagerDataSource ds = new DriverManagerDataSource();
-    ds.setDriverClassName(jdbcDriver);
-    ds.setUrl(jdbcUrl);
-    ds.setUsername(jdbcUsername);
-    ds.setPassword(jdbcPassword);
-    return ds;
+  public SqlSessionFactory sqlSessionFactory(DataSource dataSource, ApplicationContext appCtx)
+      throws Exception {
+    // log4j 활성화
+    LogFactory.useLog4JLogging();
+    SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+    sqlSessionFactoryBean.setDataSource(dataSource);
+    sqlSessionFactoryBean.setTypeAliasesPackage("julja.gms.domain");
+    sqlSessionFactoryBean
+        .setMapperLocations(appCtx.getResources("classpath:julja/gms/mapper/*Mapper.xml"));
+
+    return sqlSessionFactoryBean.getObject();
   }
 }

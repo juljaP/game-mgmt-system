@@ -9,6 +9,7 @@
 
 - src/main/java/julja/gms/DatabaseConfig.java 변경
 - src/main/java/julja/gms/AppConfig.java 변경 
+- src/main/java/julja/gms/ContextLoaderListener.java 변경 
 - src/main/java/julja/gms/MybatisConfig.java 변경 
 - src/main/java/julja/gms/ServiceApp.java 변경 
 
@@ -31,5 +32,15 @@
 
 ### 3: 각 클래스의 로그 출력 Log4j로 전환
 
-- julja.gms.ServerApp 변경
-  - 기존의 출력 log4j로 전환
+- julja.lms.ServerApp 변경
+- julja.lms.ContextLoaderListener 변경
+- julja.lms.AppConfig 변경
+- julja.lms.DatabaseConfig 변경
+- julja.lms.MybatisConfig 변경
+
+### 4: Mybatis에 log4j 설정
+
+- julja.gms.MybatisConfig 변경
+  - org.apache.ibatis.logging.LogFactory.useLog4JLogging() 호출
+  - 즉 log4j 기능을 활성화시킨다.
+
