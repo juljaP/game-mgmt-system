@@ -3,8 +3,8 @@ package julja.gms;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ public class ContextLoaderListener implements ApplicationContextListener {
       context.put("iocContainer", appCtx);
       // printBeans(appCtx);
 
-      logger.info("------------------------------------------");
+      ContextLoaderListener.logger.info("------------------------------------------");
 
       RequestMappingHandlerMapping handlerMapper = new RequestMappingHandlerMapping();
       String[] beanNames = appCtx.getBeanNamesForAnnotation(Component.class);
@@ -61,10 +61,10 @@ public class ContextLoaderListener implements ApplicationContextListener {
 
   @SuppressWarnings("unused")
   private void printBeans(ApplicationContext appCtx) {
-    logger.info("---- Spring IoC 컨테이너에 들어있는 객체들 ----");
+    ContextLoaderListener.logger.info("---- Spring IoC 컨테이너에 들어있는 객체들 ----");
     String[] beanNames = appCtx.getBeanDefinitionNames();
     for (String beanName : beanNames) {
-      logger.info(String.format("%s =======> %s\n", beanName,
+      ContextLoaderListener.logger.info(String.format("%s =======> %s\n", beanName,
           appCtx.getBean(beanName).getClass().getName()));
     }
   }

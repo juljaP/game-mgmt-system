@@ -13,8 +13,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import julja.gms.context.ApplicationContextListener;
 import julja.gms.servlet.Servlet;
@@ -113,12 +113,12 @@ public class ServerApp {
         } catch (Exception e) {
           out.println("요청 처리 중 오류 발생!");
           out.println(e.getMessage());
-          
-          logger.info("클라이언트 요청 처리 중 오류발생: ");
-          logger.info(e.getMessage());
+
+          ServerApp.logger.info("클라이언트 요청 처리 중 오류발생: ");
+          ServerApp.logger.info(e.getMessage());
           StringWriter strWriter = new StringWriter();
           e.printStackTrace(new PrintWriter(strWriter));
-          logger.debug(strWriter.toString());
+          ServerApp.logger.debug(strWriter.toString());
         }
       } else {
         notFound(out);
@@ -126,10 +126,10 @@ public class ServerApp {
       out.println("!end!");
       out.flush();
     } catch (Exception e) {
-      logger.error(String.format("예외 발생: %s", e.getMessage()));
+      ServerApp.logger.error(String.format("예외 발생: %s", e.getMessage()));
       StringWriter strWriter = new StringWriter();
       e.printStackTrace(new PrintWriter(strWriter));
-      logger.debug(strWriter.toString());
+      ServerApp.logger.debug(strWriter.toString());
     }
   }
 
