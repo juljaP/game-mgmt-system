@@ -1,7 +1,6 @@
 package julja.gms;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,14 +21,11 @@ public class ContextLoaderListener implements ApplicationContextListener {
   public void contextInitailized(Map<String, Object> context) {
     try {
 
-      @SuppressWarnings("unused")
-      HashMap<String, Object> beans = new HashMap<>();
-
       ApplicationContext appCtx = new AnnotationConfigApplicationContext(AppConfig.class);
       context.put("iocContainer", appCtx);
       // printBeans(appCtx);
 
-      ContextLoaderListener.logger.info("------------------------------------------");
+      ContextLoaderListener.logger.debug("------------------------------------------");
 
       RequestMappingHandlerMapping handlerMapper = new RequestMappingHandlerMapping();
       String[] beanNames = appCtx.getBeanNamesForAnnotation(Component.class);
@@ -41,6 +37,7 @@ public class ContextLoaderListener implements ApplicationContextListener {
           handlerMapper.addHandler(requestHandler.getPath(), requestHandler);
         }
       }
+      context.put("handlerMapper", handlerMapper);
 
     } catch (Exception e) {
       e.printStackTrace();

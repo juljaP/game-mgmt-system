@@ -6,9 +6,10 @@ import java.util.Scanner;
 import org.springframework.stereotype.Component;
 import julja.gms.domain.User;
 import julja.gms.service.UserService;
+import julja.util.RequestMapping;
 
-@Component("/user/list")
-public class UserListServlet implements Servlet {
+@Component
+public class UserListServlet {
 
   UserService userService;
 
@@ -16,9 +17,9 @@ public class UserListServlet implements Servlet {
     this.userService = userService;
   }
 
-  @Override
+  @RequestMapping("/user/list")
   public void service(Scanner in, PrintStream out) throws Exception {
-    List<User> users = userService.findAll();
+    List<User> users = userService.list();
     for (User u : users) {
       out.printf("[%d] %s | %s | %s\n", u.getNo(), u.getUserEmail(), u.getUserName(),
           u.getUserResisteredDate());

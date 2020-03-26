@@ -7,9 +7,10 @@ import org.springframework.stereotype.Component;
 import julja.gms.domain.User;
 import julja.gms.service.UserService;
 import julja.util.Prompt;
+import julja.util.RequestMapping;
 
-@Component("/user/search")
-public class UserSearchServlet implements Servlet {
+@Component
+public class UserSearchServlet {
 
   UserService userService;
 
@@ -17,12 +18,12 @@ public class UserSearchServlet implements Servlet {
     this.userService = userService;
   }
 
-  @Override
+  @RequestMapping("/user/search")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     String keyword = Prompt.getString(in, out, "검색어? ");
 
-    List<User> users = userService.findByKeyword(keyword);
+    List<User> users = userService.search(keyword);
     for (User u : users) {
       out.printf("[%d] %s | %s | %s\n", u.getNo(), u.getUserEmail(), u.getUserName(),
           u.getUserResisteredDate());

@@ -6,9 +6,10 @@ import org.springframework.stereotype.Component;
 import julja.gms.domain.Game;
 import julja.gms.service.GameService;
 import julja.util.Prompt;
+import julja.util.RequestMapping;
 
-@Component("/game/detail")
-public class GameDetailServlet implements Servlet {
+@Component
+public class GameDetailServlet {
 
   GameService gameService;
 
@@ -16,7 +17,7 @@ public class GameDetailServlet implements Servlet {
     this.gameService = gameService;
   }
 
-  @Override
+  @RequestMapping("/game/detail")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "번호? ");

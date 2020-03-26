@@ -5,11 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import julja.gms.domain.Game;
 import julja.gms.service.GameService;
 import julja.util.Prompt;
+import julja.util.RequestMapping;
 
-public class GameSearchServlet implements Servlet {
+@Component
+public class GameSearchServlet {
 
   GameService gameService;
 
@@ -17,7 +20,7 @@ public class GameSearchServlet implements Servlet {
     this.gameService = gameService;
   }
 
-  @Override
+  @RequestMapping("/game/search")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     Map<String, Object> params = new HashMap<>();

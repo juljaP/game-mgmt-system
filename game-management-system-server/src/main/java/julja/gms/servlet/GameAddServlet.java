@@ -6,9 +6,10 @@ import org.springframework.stereotype.Component;
 import julja.gms.domain.Game;
 import julja.gms.service.GameService;
 import julja.util.Prompt;
+import julja.util.RequestMapping;
 
-@Component("/game/add")
-public class GameAddServlet implements Servlet {
+@Component
+public class GameAddServlet {
 
   GameService gameService;
 
@@ -16,7 +17,7 @@ public class GameAddServlet implements Servlet {
     this.gameService = gameService;
   }
 
-  @Override
+  @RequestMapping("/game/add")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     Game game = new Game();

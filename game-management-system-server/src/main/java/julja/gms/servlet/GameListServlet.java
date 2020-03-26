@@ -6,9 +6,10 @@ import java.util.Scanner;
 import org.springframework.stereotype.Component;
 import julja.gms.domain.Game;
 import julja.gms.service.GameService;
+import julja.util.RequestMapping;
 
-@Component("/game/list")
-public class GameListServlet implements Servlet {
+@Component
+public class GameListServlet {
 
   GameService gameService;
 
@@ -16,7 +17,7 @@ public class GameListServlet implements Servlet {
     this.gameService = gameService;
   }
 
-  @Override
+  @RequestMapping("/game/list")
   public void service(Scanner in, PrintStream out) throws Exception {
     List<Game> games = gameService.findAll();
 

@@ -6,9 +6,10 @@ import org.springframework.stereotype.Component;
 import julja.gms.domain.User;
 import julja.gms.service.UserService;
 import julja.util.Prompt;
+import julja.util.RequestMapping;
 
-@Component("/user/update")
-public class UserUpdateServlet implements Servlet {
+@Component
+public class UserUpdateServlet {
 
   UserService userService;
 
@@ -16,12 +17,12 @@ public class UserUpdateServlet implements Servlet {
     this.userService = userService;
   }
 
-  @Override
+  @RequestMapping("/user/update")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    User old = userService.findByNo(no);
+    User old = userService.get(no);
 
     if (old == null) {
       out.println("해당 번호의 유저가 없습니다.");

@@ -12,9 +12,10 @@ import julja.gms.domain.PhotoFile;
 import julja.gms.service.GameService;
 import julja.gms.service.PhotoBoardService;
 import julja.util.Prompt;
+import julja.util.RequestMapping;
 
-@Component("/photoboard/add")
-public class PhotoBoardAddServlet implements Servlet {
+@Component
+public class PhotoBoardAddServlet {
 
   PhotoBoardService photoBoardService;
   GameService gameService;
@@ -26,7 +27,7 @@ public class PhotoBoardAddServlet implements Servlet {
     this.gameService = gameService;
   }
 
-  @Override
+  @RequestMapping("/photoboard/add")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     PhotoBoard photoBoard = new PhotoBoard();

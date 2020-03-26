@@ -5,9 +5,10 @@ import java.util.Scanner;
 import org.springframework.stereotype.Component;
 import julja.gms.service.GameService;
 import julja.util.Prompt;
+import julja.util.RequestMapping;
 
-@Component("/game/delete")
-public class GameDeleteServlet implements Servlet {
+@Component
+public class GameDeleteServlet {
 
   GameService gameService;
 
@@ -15,7 +16,7 @@ public class GameDeleteServlet implements Servlet {
     this.gameService = gameService;
   }
 
-  @Override
+  @RequestMapping("/game/delete")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "번호? ");

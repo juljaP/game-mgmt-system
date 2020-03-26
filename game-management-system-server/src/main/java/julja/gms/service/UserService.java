@@ -6,21 +6,17 @@ import julja.gms.domain.User;
 
 public interface UserService {
 
-  int insert(User user) throws Exception;
+  int add(User user) throws Exception;
 
-  List<User> findAll() throws Exception;
+  List<User> list() throws Exception;
 
-  User findByNo(int no) throws Exception;
+  User get(int no) throws Exception;
 
   int update(User user) throws Exception;
 
   int delete(int no) throws Exception;
 
-  default List<User> findByKeyword(String keyword) throws Exception {
-    return null;
-  }
+  List<User> search(String keyword) throws Exception;
 
-  default User findByEmailAndPassword(Map<String, Object> params) throws Exception {
-    return null;
-  }
+  User login(Map<String, Object> params) throws Exception;
 }

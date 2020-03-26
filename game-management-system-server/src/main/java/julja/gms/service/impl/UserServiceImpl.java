@@ -1,6 +1,7 @@
 package julja.gms.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import julja.gms.dao.UserDao;
 import julja.gms.domain.User;
@@ -16,17 +17,17 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public int insert(User user) throws Exception {
+  public int add(User user) throws Exception {
     return userDao.insert(user);
   }
 
   @Override
-  public List<User> findAll() throws Exception {
+  public List<User> list() throws Exception {
     return userDao.findAll();
   }
 
   @Override
-  public User findByNo(int no) throws Exception {
+  public User get(int no) throws Exception {
     return userDao.findByNo(no);
   }
 
@@ -38,6 +39,16 @@ public class UserServiceImpl implements UserService {
   @Override
   public int delete(int no) throws Exception {
     return userDao.delete(no);
+  }
+
+  @Override
+  public List<User> search(String keyword) throws Exception {
+    return userDao.findByKeyword(keyword);
+  }
+
+  @Override
+  public User login(Map<String, Object> params) throws Exception {
+    return userDao.findByEmailAndPassword(params);
   }
 
 }

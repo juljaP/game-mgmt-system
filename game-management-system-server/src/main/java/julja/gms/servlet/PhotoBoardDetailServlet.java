@@ -7,9 +7,10 @@ import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
 import julja.gms.service.PhotoBoardService;
 import julja.util.Prompt;
+import julja.util.RequestMapping;
 
-@Component("/photoboard/detail")
-public class PhotoBoardDetailServlet implements Servlet {
+@Component
+public class PhotoBoardDetailServlet {
 
   PhotoBoardService photoBoardService;
 
@@ -17,7 +18,7 @@ public class PhotoBoardDetailServlet implements Servlet {
     this.photoBoardService = photoBoardService;
   }
 
-  @Override
+  @RequestMapping("/photoboard/detail")
   public void service(Scanner in, PrintStream out) throws Exception {
     int no = Prompt.getInt(in, out, "번호? ");
 

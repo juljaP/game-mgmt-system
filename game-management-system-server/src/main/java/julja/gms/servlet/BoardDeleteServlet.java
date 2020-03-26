@@ -5,9 +5,10 @@ import java.util.Scanner;
 import org.springframework.stereotype.Component;
 import julja.gms.service.BoardService;
 import julja.util.Prompt;
+import julja.util.RequestMapping;
 
-@Component("/board/delete")
-public class BoardDeleteServlet implements Servlet {
+@Component
+public class BoardDeleteServlet {
 
   BoardService boardService;
 
@@ -15,7 +16,7 @@ public class BoardDeleteServlet implements Servlet {
     this.boardService = boardService;
   }
 
-  @Override
+  @RequestMapping("/board/delete")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "번호? ");

@@ -16,12 +16,8 @@ public interface UserDao {
 
   int delete(int no) throws Exception;
 
-  default List<User> findByKeyword(String keyword) throws Exception {
-    return null;
-  }
+  List<User> findByKeyword(String keyword) throws Exception;
 
-  default User findByEmailAndPassword(Map<String, Object> params) throws Exception {
-    return null;
-  }
+  User findByEmailAndPassword(Map<String, Object> params) throws Exception;
 
 }

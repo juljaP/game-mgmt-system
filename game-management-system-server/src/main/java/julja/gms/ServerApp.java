@@ -17,7 +17,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import julja.gms.context.ApplicationContextListener;
-import julja.gms.servlet.Servlet;
+import julja.util.RequestHandler;
+import julja.util.RequestMappingHandlerMapping;
 
 public class ServerApp {
 
@@ -28,6 +29,7 @@ public class ServerApp {
   Map<String, Object> context = new HashMap<>();
   boolean serverStop = false;
   ApplicationContext iocContainer;
+  RequestMappingHandlerMapping handlerMapper;
 
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
@@ -53,7 +55,7 @@ public class ServerApp {
 
     notifyApplicationInitialized();
     iocContainer = (ApplicationContext) context.get("iocContainer");
-
+    handlerMapper = (RequestMappingHandlerMapping) context.get("handlerMapper");
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
       ServerApp.logger.info("클라이언트 연결 대기중...");
@@ -93,28 +95,44 @@ public class ServerApp {
   }
 
   void processRequest(Socket clientSocket) {
+
     try (Socket socket = clientSocket;
         Scanner in = new Scanner(socket.getInputStream());
         PrintStream out = new PrintStream(socket.getOutputStream())) {
 
-      String request = in.nextLine();
-      ServerApp.logger.info(String.format("=> %s\n", request));
+      String[] requestLine = in.nextLine().split(" ");
+      // 기타 나머지 요청 데이터 버리기
 
+      while (true) {
+        String line = in.nextLine();
+        if (line.length() == 0) {
+          break;
+        }
+      }
 
-      if (request.equalsIgnoreCase("/server/stop")) {
+      String method = requestLine[0];
+      String requestUri = requestLine[1];
+      ServerApp.logger.info(String.format("method => %s", method));
+      ServerApp.logger.info(String.format("request-uri => %s", requestUri));
+      // HTTP 응답 헤더 출력
+      printResponseHeader(out);
+
+      if (requestUri.equalsIgnoreCase("/server/stop")) {
         quit(out);
         return;
       }
 
-      Servlet servlet = (Servlet) iocContainer.getBean(request);
-      if (servlet != null) {
+      RequestHandler requestHandler = handlerMapper.getHandler(requestUri);
+
+      if (requestHandler != null) {
         try {
-          servlet.service(in, out);
+          // request handler 메서드 호출
+          requestHandler.getMethod().invoke(requestHandler.getBean(), in, out);
         } catch (Exception e) {
           out.println("요청 처리 중 오류 발생!");
           out.println(e.getMessage());
 
-          ServerApp.logger.info("클라이언트 요청 처리 중 오류발생: ");
+          ServerApp.logger.info("클라이언트 요청 처리 중 오류 발생:");
           ServerApp.logger.info(e.getMessage());
           StringWriter strWriter = new StringWriter();
           e.printStackTrace(new PrintWriter(strWriter));
@@ -122,9 +140,11 @@ public class ServerApp {
         }
       } else {
         notFound(out);
+        ServerApp.logger.info("해당 명령을 지원하지 않습니다.");
       }
-      out.println("!end!");
       out.flush();
+      ServerApp.logger.info("클라이언트에게 응답하였음!");
+
     } catch (Exception e) {
       ServerApp.logger.error(String.format("예외 발생: %s", e.getMessage()));
       StringWriter strWriter = new StringWriter();
@@ -134,15 +154,26 @@ public class ServerApp {
   }
 
   private void notFound(PrintStream out) throws IOException {
-    out.println("FAIL");
-    out.println("요청한 명령을 처리할 수 없습니다.");
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<title>실행 오류</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>실행 오류</h1>");
+    out.println("<p>요청한 명령을 처리할 수 없습니다.</p>");
   }
 
   private void quit(PrintStream out) throws IOException {
     serverStop = true;
-    out.println("OK");
-    out.println("!end!");
     out.flush();
+  }
+
+  private void printResponseHeader(PrintStream out) {
+    out.println("HTTP/1.1 200OK");
+    out.println("Server: gmsServer");
+    out.println();
   }
 
   public static void main(String[] args) throws Exception {

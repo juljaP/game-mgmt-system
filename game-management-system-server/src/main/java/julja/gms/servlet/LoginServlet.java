@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component;
 import julja.gms.domain.User;
 import julja.gms.service.UserService;
 import julja.util.Prompt;
+import julja.util.RequestMapping;
 
-@Component("/auth/login")
-public class LoginServlet implements Servlet {
+@Component
+public class LoginServlet {
 
   UserService userService;
 
@@ -18,7 +19,7 @@ public class LoginServlet implements Servlet {
     this.userService = userService;
   }
 
-  @Override
+  @RequestMapping("/auth/login")
   public void service(Scanner in, PrintStream out) throws Exception {
     String email = Prompt.getString(in, out, "이메일? ");
     String password = Prompt.getString(in, out, "암호? ");
@@ -27,7 +28,7 @@ public class LoginServlet implements Servlet {
     params.put("email", email);
     params.put("password", password);
 
-    User u = userService.findByEmailAndPassword(params);
+    User u = userService.login(params);
     if (u != null) {
       out.printf("'%s'님 환영합니다.\n", u.getUserName());
     } else {

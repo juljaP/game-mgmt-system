@@ -9,9 +9,10 @@ import julja.gms.domain.PhotoBoard;
 import julja.gms.service.GameService;
 import julja.gms.service.PhotoBoardService;
 import julja.util.Prompt;
+import julja.util.RequestMapping;
 
-@Component("/photoboard/list")
-public class PhotoBoardListServlet implements Servlet {
+@Component
+public class PhotoBoardListServlet {
 
   PhotoBoardService photoBoardService;
   GameService gameService;
@@ -21,7 +22,7 @@ public class PhotoBoardListServlet implements Servlet {
     this.gameService = gameService;
   }
 
-  @Override
+  @RequestMapping("/photoboard/list")
   public void service(Scanner in, PrintStream out) throws Exception {
     int no = Prompt.getInt(in, out, "게임 번호? ");
     Game game = gameService.findByNo(no);

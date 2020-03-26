@@ -6,9 +6,10 @@ import java.util.Scanner;
 import org.springframework.stereotype.Component;
 import julja.gms.domain.Board;
 import julja.gms.service.BoardService;
+import julja.util.RequestMapping;
 
-@Component("/board/list")
-public class BoardListServlet implements Servlet {
+@Component
+public class BoardListServlet {
 
   BoardService boardService;
 
@@ -16,9 +17,9 @@ public class BoardListServlet implements Servlet {
     this.boardService = boardService;
   }
 
-  @Override
+  @RequestMapping("/board/list")
   public void service(Scanner in, PrintStream out) throws Exception {
-    List<Board> boards = boardService.findAll();
+    List<Board> boards = boardService.list();
 
     for (Board board : boards) {
       out.printf("[%d] %s | %s | %d \n", board.getNo(), board.getBbsName(), board.getToday(),

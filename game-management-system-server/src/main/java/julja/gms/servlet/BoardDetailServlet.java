@@ -6,9 +6,10 @@ import org.springframework.stereotype.Component;
 import julja.gms.domain.Board;
 import julja.gms.service.BoardService;
 import julja.util.Prompt;
+import julja.util.RequestMapping;
 
-@Component("/board/detail")
-public class BoardDetailServlet implements Servlet {
+@Component
+public class BoardDetailServlet {
 
   BoardService boardService;
 
@@ -16,12 +17,12 @@ public class BoardDetailServlet implements Servlet {
     this.boardService = boardService;
   }
 
-  @Override
+  @RequestMapping("/board/detail")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    Board b = boardService.findByNo(no);
+    Board b = boardService.get(no);
 
     if (b != null) {
       out.println("제목 : " + b.getBbsName());

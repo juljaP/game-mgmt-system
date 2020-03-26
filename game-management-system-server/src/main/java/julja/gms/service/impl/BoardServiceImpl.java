@@ -16,17 +16,17 @@ public class BoardServiceImpl implements BoardService {
   }
 
   @Override
-  public int insert(Board board) throws Exception {
+  public int add(Board board) throws Exception {
     return boardDao.insert(board);
   }
 
   @Override
-  public List<Board> findAll() throws Exception {
+  public List<Board> list() throws Exception {
     return boardDao.findAll();
   }
 
   @Override
-  public Board findByNo(int no) throws Exception {
+  public Board get(int no) throws Exception {
     return boardDao.findByNo(no);
   }
 
