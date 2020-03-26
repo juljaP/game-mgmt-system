@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -114,6 +115,9 @@ public class ServerApp {
       String requestUri = requestLine[1];
       ServerApp.logger.info(String.format("method => %s", method));
       ServerApp.logger.info(String.format("request-uri => %s", requestUri));
+      String servletPath = getServletPath(requestUri);
+      ServerApp.logger.debug(String.format("resource url => %s", servletPath));
+      Map<String, String> params = getParametersFromQueryString(requestUri);
       // HTTP 응답 헤더 출력
       printResponseHeader(out);
 
@@ -122,12 +126,12 @@ public class ServerApp {
         return;
       }
 
-      RequestHandler requestHandler = handlerMapper.getHandler(requestUri);
+      RequestHandler requestHandler = handlerMapper.getHandler(servletPath);
 
       if (requestHandler != null) {
         try {
           // request handler 메서드 호출
-          requestHandler.getMethod().invoke(requestHandler.getBean(), in, out);
+          requestHandler.getMethod().invoke(requestHandler.getBean(), params, out);
         } catch (Exception e) {
           out.println("요청 처리 중 오류 발생!");
           out.println(e.getMessage());
@@ -175,6 +179,35 @@ public class ServerApp {
     out.println("Server: gmsServer");
     out.println();
   }
+
+  private String getServletPath(String requestUri) {
+    // requestUri => /user/add?email=aaa@test.com&name=1111&password=1234
+    return requestUri.split("\\?")[0]; // ex) /user/list
+  }
+
+  private Map<String, String> getParametersFromQueryString(String requestUri) throws Exception {
+    String[] items = requestUri.split("\\?");
+    // 데이터(Query String) 따로 저장
+    Map<String, String> params = new HashMap<>();
+    if (items.length > 1) {
+      ServerApp.logger.debug(String.format("query string => %s", items[1])); // info:시스템 운영자
+                                                                             // debug:개발자
+      String[] entries = items[1].split("&");
+      for (String entry : entries) {
+        ServerApp.logger.debug(String.format("parameter => %s", entry));
+        String[] kv = entry.split("=");
+        // 웹브라우저가 URL 인코딩하여 보낸 데이터 디코딩 필요
+        if (kv.length > 1) {
+          String value = URLDecoder.decode(kv[1], "UTF-8");
+          params.put(kv[0], value);
+        } else {
+          params.put(kv[0], "");
+        }
+      }
+    }
+    return params;
+  }
+
 
   public static void main(String[] args) throws Exception {
     ServerApp.logger.info("게임 관리 시스템 서버입니다.");

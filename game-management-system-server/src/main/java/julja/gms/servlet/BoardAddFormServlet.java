@@ -7,34 +7,32 @@ import julja.gms.service.BoardService;
 import julja.util.RequestMapping;
 
 @Component
-public class BoardDeleteServlet {
+public class BoardAddFormServlet {
 
   BoardService boardService;
 
-  public BoardDeleteServlet(BoardService boardService) {
+  public BoardAddFormServlet(BoardService boardService) {
     this.boardService = boardService;
   }
 
-  @RequestMapping("/board/delete")
+  @RequestMapping("/board/addform")
   public void service(Map<String, String> params, PrintStream out) throws Exception {
-
-    int no = Integer.parseInt(params.get("no"));
 
     out.println("<!DOCTYPE html>");
     out.println("<html>");
     out.println("<head>");
     out.println("<meta charset='UTF-8'>");
-    out.println("<meta http-equiv='refresh' content='2;url=/board/list'>");
-    out.println("<title>게시글 삭제</title>");
+    out.println("<title>게시글 등록</title>");
     out.println("</head>");
-    out.println("<body>");
-    out.println("<h1>게시글 삭제 결과</h1>");
 
-    if (boardService.delete(no) > 0) {
-      out.println("<p>해당 번호의 게시물을 삭제하였습니다.</p>");
-    } else {
-      out.println("<p>해당 번호의 게시물이 없습니다.</p>");
-    }
+    out.println("<body>");
+    out.println("<h1>게시글 등록</h1>");
+    out.println("<form action='/board/add'>");
+    out.println("제목: <input name='bbsName' type='text'><br>");
+    out.println("내용: <br>");
+    out.println("<textarea name='bbsText' rows='5' cols='60'></textarea><br>");
+    out.println("<button>제출</button>");
+    out.println("</form>");
     out.println("</body>");
     out.println("</html>");
   }
