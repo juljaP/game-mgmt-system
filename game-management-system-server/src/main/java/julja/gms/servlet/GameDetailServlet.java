@@ -46,6 +46,7 @@ public class GameDetailServlet {
       out.printf("사진 : <input name='photo' type='text' value='%s'/></p>\n", g.getPhoto());
       out.print("<button>변경</button>");
       out.printf("<a href='/game/delete?no=%d'>삭제</a>\n", g.getNo());
+      out.printf("<a href='/photoboard/list?no=%d'>사진 게시판</a>\n", g.getNo());
       out.println("</form>");
     } else {
       out.println("<p>해당 번호의 게임이 없습니다.</p>");

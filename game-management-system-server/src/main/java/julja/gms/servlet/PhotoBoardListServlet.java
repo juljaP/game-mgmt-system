@@ -2,13 +2,12 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import julja.gms.domain.Game;
 import julja.gms.domain.PhotoBoard;
 import julja.gms.service.GameService;
 import julja.gms.service.PhotoBoardService;
-import julja.util.Prompt;
 import julja.util.RequestMapping;
 
 @Component
@@ -23,22 +22,38 @@ public class PhotoBoardListServlet {
   }
 
   @RequestMapping("/photoboard/list")
-  public void service(Scanner in, PrintStream out) throws Exception {
-    int no = Prompt.getInt(in, out, "게임 번호? ");
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
+    int no = Integer.parseInt(params.get("no"));
     Game game = gameService.findByNo(no);
-    if (game == null) {
-      out.println("해당하는 번호의 게임이 존재하지 않습니다.");
-      return;
-    }
 
-    out.println("게임명 : " + game.getGameName());
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.printf("<title>[%s]의 사진</title>", game.getGameName());
+    out.println("</head>");
+    out.println("<body>");
+    out.printf("<h1>[%s]의 사진</h1>", game.getGameName());
+    out.println("<table border='1'>");
+    out.println("<tr>");
+    out.println("<th>번호</th>");
+    out.println("<th>제목</th>");
+    out.println("<th>등록일</th>");
+    out.println("<th>조회수</th>");
+    out.println("</th>");
 
     List<PhotoBoard> photoboards = photoBoardService.findAllByNo(no);
 
     for (PhotoBoard photoBoard : photoboards) {
-      out.printf("[%d] %s | %s | %d \n", photoBoard.getNo(), photoBoard.getTitle(),
+      out.printf(
+          "<tr><td>%d</td> <td><a href='/photoboard/detail?no=%d&gameNo=%d'>%s</a></td> <td>%s</td> <td>%d</td> </tr>\n",
+          photoBoard.getNo(), photoBoard.getNo(), game.getNo(), photoBoard.getTitle(),
           photoBoard.getCreadtedDate(), photoBoard.getHits());
     }
+    out.println("</table>");
+
+    out.println("</body>");
+    out.println("</html>");
   }
 
 }

@@ -39,7 +39,8 @@ public class UserDetailServlet {
       out.printf("가입일 : <input name='userResisteredDate' type='date' value='%s'/>\n</p>",
           u.getUserResisteredDate());
       out.printf("<button>수정</button>");
-      out.printf("<a href='/user/delete?no=%d'>  삭제</a>\n", u.getNo());
+      out.printf("<a href='/user/delete?no=%d'>삭제</a>\n", u.getNo());
+
       out.printf("</form>");
     } else {
       out.println("<p>해당 번호의 유저가 없습니다.</p>");
