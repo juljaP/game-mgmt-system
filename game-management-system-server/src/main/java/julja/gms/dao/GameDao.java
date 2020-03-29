@@ -10,7 +10,7 @@ public interface GameDao {
 
   List<Game> findAll() throws Exception;
 
-  List<Game> findByKeyword(Map<String, Object> params) throws Exception;
+  List<Game> findAll(Map<String, Object> params) throws Exception;
 
   Game findByNo(int no) throws Exception;
 

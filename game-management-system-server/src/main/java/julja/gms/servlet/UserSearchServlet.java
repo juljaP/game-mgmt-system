@@ -2,11 +2,10 @@ package julja.gms.servlet;
 
 import java.io.PrintStream;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import julja.gms.domain.User;
 import julja.gms.service.UserService;
-import julja.util.Prompt;
 import julja.util.RequestMapping;
 
 @Component
@@ -19,15 +18,34 @@ public class UserSearchServlet {
   }
 
   @RequestMapping("/user/search")
-  public void service(Scanner in, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
 
-    String keyword = Prompt.getString(in, out, "검색어? ");
-
+    String keyword = params.get("keyword");
     List<User> users = userService.search(keyword);
+
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<title>유저 검색</title>");
+    out.println("</head>");
+
+    out.println("<body>");
+    out.println("<h1>유저 검색</h1>");
+    out.println("<table border='1'>");
+    out.println("<tr>");
+    out.println("<th>번호</th>");
+    out.println("<th>이메일</th>");
+    out.println("<th>이름</th>");
+    out.println("<th>등록일</th>");
+    out.println("</tr>");
+
     for (User u : users) {
-      out.printf("[%d] %s | %s | %s\n", u.getNo(), u.getUserEmail(), u.getUserName(),
-          u.getUserResisteredDate());
+      out.printf(
+          "<tr><td>%d</td> <td><a href='/user/detail?no=%d'>%s</a></td> <td>%s</td> <td>%s</td></tr>\n",
+          u.getNo(), u.getNo(), u.getUserEmail(), u.getUserName(), u.getUserResisteredDate());
     }
+    out.println("</table>");
   }
 
 }

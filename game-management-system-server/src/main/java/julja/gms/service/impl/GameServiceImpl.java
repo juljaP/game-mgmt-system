@@ -1,6 +1,7 @@
 package julja.gms.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import julja.gms.dao.GameDao;
 import julja.gms.domain.Game;
@@ -38,6 +39,11 @@ public class GameServiceImpl implements GameService {
   @Override
   public int delete(int no) throws Exception {
     return gameDao.delete(no);
+  }
+
+  @Override
+  public List<Game> findByKeyword(Map<String, Object> params) throws Exception {
+    return gameDao.findAll(params);
   }
 
 }

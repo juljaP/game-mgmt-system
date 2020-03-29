@@ -38,7 +38,7 @@ public class BoardDetailServlet {
       out.printf("등록일: %s<br>\n", b.getToday());
       out.printf("조회수: %d<br>\n", b.getBbsHits());
       out.printf("<p><a href='/board/delete?no=%d'>삭제</a>\n", b.getNo());
-      out.printf("<a href='/board/updateform?no=%d'>변경</a></p>\n", b.getNo());
+      out.printf("<a href='/board/updateForm?no=%d'>변경</a></p>\n", b.getNo());
     } else {
       out.println("<p>해당 번호의 게시물이 없습니다.</p>");
     }

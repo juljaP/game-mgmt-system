@@ -7,35 +7,30 @@ import julja.gms.service.UserService;
 import julja.util.RequestMapping;
 
 @Component
-public class UserDeleteServlet {
+public class LoginFormServlet {
 
   UserService userService;
 
-  public UserDeleteServlet(UserService userService) {
+  public LoginFormServlet(UserService userService) {
     this.userService = userService;
   }
 
-  @RequestMapping("/user/delete")
+  @RequestMapping("/auth/loginForm")
   public void service(Map<String, String> params, PrintStream out) throws Exception {
-
-    int no = Integer.parseInt(params.get("no"));
-
     out.println("<!DOCTYPE html>");
     out.println("<html>");
     out.println("<head>");
     out.println("<meta charset='UTF-8'>");
-    out.println("<meta http-equiv='refresh' content='2;url=/user/list'>");
-    out.println("<title>회원 삭제</title>");
+    out.println("<title>로그인</title>");
     out.println("</head>");
     out.println("<body>");
-    out.println("<h1>회원 삭제 결과</h1>");
-    if (userService.delete(no) > 0) {
-      out.println("<p>해당 번호의 유저를 삭제하였습니다.</p>");
-    } else {
-      out.println("<p>해당 번호의 유저가 없습니다.</p>");
-    }
+    out.println("<h1>로그인</h1>");
+    out.println("<form action='/auth/login'>");
+    out.println("이메일 : <input name='email' type='email'/><br>");
+    out.println("비밀번호 : <input name='password' type='password'/><br>\n");
+    out.println("<button>로그인</button>");
+    out.println("</form>");
     out.println("</body>");
     out.println("</html>");
   }
-
 }

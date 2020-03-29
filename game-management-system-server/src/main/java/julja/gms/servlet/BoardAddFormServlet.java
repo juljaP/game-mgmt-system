@@ -15,7 +15,7 @@ public class BoardAddFormServlet {
     this.boardService = boardService;
   }
 
-  @RequestMapping("/board/addform")
+  @RequestMapping("/board/addForm")
   public void service(Map<String, String> params, PrintStream out) throws Exception {
 
     out.println("<!DOCTYPE html>");

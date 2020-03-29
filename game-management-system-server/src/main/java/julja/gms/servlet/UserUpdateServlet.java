@@ -1,11 +1,11 @@
 package julja.gms.servlet;
 
 import java.io.PrintStream;
-import java.util.Scanner;
+import java.sql.Date;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import julja.gms.domain.User;
 import julja.gms.service.UserService;
-import julja.util.Prompt;
 import julja.util.RequestMapping;
 
 @Component
@@ -18,32 +18,35 @@ public class UserUpdateServlet {
   }
 
   @RequestMapping("/user/update")
-  public void service(Scanner in, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
 
-    int no = Prompt.getInt(in, out, "번호? ");
+    int no = Integer.parseInt(params.get("no"));
+    User user = userService.get(no);
 
-    User old = userService.get(no);
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<meta http-equiv='refresh' content='2;url=/user/list'>");
+    out.println("<title>회원 정보 수정</title>");
+    out.println("</head>");
 
-    if (old == null) {
-      out.println("해당 번호의 유저가 없습니다.");
-      return;
-    }
-
-    User user = new User();
+    out.println("<body>");
+    out.println("<h1>회원 정보 수정 결과</h1>");
 
     user.setNo(no);
-    user.setUserEmail(Prompt.getString(in, out, String.format("이메일(%s) : ", old.getUserEmail()),
-        old.getUserEmail()));
-    user.setUserPW(
-        Prompt.getString(in, out, String.format("비밀번호(%s) : ", old.getUserPW()), old.getUserPW()));
-    user.setUserName(Prompt.getString(in, out, String.format("회원명(%s) : ", old.getUserName()),
-        old.getUserName()));
-    user.setUserResisteredDate(old.getUserResisteredDate());
+    user.setUserEmail(params.get("userEmail"));
+    user.setUserPW(params.get("userPW"));
+    user.setUserName(params.get("userName"));
+    user.setUserResisteredDate(Date.valueOf(params.get("userResisteredDate")));
+
     if (userService.update(user) > 0) {
-      out.println("유저 정보를 변경하였습니다.");
+      out.println("<p>유저 정보를 변경하였습니다.</p>");
     } else {
-      out.println("데이터 저장 실패.");
+      out.println("<p>데이터 저장 실패.</p>");
     }
+    out.println("</body>");
+    out.println("</html>");
   }
 
 }

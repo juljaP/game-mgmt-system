@@ -46,6 +46,7 @@
       <if test="gameVoice!=null">AND vo LIKE CONCAT('%', #{gameVoice}, '%')</if>
     </where>
   </select>
+
   
   <select id="findByNo" resultMap="GameMap" parameterType="int">
     <include refid="select1"/>

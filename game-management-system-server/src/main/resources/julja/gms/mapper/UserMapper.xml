@@ -34,7 +34,7 @@
   
   <select id="findByKeyword" resultMap="UserMap">
     <include refid="select1"/>
-    WHERE user_id LIKE #{key} OR email LIKE #{key} OR name LIKE #{key}
+    WHERE user_id LIKE CONCAT('%', #{key}, '%') OR email LIKE CONCAT('%', #{key}, '%') OR name LIKE CONCAT('%', #{key}, '%')
   </select>
   
   <update id="update" parameterType="User">
