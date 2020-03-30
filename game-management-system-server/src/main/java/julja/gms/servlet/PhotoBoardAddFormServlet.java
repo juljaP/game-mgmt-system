@@ -1,6 +1,6 @@
 package julja.gms.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -23,7 +23,7 @@ public class PhotoBoardAddFormServlet {
   }
 
   @RequestMapping("/photoboard/addForm")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
 
     Game game = gameService.findByNo(Integer.parseInt(params.get("gameNo")));
 

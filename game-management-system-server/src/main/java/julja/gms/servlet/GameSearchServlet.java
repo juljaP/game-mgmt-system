@@ -1,6 +1,6 @@
 package julja.gms.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,7 @@ public class GameSearchServlet {
   }
 
   @RequestMapping("/game/search")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
 
     Map<String, Object> params1 = new HashMap<>();
 

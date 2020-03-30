@@ -1,6 +1,6 @@
 package julja.gms.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import julja.gms.domain.User;
@@ -17,7 +17,7 @@ public class UserAddServlet {
   }
 
   @RequestMapping("/user/add")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
 
     User user = new User();
     user.setUserEmail(params.get("userEmail"));

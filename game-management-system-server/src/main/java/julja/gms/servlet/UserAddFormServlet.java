@@ -1,6 +1,6 @@
 package julja.gms.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import julja.gms.service.UserService;
@@ -16,7 +16,7 @@ public class UserAddFormServlet {
   }
 
   @RequestMapping("/user/addForm")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
 
     out.println("<!DOCTYPE html>");
     out.println("<html>");

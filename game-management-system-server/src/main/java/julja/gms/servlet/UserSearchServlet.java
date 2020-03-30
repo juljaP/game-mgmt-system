@@ -1,6 +1,6 @@
 package julja.gms.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class UserSearchServlet {
   }
 
   @RequestMapping("/user/search")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
 
     String keyword = params.get("keyword");
     List<User> users = userService.search(keyword);

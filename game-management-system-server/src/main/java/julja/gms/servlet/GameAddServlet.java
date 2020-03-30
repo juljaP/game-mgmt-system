@@ -1,6 +1,6 @@
 package julja.gms.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.sql.Date;
 import java.util.Map;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class GameAddServlet {
   }
 
   @RequestMapping("/game/add")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
 
     Game game = new Game();
     game.setGameName(params.get("gameName"));

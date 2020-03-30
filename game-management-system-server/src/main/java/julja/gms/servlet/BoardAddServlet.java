@@ -1,6 +1,6 @@
 package julja.gms.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import julja.gms.domain.Board;
@@ -17,7 +17,7 @@ public class BoardAddServlet {
   }
 
   @RequestMapping("/board/add")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
 
     Board board = new Board();
     board.setBbsName(params.get("bbsName"));

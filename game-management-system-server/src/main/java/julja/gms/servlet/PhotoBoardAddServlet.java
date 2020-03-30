@@ -1,6 +1,6 @@
 package julja.gms.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class PhotoBoardAddServlet {
   }
 
   @RequestMapping("/photoboard/add")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
 
     Game game = gameService.findByNo(Integer.parseInt(params.get("gameNo")));
     PhotoBoard photoBoard = new PhotoBoard();

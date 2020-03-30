@@ -1,19 +1,32 @@
 package julja.gms;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ConnectionClosedException;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.ExceptionListener;
+import org.apache.hc.core5.http.HttpConnection;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.impl.bootstrap.HttpServer;
+import org.apache.hc.core5.http.impl.bootstrap.ServerBootstrap;
+import org.apache.hc.core5.http.io.HttpRequestHandler;
+import org.apache.hc.core5.http.io.SocketConfig;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.io.CloseMode;
+import org.apache.hc.core5.util.TimeValue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -21,12 +34,10 @@ import julja.gms.context.ApplicationContextListener;
 import julja.util.RequestHandler;
 import julja.util.RequestMappingHandlerMapping;
 
-public class ServerApp {
+public class ServerApp implements ExceptionListener, HttpRequestHandler {
 
   static Logger logger = LogManager.getLogger(ServerApp.class);
-
   Set<ApplicationContextListener> listeners = new HashSet<>();
-  ExecutorService executorService = Executors.newCachedThreadPool();
   Map<String, Object> context = new HashMap<>();
   boolean serverStop = false;
   ApplicationContext iocContainer;
@@ -52,112 +63,42 @@ public class ServerApp {
     }
   }
 
-  public void service() {
+  public void service() throws Exception {
 
     notifyApplicationInitialized();
     iocContainer = (ApplicationContext) context.get("iocContainer");
     handlerMapper = (RequestMappingHandlerMapping) context.get("handlerMapper");
 
-    try (ServerSocket serverSocket = new ServerSocket(9999)) {
-      ServerApp.logger.info("클라이언트 연결 대기중...");
-      while (true) {
-        Socket socket = serverSocket.accept();
-        ServerApp.logger.info("클라이언트와 연결되었습니다.");
+    // 소켓 설정
+    SocketConfig socketConfig = SocketConfig.custom()//
+        .setSoTimeout(15, TimeUnit.SECONDS)//
+        .setTcpNoDelay(true)//
+        .build();
 
-        executorService.submit(() -> {
-          processRequest(socket);
-          ServerApp.logger.info("-----------------------------------");
-        });
+    // HTTP 서버 준비
+    HttpServer server = ServerBootstrap.bootstrap()//
+        .setListenerPort(9999)// 웹서버 포트 번호 설정
+        .setSocketConfig(socketConfig)// 기본 소켓 동작 설정
+        .setSslContext(null)// SSL 설정
+        .setExceptionListener(this)// 예외 처리자 설정
+        .register("*", this) // 요청 처리자 설정
+        .create();// 웹서버 객체 생성
 
-        if (serverStop) {
-          break;
-        }
-
+    server.start();
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      @Override
+      public void run() {
+        notifyApplicationDestroyed();
+        ServerApp.logger.info("서버 종료!");
+        server.close(CloseMode.GRACEFUL);
       }
-    } catch (Exception e) {
-      ServerApp.logger.error(String.format("서버 준비 중 오류 발생: %s", e.getMessage()));
-    }
+    });
 
-    executorService.shutdown();
-
-    while (true) {
-      if (executorService.isTerminated()) {
-        break;
-      }
-      try {
-        Thread.sleep(500); // 0.5초마다 스레드 종료 여부 검사
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-
-    notifyApplicationDestroyed();
-
+    ServerApp.logger.info("✅ Listening on port " + 9999);
+    server.awaitTermination(TimeValue.MAX_VALUE);
   }
 
-  void processRequest(Socket clientSocket) {
-
-    try (Socket socket = clientSocket;
-        Scanner in = new Scanner(socket.getInputStream());
-        PrintStream out = new PrintStream(socket.getOutputStream())) {
-
-      String[] requestLine = in.nextLine().split(" ");
-      // 기타 나머지 요청 데이터 버리기
-
-      while (true) {
-        String line = in.nextLine();
-        if (line.length() == 0) {
-          break;
-        }
-      }
-
-      String method = requestLine[0];
-      String requestUri = requestLine[1];
-      ServerApp.logger.info(String.format("method => %s", method));
-      ServerApp.logger.info(String.format("request-uri => %s", requestUri));
-      String servletPath = getServletPath(requestUri);
-      ServerApp.logger.debug(String.format("resource url => %s", servletPath));
-      Map<String, String> params = getParametersFromQueryString(requestUri);
-      // HTTP 응답 헤더 출력
-      printResponseHeader(out);
-
-      if (requestUri.equalsIgnoreCase("/server/stop")) {
-        quit(out);
-        return;
-      }
-
-      RequestHandler requestHandler = handlerMapper.getHandler(servletPath);
-
-      if (requestHandler != null) {
-        try {
-          // request handler 메서드 호출
-          requestHandler.getMethod().invoke(requestHandler.getBean(), params, out);
-        } catch (Exception e) {
-          out.println("요청 처리 중 오류 발생!");
-          out.println(e.getMessage());
-
-          ServerApp.logger.info("클라이언트 요청 처리 중 오류 발생:");
-          ServerApp.logger.info(e.getMessage());
-          StringWriter strWriter = new StringWriter();
-          e.printStackTrace(new PrintWriter(strWriter));
-          ServerApp.logger.debug(strWriter.toString());
-        }
-      } else {
-        notFound(out);
-        ServerApp.logger.info("해당 명령을 지원하지 않습니다.");
-      }
-      out.flush();
-      ServerApp.logger.info("클라이언트에게 응답하였음!");
-
-    } catch (Exception e) {
-      ServerApp.logger.error(String.format("예외 발생: %s", e.getMessage()));
-      StringWriter strWriter = new StringWriter();
-      e.printStackTrace(new PrintWriter(strWriter));
-      ServerApp.logger.debug(strWriter.toString());
-    }
-  }
-
-  private void notFound(PrintStream out) throws IOException {
+  private void notFound(PrintWriter out) throws IOException {
     out.println("<!DOCTYPE html>");
     out.println("<html>");
     out.println("<head>");
@@ -169,15 +110,16 @@ public class ServerApp {
     out.println("<p>요청한 명령을 처리할 수 없습니다.</p>");
   }
 
-  private void quit(PrintStream out) throws IOException {
-    serverStop = true;
-    out.flush();
-  }
-
-  private void printResponseHeader(PrintStream out) {
-    out.println("HTTP/1.1 200OK");
-    out.println("Server: gmsServer");
-    out.println();
+  private void error(PrintWriter out, Exception e) throws IOException {
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<title>실행 오류</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>실행 오류</h1>");
+    out.println("<p>요청한 명령을 처리할 수 없습니다.</p>");
   }
 
   private String getServletPath(String requestUri) {
@@ -185,7 +127,7 @@ public class ServerApp {
     return requestUri.split("\\?")[0]; // ex) /user/list
   }
 
-  private Map<String, String> getParametersFromQueryString(String requestUri) throws Exception {
+  private Map<String, String> getParameters(String requestUri) throws Exception {
     String[] items = requestUri.split("\\?");
     // 데이터(Query String) 따로 저장
     Map<String, String> params = new HashMap<>();
@@ -214,6 +156,72 @@ public class ServerApp {
     ServerApp app = new ServerApp();
     app.addApplicationContextListener(new ContextLoaderListener());
     app.service();
+  }
+
+  // ExceptionListener interface 구현
+  @Override
+  public void onError(Exception ex) {
+    ex.printStackTrace();
+
+  }
+
+  @Override
+  public void onError(HttpConnection connection, Exception ex) {
+    if (ex instanceof SocketTimeoutException) {
+      System.err.println("Connection timed out");
+    } else if (ex instanceof ConnectionClosedException) {
+      System.err.println(ex.getMessage());
+    } else {
+      ex.printStackTrace();
+    }
+  }
+
+  @Override
+  public void handle(ClassicHttpRequest request, ClassicHttpResponse response, HttpContext context)
+      throws HttpException, IOException {
+    ServerApp.logger.info("--------------------------------------");
+    ServerApp.logger.info("클라이언트의 요청이 들어옴!");
+
+    StringWriter outBuffer = new StringWriter(); // 클라이언트로 콘텐츠 출력 시 사용할 도구
+    PrintWriter out = new PrintWriter(outBuffer);
+
+    String method = request.getMethod(); // GET|POST|PUT|HEAD|PUT|...
+    String requestUri = request.getPath(); // /photoboard/list?lessonNo=100
+    ServerApp.logger.info("{} {}", method, requestUri);
+
+    try {
+      String servletPath = getServletPath(requestUri);
+      ServerApp.logger.debug(String.format("resource url => %s", servletPath));
+
+      Map<String, String> params = getParameters(requestUri);
+      RequestHandler requestHandler = handlerMapper.getHandler(servletPath);
+      if (requestHandler != null) {
+        try {
+          // request handler 메서드 호출
+          requestHandler.getMethod().invoke(requestHandler.getBean(), params, out);
+        } catch (Exception e) {
+        }
+      } else {
+        notFound(new PrintWriter(out));
+        ServerApp.logger.info("해당 명령을 지원하지 않습니다.");
+      }
+      out.flush();
+      ServerApp.logger.info("클라이언트에게 응답하였음!");
+    } catch (Exception e) {
+      error(new PrintWriter(out), e);
+
+      ServerApp.logger.info("클라이언트 요청 처리 중 오류 발생:");
+      ServerApp.logger.info(e.getMessage());
+      StringWriter strWriter = new StringWriter();
+      e.printStackTrace(new PrintWriter(strWriter));
+      ServerApp.logger.debug(strWriter.toString());
+    }
+
+    response.setCode(HttpStatus.SC_OK);
+
+    response.setEntity(new StringEntity(outBuffer.toString(),
+        ContentType.create("text/html", Charset.forName("UTF-8"))));
+
   }
 
 }
