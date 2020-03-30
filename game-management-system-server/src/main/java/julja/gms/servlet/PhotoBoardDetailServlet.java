@@ -32,6 +32,7 @@ public class PhotoBoardDetailServlet {
     out.println("<body>");
     out.printf("   <h1>[%s] 사진 상제정보</h1>", photoBoard.getGame().getGameName());
 
+
     if (photoBoard != null) {
       out.println("<form action='/photoboard/update'>");
       out.printf("<p>번호: <input name='no' readonly type='text' readonly value='%d'><br>\n",

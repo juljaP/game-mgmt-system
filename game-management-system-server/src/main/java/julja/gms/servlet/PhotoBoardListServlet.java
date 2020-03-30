@@ -34,6 +34,7 @@ public class PhotoBoardListServlet {
     out.println("</head>");
     out.println("<body>");
     out.printf("<h1>[%s]의 사진</h1>", game.getGameName());
+    out.printf("<a href='/photoboard/addForm?gameNo=%d'>사진 추가</a><br>\n", game.getNo());
     out.println("<table border='1'>");
     out.println("<tr>");
     out.println("<th>번호</th>");

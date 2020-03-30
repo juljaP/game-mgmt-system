@@ -3,7 +3,7 @@ package julja.gms.servlet;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 import julja.gms.domain.Game;
@@ -11,7 +11,6 @@ import julja.gms.domain.PhotoBoard;
 import julja.gms.domain.PhotoFile;
 import julja.gms.service.GameService;
 import julja.gms.service.PhotoBoardService;
-import julja.util.Prompt;
 import julja.util.RequestMapping;
 
 @Component
@@ -28,50 +27,41 @@ public class PhotoBoardAddServlet {
   }
 
   @RequestMapping("/photoboard/add")
-  public void service(Scanner in, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
 
+    Game game = gameService.findByNo(Integer.parseInt(params.get("gameNo")));
     PhotoBoard photoBoard = new PhotoBoard();
-    photoBoard.setTitle(Prompt.getString(in, out, "제목 : "));
-    int no = Prompt.getInt(in, out, "게임 번호: ");
-
-    Game game = gameService.findByNo(no);
-
-    if (game == null) {
-      out.println("게임 번호가 유효하지 않습니다.");
-      return;
-    }
-
+    photoBoard.setTitle(params.get("title"));
     photoBoard.setGame(game);
 
-    List<PhotoFile> photoFiles = uploadFiles(in, out);
-    photoBoard.setFiles(photoFiles);
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
 
-    photoBoardService.insert(photoBoard);
-    out.println("새 사진 게시글을 등록했습니다.");
-
-  }
-
-  private List<PhotoFile> uploadFiles(Scanner in, PrintStream out) {
+    out.println("<meta http-equiv='refresh' content='2;url=/game/list'>");
+    out.println("<title>사진 게시글 등록</title>");
+    out.println("</head>");
+    out.println("<h1>사진 입력 결과</h1>");
+    out.println("<body>");
 
     List<PhotoFile> photoFiles = new ArrayList<>();
 
-    out.println("최소 한 개의 사진 파일을 등록해야 합니다.");
-    out.println("파일명 입력 없이 그냥 엔터를 치면 파일 추가를 마칩니다.");
-
-    while (true) {
-      String filepath = Prompt.getString(in, out, "사진 파일? ");
-
-      if (filepath.length() == 0) {
-        if (photoFiles.size() > 0) {
-          break;
-        } else {
-          out.println("최소 한 개의 사진 파일을 등록해야 합니다.");
-          continue;
-        }
+    for (int i = 1; i < 6; i++) {
+      PhotoFile photoFile = new PhotoFile();
+      if (params.get("photo" + i).length() > 0) {
+        photoFile.setNo(game.getNo());
+        photoFile.setFilepath(params.get("photo" + i));
+        photoFiles.add((i - 1), photoFile);
       }
-      photoFiles.add(new PhotoFile().setFilepath(filepath));
     }
-    return photoFiles;
+
+    photoBoard.setFiles(photoFiles);
+
+    photoBoardService.insert(photoBoard);
+    out.println("<p>새 사진 게시글을 등록했습니다.</p>");
+    out.println("</body>");
+    out.println("</html>");
   }
 
 }
