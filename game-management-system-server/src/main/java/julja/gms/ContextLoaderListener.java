@@ -1,62 +1,35 @@
 package julja.gms;
 
-import java.lang.reflect.Method;
-import java.util.Map;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Component;
-import julja.gms.context.ApplicationContextListener;
-import julja.util.RequestHandler;
-import julja.util.RequestMapping;
-import julja.util.RequestMappingHandlerMapping;
 
-
-public class ContextLoaderListener implements ApplicationContextListener {
+@WebListener // Servlet Container 관리
+public class ContextLoaderListener implements ServletContextListener {
 
   static Logger logger = LogManager.getLogger(ContextLoaderListener.class);
 
   @Override
-  public void contextInitailized(Map<String, Object> context) {
+  public void contextInitialized(ServletContextEvent sce) {
+    ServletContext servletContext = sce.getServletContext();
     try {
 
-      ApplicationContext appCtx = new AnnotationConfigApplicationContext(AppConfig.class);
-      context.put("iocContainer", appCtx);
-      // printBeans(appCtx);
+      ApplicationContext iocContainer = new AnnotationConfigApplicationContext(AppConfig.class);
+      servletContext.setAttribute("iocContainer", iocContainer);
 
       ContextLoaderListener.logger.debug("------------------------------------------");
-
-      RequestMappingHandlerMapping handlerMapper = new RequestMappingHandlerMapping();
-      String[] beanNames = appCtx.getBeanNamesForAnnotation(Component.class);
-      for (String beanName : beanNames) {
-        Object component = appCtx.getBean(beanName);
-        Method method = getRequestHandler(component.getClass());
-        if (method != null) {
-          RequestHandler requestHandler = new RequestHandler(method, component);
-          handlerMapper.addHandler(requestHandler.getPath(), requestHandler);
-        }
-      }
-      context.put("handlerMapper", handlerMapper);
+      printBeans(iocContainer);
 
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  private Method getRequestHandler(Class<?> type) {
-    Method[] methods = type.getMethods();
-    for (Method m : methods) {
-      // @RequestMapping 붙은 메서드 조사
-      RequestMapping anno = m.getAnnotation(RequestMapping.class);
-      if (anno != null) {
-        return m;
-      }
-    }
-    return null;
-  }
-
-  @SuppressWarnings("unused")
   private void printBeans(ApplicationContext appCtx) {
     ContextLoaderListener.logger.info("---- Spring IoC 컨테이너에 들어있는 객체들 ----");
     String[] beanNames = appCtx.getBeanDefinitionNames();
@@ -67,6 +40,7 @@ public class ContextLoaderListener implements ApplicationContextListener {
   }
 
   @Override
-  public void contextDestroyed(Map<String, Object> context) {}
-
+  public void contextDestroyed(ServletContextEvent sce) {}
+  // 서블릿 컨테이너 종료되기 직전 호출
+  // 주로 서블릿이 사용한 자원 해제
 }
