@@ -1,69 +1,58 @@
-# 55_1 - JavaEE Servlet
+# 55_2 - 이클립스 웹 프로젝트 전환
 
-- JavaEE Implements(WAS; Web Application Server)
-- Tomcat 서블릿 컨테이너
-- 웹 애플리케이션
+- gradle 설정을 통해 이클립스 웹 프로젝트로 전환
 
 ## 소스 및 결과
 
 - build.gradle 변경
-- src/main/java/julja/lms/ServerApp.java 변경
-- src/main/java/julja/lms/servlet/XxxServlet.java 변경
+- src/main/webapp/index.html 추가
 
-### 1: 서블릿 컨테이너 설치 및 설정
 
-- tomcat.apache.org 사이트에서 서블릿 컨테이너 다운로드
-- 특정 폴더에 압축을 풀고, 설정
-  - 관리자 ID/PWD를 등록
-    - $톰캣홈/conf/tomcat-users.xml
-  - 관리자 로그인 활성화
-    - $톰캣홈/conf/Catalina/localhost/manager.xml
-- 톰캣 서버를 실행하고 웹 브라우저 통해 접속 확인
+### 1: 이클립스에 톰캣 서버 환경을 추가한다.
 
-### 2: JavaEE Servlet 기술을 사용하기 위한 라이브러리를 프로젝트에 적용
+- Window 메뉴/Preferences/Server/Runtime Environment 설정 추가
+
+### 2: 웹애플리케이션 테스트 서버 구축 
+
+- Servers 뷰/New Server
+
+### 3: 웹프로젝트로 전환
 
 - build.gradle 변경
-  - search.maven.org 에서 'servlet-api'를 검색
-  - 의존 라이브러리 블록에 추가
-  - 의존 라이브러리 옵션은 compileOnly로 설정
-  - 왜? 'servlet-api'는 컴파일할 때만 사용할 것이기 때문이다. 
+  - 'eclipse' 플러그인 대신에 'eclipse-wtp' 플러그인 추가
+  - 'war' 플러그인 추가 
 - 'gradle eclipse' 실행
-  - 이클립스 설정 파일을 갱신
-- 이클립스 IDE의 프로젝트를 refresh 
+  - .settings/ 폴더에 웹프로젝트 관련 설정파일이 추가된다.
+  - .project 파일에 웹프로젝트 관련 설정 정보가 추가된다.
+- 프로젝트 refresh
+  - 프로젝트 아이콘에 지구본 모양이 추가된다.
+  
+### 4: 테스트 서버에 웹 프로젝트를 등록
 
-### 3: JavaEE의 Servlet 기술을 사용하여 Spring IoC 컨테이너를 준비
+- 'Servers 뷰/테스트서버' 에 대해 컨텍스트 메뉴 출력
+- 'Add and Remove...' 메뉴 선택
+- 웹프로젝트 추가
 
-- julja.lms.ContextLoaderListener 변경
-  - Servlet 기술에게 제공하는 ServletContextListener를 구현
-  - Spring IoC 컨테이너를 준비 
-- julja.lms.context 패키지 및 하위 클래스 삭제
+### 5: 테스트 서버 시작
 
-### 4: 기존의 서블릿 클래스를 JavaEE의 Servlet 기술을 적용하여 변경
+- '테스트서버/컨텍스트 메뉴/Publish' 선택
+  - 테스트 서버의 배치 폴더에 웹애플리케이션 배치
+  - '**.server.core/tmp0/wtpwebapps/' 폴더 확인
+- '테스트서버/컨텍스트 메뉴/Start' 선택
+  - 서버 실행
+   
+### 6: 웹애플리케이션 테스트
 
-- julja.lms.servlet.XxxServlet 변경
-- julja.lms.ServerApp 삭제
+- http://localhost:9999/
+  - 테스트 서버에는 루트 웹 애플리케이션이 배치되지 않았기 때문에 오류 발생 
+- http://localhost:9999/bitcamp-project-server/board/list
 
-### 5: 웹애플리케이션을 빌드 
+### 7: 정적자원 폴더 추가
 
-- build.gradle 변경
-  - 웹애플리케이션 배치 파일을 생성하기 위해 'war' 플러그인 추가
-- 'gradle build'를 실행
-  - 'build/libs/bitcamp-project-server.war' 파일 생성
+- src/main/webapp/ 폴더 생성
+- eclipse 프로젝트 설정 파일을 생성한 후에 이 디렉토리를 만들면, 설정파일에 이 디렉토리 정보가 포함되지 않음.
+- 해결책? 다시 'gradle eclipse'를 실행하여 설정파일 만들어야 함
 
-### 6: 톰캣 서버에 배치
+### 8: 웹애플리케이션 기본 HTML 파일 생성
 
-- $톰캣홈/webapps/ 폴더에 war 파일을 놓는다.
-- 톰캣 서버를 다시 시작
-  - 톰캣 서버는 bitcamp-project-server.war 파일과 
-    동일한 이름으로 폴더를 만들고 압축 풀기
-  - 예) $톰캣홈/webapp/bitcamp-project-server
-
-### 7: 웹애플리케이션을 실행
-
-- /board/list 실행
-  - http://localhost:포트번호/웹애플리케이션이름/board/list
-  - 웹애플리케이션 이름은 webapps/ 폴더에 압축을 푼 디렉토리 이름
-  - 예) http://localhost:9999/game-management-system-server/board/list
-- julja.lms.servlet.XxxServlet 변경
-  - 상대 경로 지정
-
+- src/main/webapp/index.html 파일 생성
